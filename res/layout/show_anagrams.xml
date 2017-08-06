@@ -1,0 +1,146 @@
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/show_anagrams_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.lfq.learnfactsquick.SecondLfqActivity"
+    tools:ignore="TextFields" >
+
+    <RelativeLayout
+        android:id="@+id/anagrams_above_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/anagrams_split_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/anagrams_left_top"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/prompt_anagram"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"                    
+                    android:text="Input an anagram"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+
+                <EditText
+                    android:id="@+id/anagram_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"                    
+                    android:background="@drawable/rounded_edittext"
+                    android:gravity="top|left" />
+
+                <Button
+                    android:id="@+id/make_anagrams"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/anagram_input"
+                    android:layout_marginTop="4dp"
+                    android:text="Make Anagrams!" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/anarams_right_top"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:orientation="vertical" >
+
+                <CheckBox
+                    android:id="@+id/check_all_combos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Find all combinations?"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/check_like_vowels"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Treat consonants like vowels?"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/check_limited_letters"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Find a limited number of letters?"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/prompt_number_letters"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="How many letters?"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+
+                <EditText
+                    android:id="@+id/input_number_letters"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:maxLength="1"
+                    android:background="@drawable/rounded_edittext" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/anagram_top_results_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/anagrams_above_layout"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/anagrams_backup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:text="BACK UP?" >
+        </Button>
+
+        <TextView
+            android:id="@+id/anagrams_load_results"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24dp" >
+        </TextView>
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/show_scroll_anagram_results"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/anagram_top_results_layout" >
+
+        <TextView
+            android:id="@+id/show_anagram_results"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="RESULTS:"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="24dp" />
+    </ScrollView>
+
+</RelativeLayout>

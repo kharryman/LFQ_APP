@@ -1,0 +1,92 @@
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/show_major_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.lfq.learnfactsquick.SecondLfqActivity"
+    tools:ignore="TextFields" >
+
+    <LinearLayout
+        android:id="@+id/major_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <CheckBox
+            android:id="@+id/check_use_major_letters"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:text="Use beginning letters?"
+            android:textSize="12sp" />
+
+        <CheckBox
+            android:id="@+id/check_all_major_letters"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:text="find words for each letter?"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/major_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/major_top_layout"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/prompt_major"
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:text="Input (Letter(s)) + Numbers:"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/major_input"
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/prompt_major"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/rounded_edittext"
+            android:gravity="top|left" />
+
+        <Button
+            android:id="@+id/make_major"            
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            style="?android:attr/buttonStyleSmall"
+            android:text="Find Major System Words" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/major_load_results"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"        
+        android:layout_below="@+id/major_bottom_layout" >
+        </TextView>
+    
+    <ScrollView
+        android:id="@+id/show_scroll_major_results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"        
+        android:layout_below="@+id/major_load_results" >
+
+        <TextView
+            android:id="@+id/show_major_results"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="RESULTS:"            
+            android:textSize="20sp" />
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,245 @@
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edit_numbers_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.lfq.learnfactsquick.SecondLfqActivity"
+    tools:ignore="TextFields" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/prompt_edit_numbers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Input Numbers:"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/prompt_edit_numbers_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/prompt_edit_numbers"
+                android:text="User name:"
+                android:textSize="14dp" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/edit_numbers_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_edit_numbers"
+                android:layout_toRightOf="@+id/prompt_edit_numbers_username"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_edittext"
+                android:inputType="textMultiLine"
+                android:maxLines="1"
+                android:textSize="14dp" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_edit_numbers_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edit_numbers_username"
+                android:text="Password:"
+                android:textSize="14dp" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/edit_numbers_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edit_numbers_username"
+                android:layout_toRightOf="@+id/prompt_edit_numbers_password"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_edittext"
+                android:inputType="textMultiLine"
+                android:maxLines="1"
+                android:password="true"
+                android:textSize="14dp" >
+            </EditText>
+
+            <Button
+                android:id="@+id/do_login_edit_numbers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_edit_numbers_password"
+                android:text="LOG IN"
+                android:textSize="15sp" >
+            </Button>
+
+            <Button
+                android:id="@+id/do_logout_edit_numbers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_edit_numbers_password"
+                android:layout_toRightOf="@+id/do_login_edit_numbers"
+                android:text="LOG OUT"
+                android:textSize="15sp" >
+            </Button>
+
+            <TextView
+                android:id="@+id/edit_numbers_login_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/do_login_edit_numbers"
+                android:text="LOGGED OUT" >
+            </TextView>
+
+            <LinearLayout
+                android:id="@+id/edit_numbers_choose_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edit_numbers_login_status"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/prompt_choose_numbers_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Which Type?:" >
+                </TextView>
+
+                <RadioGroup
+                    android:id="@+id/edit_numbers_choices"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <RadioButton
+                        android:id="@+id/check_edit_shared_numbers"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="Shared Numbers"
+                        android:textSize="12sp" >
+                    </RadioButton>
+
+                    <RadioButton
+                        android:id="@+id/check_edit_user_numbers"
+                        android:layout_weight="1"
+                        android:text="User&apos;s Numbers"
+                        android:textSize="12sp" >
+                    </RadioButton>
+                </RadioGroup>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/prompt_number_numbers_entries"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edit_numbers_choose_layout"
+                android:text="How Many Entries?:" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/input_number_numbers_entries"
+                android:layout_width="75sp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edit_numbers_choose_layout"
+                android:layout_toRightOf="@+id/prompt_number_numbers_entries"
+                android:background="@drawable/rounded_edittext"
+                android:inputType="number"
+                android:maxLength="3" >
+            </EditText>
+
+            <Button
+                android:id="@+id/get_edit_numbers_entries"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edit_numbers_choose_layout"
+                android:layout_toRightOf="@+id/input_number_numbers_entries"
+                android:text="GET ENTRIES"
+                android:textSize="12sp" >
+            </Button>
+
+            <LinearLayout
+                android:id="@+id/numbers_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_below="@+id/get_edit_numbers_entries"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/do_begin_insert_numbers"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:padding="1dp"
+                    android:text="BEGIN INSERT"
+                    android:textSize="12sp" >
+                </Button>
+
+                <Button
+                    android:id="@+id/do_begin_update_numbers"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:padding="1dp"
+                    android:text="BEGIN UPDATE"
+                    android:textSize="12sp" >
+                </Button>
+
+                <Button
+                    android:id="@+id/do_update_numbers"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:padding="1dp"
+                    android:text="UPDATE"
+                    android:textSize="12sp" >
+                </Button>
+
+                <Button
+                    android:id="@+id/do_insert_numbers"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:padding="1dp"
+                    android:text="INSERT"
+                    android:textSize="12sp" >
+                </Button>
+
+                <Button
+                    android:id="@+id/do_delete_numbers"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:padding="1dp"
+                    android:text="DELETE"
+                    android:textSize="12sp" >
+                </Button>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/edit_numbers_results"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/numbers_buttons"
+                android:textSize="12sp" >
+            </TextView>
+
+
+                <RelativeLayout
+                    android:id="@+id/numbers_mnemonic_entries_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/edit_numbers_results"  >
+                </RelativeLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

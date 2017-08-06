@@ -1,0 +1,138 @@
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edit_dictionary_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.lfq.learnfactsquick.SecondLfqActivity"
+    tools:ignore="TextFields" >
+
+    <ScrollView
+        android:id="@+id/edit_dictionary_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <RelativeLayout
+            android:id="@+id/edit_dictionary_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:id="@+id/edit_dic_input_word_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/prompt_word"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.33"
+                    android:text="ENTER WORD:"
+                    android:textSize="12sp" >
+                </TextView>
+
+                <EditText
+                    android:id="@+id/dictionary_word_input"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.33"
+                    android:background="@drawable/rounded_edittext"
+                    android:inputType="text"
+                    android:padding="5dip" />
+
+                <Spinner
+                    android:id="@+id/select_speech"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.33" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/suggested_words"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edit_dic_input_word_layout"
+                android:layout_marginTop="20dp"
+                android:text="SUGGESTED WORDS:"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="12sp" />
+
+            <Spinner
+                android:id="@+id/select_suggested_words"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edit_dic_input_word_layout"                
+                android:layout_toRightOf="@+id/suggested_words" />
+
+            <EditText
+                android:id="@+id/dictionary_definition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/suggested_words"                
+                android:background="@drawable/rounded_edittext"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:lines="10"
+                android:scrollHorizontally="false"
+                android:singleLine="false" />
+
+            <RadioGroup
+                android:id="@+id/dictionary_edit_choices"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dictionary_definition"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@+id/insert_definition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Insert" />
+
+                <RadioButton
+                    android:id="@+id/delete_definition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Delete" />
+
+                <RadioButton
+                    android:id="@+id/edit_definition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edit" />
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/get_definition"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dictionary_edit_choices"                
+                android:text="Get Definition" />
+
+            <Button
+                android:id="@+id/edit_specific_definition"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dictionary_edit_choices"                
+                android:layout_toRightOf="@+id/get_definition"
+                android:text="Edit Dictionary" />
+
+            <TextView
+                android:id="@+id/show_results"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"                
+                android:layout_below="@+id/get_definition"
+                android:text="RESULTS:"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="12sp" />
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,206 @@
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/show_numbers_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.lfq.learnfactsquick.SecondLfqActivity"
+    tools:ignore="TextFields" >    
+     
+    <RelativeLayout
+        android:id="@+id/numbers_above_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"       
+        >
+    <TextView
+        android:id="@+id/prompt_numbers_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"       
+        android:text="User name:"
+        android:textSize="14dp" >
+    </TextView>
+
+    <EditText
+        android:id="@+id/numbers_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"        
+        android:layout_toRightOf="@+id/prompt_numbers_username"        
+        android:background="@drawable/rounded_edittext"
+        android:inputType="textMultiLine"
+        android:maxLines="1"
+        android:textSize="14dp" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/prompt_numbers_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/numbers_username"
+        android:text="Password:"
+        android:textSize="14dp" >
+    </TextView>
+
+    <EditText
+        android:id="@+id/numbers_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/numbers_username"
+        android:layout_toRightOf="@+id/prompt_numbers_password"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_edittext"
+        android:inputType="textMultiLine"
+        android:maxLines="1"
+        android:password="true"
+        android:textSize="14dp" >
+    </EditText>
+
+    <Button
+        android:id="@+id/do_login_numbers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/prompt_numbers_password"
+        android:text="LOG IN"
+        android:textSize="15sp" >
+    </Button>
+
+    <Button
+        android:id="@+id/do_logout_numbers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/prompt_numbers_password"
+        android:layout_toRightOf="@+id/do_login_numbers"
+        android:text="LOG OUT"
+        android:textSize="15sp" >
+    </Button>
+
+    <TextView
+        android:id="@+id/numbers_login_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/do_login_numbers"
+        android:text="LOGGED OUT" >
+    </TextView>
+
+    <LinearLayout
+        android:id="@+id/numbers_do_choices_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/numbers_login_status">
+    <Button
+        android:id="@+id/do_get_numbers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"        
+        android:text="GET NUMBERS"
+        android:textSize="12sp" >
+    </Button>
+    <RadioGroup
+        android:id="@+id/numbers_choices"
+        android:layout_width="match_parent"        
+        android:layout_height="wrap_content"        
+        android:orientation="horizontal" >
+        <RadioButton
+            android:id="@+id/check_shared_numbers"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:text="Get Shared Numbers" >
+        </RadioButton>
+        <RadioButton
+            android:id="@+id/check_user_numbers"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:text="Get User's Numbers" >
+        </RadioButton>
+    </RadioGroup>
+    </LinearLayout>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/numbers_backup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BACKUP?"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/numbers_above_layout"
+        ></Button>
+    <HorizontalScrollView
+        android:id="@+id/horizontal_scroll_numbers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/numbers_backup" >
+
+        <RelativeLayout
+            android:id="@+id/horizontal_numbers_relative_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TableLayout
+                android:id="@+id/numbers_header_table"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" >
+
+                <TableRow android:id="@+id/numbers_header_main" >
+
+                    <TextView
+                        android:layout_width="150px"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/header_shape"
+                        android:gravity="center_horizontal"
+                        android:text="TYPE" >
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="150px"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/header_shape"
+                        android:gravity="center_horizontal"
+                        android:text="NUMBER" >
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="400px"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/header_shape"
+                        android:gravity="center_horizontal"
+                        android:text="INFORMATION" >
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="400px"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/header_shape"
+                        android:gravity="center_horizontal"
+                        android:text="MNEMONIC WORDS" >
+                    </TextView>
+                </TableRow>
+            </TableLayout>
+
+            <ScrollView
+                android:id="@+id/scroll_numbers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/numbers_header_table" >
+
+                <TableLayout
+                    android:id="@+id/numbers_table"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+                </TableLayout>
+            </ScrollView>
+        </RelativeLayout>
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/numbers_results"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/horizontal_scroll_numbers"
+        android:textSize="12sp" />
+
+</RelativeLayout>

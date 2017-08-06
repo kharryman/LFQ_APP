@@ -1,0 +1,512 @@
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edit_acrostics_tables_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.lfq.learnfactsquick.SecondLfqActivity"
+    tools:ignore="TextFields" >        
+        
+        <TextView
+        android:id="@+id/prompt_input_table"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit Acrostics Tables:"
+        android:layout_marginTop="4dp"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></TextView>
+        
+        <EditText
+        android:id="@+id/table_input"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/prompt_input_table"
+        android:background="@drawable/rounded_edittext_red"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></EditText>
+        
+        <Spinner
+        android:id="@+id/select_edit_table"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/table_input"
+        android:layout_below="@+id/prompt_input_table"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"        
+        ></Spinner>
+        
+    <TableLayout 
+        android:id="@+id/category_table"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"
+        android:layout_below="@+id/table_input"
+        >
+       
+        <TableRow>            
+        <TextView
+        android:id="@+id/prompt_cat1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Category1:"
+        android:layout_below="@+id/table_input"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></TextView>
+        
+        <EditText
+        android:id="@+id/edit_cat1"
+        android:background="@drawable/rounded_edittext_red"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/table_input"
+        android:layout_toRightOf="@+id/prompt_cat1"                
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></EditText>
+        
+        <TextView
+        android:id="@+id/prompt_dat_typ1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/table_input"
+        android:layout_toRightOf="@+id/edit_cat1"        
+        android:text="Data Type1"    
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></TextView>
+        
+        <EditText
+        android:id="@+id/edit_dat_typ1"
+        android:background="@drawable/rounded_edittext_red"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"        
+        android:layout_below="@+id/table_input"
+        android:layout_toRightOf="@+id/prompt_dat_typ1"            
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"></EditText>
+        
+        <Spinner
+        android:id="@+id/select_data_type1"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/table_input"
+        android:layout_toRightOf="@+id/edit_dat_typ1"                
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"
+        android:entries="@array/data_type_options"
+        ></Spinner>
+        </TableRow>
+        <TableRow>
+        <TextView
+        android:id="@+id/prompt_cat2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Category2:"
+        android:layout_below="@+id/prompt_cat1"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></TextView>
+        
+        <EditText
+        android:id="@+id/edit_cat2"
+        android:background="@drawable/rounded_edittext_red"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/prompt_cat2"
+        android:layout_below="@+id/prompt_cat1"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></EditText>
+        
+        <TextView
+        android:id="@+id/prompt_dat_typ2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/edit_cat2"
+        android:layout_below="@+id/prompt_cat1"
+        android:text="Data Type2"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></TextView>
+        
+        <EditText
+        android:id="@+id/edit_dat_typ2"
+        android:background="@drawable/rounded_edittext_red"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/prompt_dat_typ2"
+        android:layout_below="@+id/prompt_cat1"            
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"></EditText>
+        
+        <Spinner
+        android:id="@+id/select_data_type2"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/edit_dat_typ2"
+        android:layout_below="@+id/prompt_cat1"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"
+        android:entries="@array/data_type_options"
+        ></Spinner>
+        
+        </TableRow>
+        <TableRow >
+        <TextView
+        android:id="@+id/prompt_cat3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Category3:"
+        android:layout_below="@+id/prompt_cat2"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></TextView>
+        
+        <EditText
+        android:id="@+id/edit_cat3"
+        android:background="@drawable/rounded_edittext_red"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/prompt_cat3"
+        android:layout_below="@+id/prompt_cat2"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></EditText>
+        
+        <TextView
+        android:id="@+id/prompt_dat_typ3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/edit_cat3"
+        android:layout_below="@+id/prompt_cat2"
+        android:text="Data Type3"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></TextView>
+        
+        <EditText
+        android:id="@+id/edit_dat_typ3"
+        android:background="@drawable/rounded_edittext_red"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/prompt_dat_typ3"
+        android:layout_below="@+id/prompt_cat2"            
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"></EditText>
+        
+        <Spinner
+        android:id="@+id/select_data_type3"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/edit_dat_typ3"
+        android:layout_below="@+id/prompt_cat2"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"
+        android:entries="@array/data_type_options"
+        ></Spinner>
+        
+        </TableRow>
+        <TableRow>
+        
+        <TextView
+        android:id="@+id/prompt_cat4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Category4:"
+        android:layout_below="@+id/prompt_cat3"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></TextView>
+        
+        <EditText
+        android:id="@+id/edit_cat4"
+        android:background="@drawable/rounded_edittext_red"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/prompt_cat4"
+        android:layout_below="@+id/prompt_cat3"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></EditText>
+        
+        <TextView
+        android:id="@+id/prompt_dat_typ4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/edit_cat4"
+        android:layout_below="@+id/prompt_cat3"
+        android:text="Data Type4"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></TextView>
+        
+        <EditText
+        android:id="@+id/edit_dat_typ4"
+        android:background="@drawable/rounded_edittext_red"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/prompt_dat_typ4"
+        android:layout_below="@+id/prompt_cat3"            
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"></EditText>
+        
+        <Spinner
+        android:id="@+id/select_data_type4"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/edit_dat_typ4"
+        android:layout_below="@+id/prompt_cat3"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"
+        android:entries="@array/data_type_options"
+        ></Spinner>
+        </TableRow>
+           
+        <TableRow >
+        <TextView
+        android:id="@+id/prompt_cat5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Category5:"
+        android:layout_below="@+id/prompt_cat4"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></TextView>
+        
+        <EditText
+        android:id="@+id/edit_cat5"
+        android:background="@drawable/rounded_edittext_red"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/prompt_cat5"
+        android:layout_below="@+id/prompt_cat4"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></EditText>
+        
+        <TextView
+        android:id="@+id/prompt_dat_typ5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/edit_cat5"
+        android:layout_below="@+id/prompt_cat4"
+        android:text="Data Type5"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></TextView>
+        
+        <EditText
+        android:id="@+id/edit_dat_typ5"
+        android:background="@drawable/rounded_edittext_red"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/prompt_dat_typ5"
+        android:layout_below="@+id/prompt_cat4"            
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"></EditText>
+        
+        <Spinner
+        android:id="@+id/select_data_type5"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/edit_dat_typ5"
+        android:layout_below="@+id/prompt_cat4"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"
+        android:entries="@array/data_type_options"
+        ></Spinner>
+        </TableRow>
+        
+        <TableRow>
+        <TextView
+        android:id="@+id/prompt_cat6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Category6:"
+        android:layout_below="@+id/prompt_cat5"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></TextView>
+        
+        <EditText
+        android:id="@+id/edit_cat6"
+        android:background="@drawable/rounded_edittext_red"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/prompt_cat6"
+        android:layout_below="@+id/prompt_cat5"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></EditText>
+        
+        <TextView
+        android:id="@+id/prompt_dat_typ6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/edit_cat6"
+        android:layout_below="@+id/prompt_cat5"
+        android:text="Data Type6"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></TextView>
+        
+        <EditText
+        android:id="@+id/edit_dat_typ6"
+        android:background="@drawable/rounded_edittext_red"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/prompt_dat_typ6"
+        android:layout_below="@+id/prompt_cat5"            
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"></EditText>
+        
+        <Spinner
+        android:id="@+id/select_data_type6"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/edit_dat_typ6"
+        android:layout_below="@+id/prompt_cat5"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"
+        android:entries="@array/data_type_options"
+        ></Spinner>
+        </TableRow>   
+        
+        <TableRow >
+        <TextView
+        android:id="@+id/prompt_cat7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Category7:"
+        android:layout_below="@+id/prompt_cat6"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></TextView>
+        
+        <EditText
+        android:id="@+id/edit_cat7"
+        android:background="@drawable/rounded_edittext_red"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/prompt_cat7"
+        android:layout_below="@+id/prompt_cat6"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></EditText>
+        
+        <TextView
+        android:id="@+id/prompt_dat_typ7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/edit_cat7"
+        android:layout_below="@+id/prompt_cat6"
+        android:text="Data Type7"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp"></TextView>
+        
+        <EditText
+        android:id="@+id/edit_dat_typ7"
+        android:background="@drawable/rounded_edittext_red"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/prompt_dat_typ7"
+        android:layout_below="@+id/prompt_cat6"            
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"
+        ></EditText>
+        
+        <Spinner
+        android:id="@+id/select_data_type7"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/edit_dat_typ7"
+        android:layout_below="@+id/prompt_cat6"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"
+        android:entries="@array/data_type_options"
+        ></Spinner>
+        </TableRow>
+                
+        </TableLayout>
+        
+        <RadioGroup
+        android:id="@+id/acr_table_edit_choices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/category_table"
+        android:orientation="horizontal"        
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp">
+           <RadioButton
+               android:id="@+id/rad_get_table"              
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Get?"
+               android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"
+               >               
+           </RadioButton>
+           <RadioButton
+               android:id="@+id/rad_edit_table"               
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Edit?"               
+               android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="10sp"
+               ></RadioButton>
+           <RadioButton
+               android:id="@+id/rad_create_table"               
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Create?"
+               android:textAppearance="?android:attr/textAppearanceMedium"
+               android:textSize="10sp"
+               ></RadioButton>
+           <!--
+           <RadioButton
+               android:id="@+id/rad_delete_table"               
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Delete?"
+               android:textAppearance="?android:attr/textAppearanceMedium"
+               android:textSize="10sp"
+               ></RadioButton>
+               -->
+           <RadioButton
+               android:id="@+id/rad_change_table_name"               
+               android:layout_width="wrap_content"
+               android:text="Change Name?"
+               android:layout_height="wrap_content"
+               android:textAppearance="?android:attr/textAppearanceMedium"
+               android:textSize="10sp"
+               ></RadioButton>           
+        </RadioGroup>
+        
+        <CheckBox
+               android:id="@+id/check_inc_mne_col"               
+               android:layout_width="100dp"
+               android:layout_height="wrap_content"
+               android:layout_below="@+id/acr_table_edit_choices"
+               android:text="Include Mnemonics?">            
+        </CheckBox>          
+        <CheckBox
+               android:id="@+id/check_table_done"               
+               android:layout_width="100dp"
+               android:layout_height="wrap_content"
+               android:layout_toRightOf="@+id/check_inc_mne_col"
+               android:text="Done?"
+               android:layout_below="@+id/acr_table_edit_choices">"
+            
+        </CheckBox>
+        <Button
+               android:id="@+id/edit_table"               
+               android:layout_width="100dp"
+               android:layout_height="wrap_content"
+               android:text="EDIT TABLE"
+               android:layout_below="@+id/check_inc_mne_col">
+            
+        </Button>
+        <Button
+               android:id="@+id/clear_table"               
+               android:layout_width="100dp"
+               android:layout_height="wrap_content"
+               android:text="CLEAR TABLE"
+               android:layout_toRightOf="@+id/edit_table"
+               android:layout_below="@+id/check_inc_mne_col">            
+        </Button>
+        
+        <TextView
+            android:id="@+id/results_edit_table"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edit_table"
+            ></TextView>
+        
+        
+        </RelativeLayout>
+        

@@ -1,0 +1,270 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_lfq_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_green"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.lfq.learnfactsquick.MainLfqActivity" >
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="*"
+        >
+
+        <TableRow android:id="@+id/main_prompt">
+
+            <TextView
+                android:id="@+id/edit"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center|center"
+                android:text="EDIT"
+                android:textStyle="bold"
+                android:layout_margin="1px"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/show"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:text="SHOW"
+                android:gravity="center|center"
+                android:textStyle="bold"
+                android:layout_margin="1px"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tools"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:text="TOOLS"
+                android:gravity="center|center"
+                android:layout_margin="1px"
+                android:textStyle="bold"
+                android:textSize="15sp" />
+        </TableRow>
+
+        <TableRow android:layout_weight="1.0" >
+
+            <Button
+                android:id="@+id/edit_acrostics"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"                
+                android:background="@drawable/button"
+                android:text="Acrostics"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/show_tables"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Acrostics Tables"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/major_system"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Major System"
+                android:textSize="12sp" />
+        </TableRow>
+
+        <TableRow android:layout_weight="1.0" >
+
+            <Button
+                android:id="@+id/edit_alphabet"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Alphabet"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/show_words"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Show New Words"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/celebrity_numbers"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Celebrity Numbers"
+                android:textSize="12sp" />
+        </TableRow>
+
+        <TableRow android:layout_weight="1.0" >
+
+            <Button
+                android:id="@+id/edit_dictionary"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Dictionary"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/show_mnemonics"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Mnemonics"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/anagram_generator"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Anagram Generator"
+                android:textSize="12sp" />
+        </TableRow>
+
+        <TableRow android:layout_weight="1.0" >
+
+            <Button
+                android:id="@+id/edit_events"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Events"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/show_numbers"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Numbers"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/mnemonic_generator"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Mnemonic Generator"
+                android:textSize="12sp" />
+        </TableRow>
+
+        <TableRow android:layout_weight="1.0" >
+
+            <Button
+                android:id="@+id/edit_mnemonics"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Mnemonics"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/show_timeline"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Timeline"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/dictionary"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Dictionary"
+                android:textSize="12sp" />
+        </TableRow>
+
+        <TableRow android:layout_weight="1.0" >
+
+            <Button
+                android:id="@+id/edit_numbers"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Numbers"
+                android:textSize="12sp" />
+        </TableRow>
+
+        <TableRow android:layout_weight="1.0" >
+
+            <Button
+                android:id="@+id/edit_tables"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Tables"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="0px"
+                android:layout_height="fill_parent" >
+            </TextView>
+
+            <Button
+                android:id="@+id/edit_users"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Users"
+                android:textSize="12sp" />
+        </TableRow>
+
+        <TableRow android:layout_weight="1.0" >
+
+            <Button
+                android:id="@+id/edit_words"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Edit New Words"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="0px"
+                android:layout_height="fill_parent" >
+            </TextView>
+
+            <Button
+                android:id="@+id/help_menu"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_margin="1px"
+                android:background="@drawable/button"
+                android:text="Help Menu"
+                android:textSize="12sp" />
+        </TableRow>
+    </TableLayout>
+
+</RelativeLayout>

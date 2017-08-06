@@ -1,0 +1,448 @@
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/show_acrostics_tables_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.lfq.learnfactsquick.SecondLfqActivity"
+    tools:ignore="TextFields" >
+    
+    <RelativeLayout
+    android:id="@+id/acr_tables_top_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">"
+
+        <LinearLayout
+        android:id="@+id/show_acrs_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"    
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/show_acrs_select_tables_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/prompt_select_table"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select the table:"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="12sp" />
+
+            <Spinner
+                android:id="@+id/select_table"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawSelectorOnTop="true" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/show_acr_see_how_many_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/prompt_see_entered"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/select_table"
+                android:text="How many so far?"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="12sp" />
+
+            <Spinner
+                android:id="@+id/see_entered"
+                android:layout_width="200px"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_see_entered"
+                android:layout_margin="4px"
+                android:layout_toRightOf="@+id/select_table"
+                android:drawSelectorOnTop="true" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/show_acr_sort_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/show_acrs_top_layout"
+        android:background="#ffffff"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/one_type_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:orientation="vertical" >
+
+            <CheckBox
+                android:id="@+id/check_one_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SHOW ONE TYPE OF CATEGORY?" 
+                android:textSize="10sp">
+            </CheckBox>
+
+            <LinearLayout
+                android:id="@+id/select_cat_type_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <Spinner
+                    android:id="@+id/select_cat"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5" >
+                </Spinner>
+
+                <Spinner
+                    android:id="@+id/select_type"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5" >
+                </Spinner>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/sort_cat_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:orientation="vertical" >
+
+            <CheckBox
+                android:id="@+id/check_sort_cat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SORT BY CATEGORY?" 
+                android:textSize="10sp">
+            </CheckBox>
+
+            <Spinner
+                android:id="@+id/select_cat2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+            </Spinner>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/check_table"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/show_acr_sort_layout"
+        android:background="#ffffff" >
+
+        <Button
+            android:id="@+id/make_list"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"            
+            android:layout_marginTop="4dp"
+            android:layout_weight="0.4"
+            android:text="Show Acrostics Table" />
+
+        <CheckBox
+            android:id="@+id/check_read_acr"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:text="Read?"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="12sp" />
+
+        <CheckBox
+            android:id="@+id/check_show_all_categories"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:text="Show all categories?"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <HorizontalScrollView
+        android:id="@+id/horizontal_layout_check_acr_complete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/check_table"
+        android:background="#ffffff" >
+
+        <LinearLayout
+            android:id="@+id/horizontal_layout_check_acr_complete_linear_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/check_acr_info_linear_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <CheckBox
+                    android:id="@+id/check_information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Information?"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/check_complete_information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="complete"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/check_incomplete_information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="incomplete"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/check_acr_acr_linear_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <CheckBox
+                    android:id="@+id/check_acrostics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Acrostics?"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/check_complete_acrostics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="complete"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/check_incomplete_acrostics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="incomplete"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/check_acr_mne_linear_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <CheckBox
+                    android:id="@+id/check_mnemonics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mnemonics?"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/check_complete_mnemonics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="complete"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/check_incomplete_mnemonics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="incomplete"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/check_acr_img_linear_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <CheckBox
+                    android:id="@+id/check_images"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Images?"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/check_complete_images"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="complete"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/check_incomplete_images"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="incomplete"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/check_acr_peg_linear_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <CheckBox
+                    android:id="@+id/check_peglist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Peglist?"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/check_complete_peglist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="complete"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/check_incomplete_peglist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="incomplete"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </HorizontalScrollView>
+    </RelativeLayout>
+    
+    <LinearLayout 
+        android:id="@+id/acr_tables_result_backup_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/acr_tables_top_layout">
+    <TextView
+        android:id="@+id/acrostics_results"
+        android:layout_width="0dp"
+        android:layout_weight="0.6"
+        android:layout_height="wrap_content"        
+        android:text="RESULTS:"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12dp" />
+    <Button
+    android:id="@+id/acr_tables_backup"
+    android:layout_width="0dp"
+    android:background="@drawable/button"
+        android:layout_height="50px"
+        android:layout_weight="0.4"
+        android:text="BACK UP?"
+        ></Button>
+    </LinearLayout>
+    
+
+    <HorizontalScrollView
+        android:id="@+id/horizontal_scroll_acrostics_results"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/acr_tables_result_backup_layout" >
+
+        <LinearLayout
+            android:id="@+id/horizontal_scroll_acrostics_vertical_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+"
+
+            <TableLayout
+                android:id="@+id/show_acr_header_table"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TableRow android:id="@+id/show_acr_table_header_row" >
+
+                    <TextView
+                        android:id="@+id/show_acr_table_header_name"
+                        android:layout_width="200px"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/header_shape"
+                        android:text="Name:" >
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/show_acr_table_header_info"
+                        android:layout_width="300px"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/header_shape"
+                        android:text="Information:" >
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/show_acr_table_header_acr"
+                        android:layout_width="300px"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/header_shape"
+                        android:text="Acrostics:" >
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/show_acr_table_header_mne"
+                        android:layout_width="300px"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/header_shape"
+                        android:text="Mnemonics:" >
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/show_acr_table_header_peg"
+                        android:layout_width="300px"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/header_shape"
+                        android:text="Peglist:" >
+                    </TextView>
+                </TableRow>
+            </TableLayout>
+
+            <ScrollView
+                android:id="@+id/scroll_acrostics_results"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TableLayout
+                    android:id="@+id/acrostics_table"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp" />
+            </ScrollView>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</RelativeLayout>

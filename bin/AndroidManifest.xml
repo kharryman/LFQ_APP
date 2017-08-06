@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.lfq.learnfactsquick"
+    android:versionCode="7"
+    android:installLocation="preferExternal"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="21" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+     <uses-permission android:name="android.permission.INTERNET" />
+     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+     <!--  <uses-permission android:name="android.permission.READ_PHONE_STATE"/> -->
+
+    <application     
+        android:name="com.lfq.learnfactsquick.LfqApp"   
+        android:largeHeap="true"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.lfq.learnfactsquick.MainLfqActivity"
+            android:label="@string/app_name" 
+            android:configChanges="orientation|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.AnagramGenerator"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.CelebritiesToNumbers"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.Dictionary"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.EditAcrostics"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.EditAlphabet"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.EditDictionary"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.EditEvents"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.EditMnemonics"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.EditNewWords"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.EditNumbers"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.EditTables"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.EditUsers"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.HelpMenu"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.MajorSystemGenerator"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.MnemonicGenerator"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.Mnemonics"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.NewWords"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.Numbers"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        
+        <activity
+            android:name="com.lfq.learnfactsquick.ShowAcrosticsTables"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.OldSynchronize"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+        <activity
+            android:name="com.lfq.learnfactsquick.Timeline"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+    </application>
+
+</manifest>

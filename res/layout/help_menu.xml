@@ -1,0 +1,321 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/help_menu_scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.lfq.learnfactsquick.MainLfqActivity"
+    tools:ignore="TextFields" >
+
+    <LinearLayout
+        android:id="@+id/help_menu_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        
+          <TextView
+            android:id="@+id/help_menu_general_prompt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"            
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_general_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_prompt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"            
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_acrostics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_acrostics_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_alphabet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_alphabet_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_dictionary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_dictionary_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_events"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_events_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_mnemonics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_mnemonics_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_numbers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_numbers_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_tables"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_tables_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_newwords"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_edit_newwords_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_show_prompt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_show_acrostics_tables"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_show_acrostics_tables_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_show_newwords"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_show_newwords_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_show_mnemonics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_show_mnemonics_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_show_numbers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_show_numbers_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_timeline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_timeline_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_tools_prompt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_major_system"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_major_system_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_celebrity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_celebrity_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_anagrams"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_anagrams_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_mnemonic_generator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_mnemonic_generator_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_dictionary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_dictionary_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_users_prompt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16pt" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/help_menu_users_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14pt" >
+        </TextView>
+    </LinearLayout>
+
+</ScrollView>
