@@ -1,0 +1,45 @@
+1406672013914	Move compilation unit
+1406672025876	Delete element
+1406706175261	Rename field 'button6'
+1406706857312	Rename field 'button1'
+1406706877377	Rename field 'button2'
+1406706891514	Rename field 'button3'
+1406706904152	Rename field 'button4'
+1406706914030	Rename field 'button5'
+1406706925957	Rename field 'button6'
+1406706939322	Rename field 'button7'
+1406706950758	Rename field 'button8'
+1406706960210	Rename field 'button9'
+1406706969948	Rename field 'button10'
+1406706977604	Rename field 'button11'
+1406706988533	Rename field 'button12'
+1406707018672	Rename field 'button13'
+1406707031515	Rename field 'button14'
+1406707042719	Rename field 'button15'
+1406707056736	Rename field 'button16'
+1406707321232	Rename resource 'activity_main.xml'
+1406708017679	Delete element
+1406708026335	Move compilation unit
+1406708030476	Move compilation unit
+1406708037163	Delete element
+1406708067791	Infer generic type arguments
+1406708225058	Rename package 'com.example.learnfactsquick'
+1406734031409	Delete element
+1406734070526	Delete element
+1406734262171	Rename package 'com.example.learnfactsquick'
+1406738226697	Rename field 'button1'
+1406738241143	Rename field 'button2'
+1406738356133	Rename field 'button3'
+1406738368013	Rename field 'button4'
+1406738381273	Rename field 'button5'
+1406738395595	Rename field 'button7'
+1406738408830	Rename field 'button8'
+1406738420969	Rename field 'button9'
+1406738433416	Rename field 'button11'
+1406738449092	Rename field 'button12'
+1406738459051	Rename field 'button13'
+1406738468928	Rename field 'button14'
+1406738479692	Rename field 'button15'
+1406738489401	Rename field 'button10'
+1406738497516	Rename field 'button16'
+1406738511895	Rename field 'button6'

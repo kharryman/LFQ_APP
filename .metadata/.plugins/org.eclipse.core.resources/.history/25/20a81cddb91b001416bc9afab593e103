@@ -1,0 +1,81 @@
+package com.lfq.learnfactsquick2;
+
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.view.KeyEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import com.example.learnfactsquick.R;
+import com.lfq.learnfactsquick.DatabaseManager;
+
+public class EditDictionary {
+	private RelativeLayout layout;
+	private EditText dictionary_word_input;
+	private Spinner select_speech;
+	private TextView suggested_words;
+	private EditText dictionary_definition;
+	private RadioGroup dictionary_edit_choices;
+	private Button get, edit_definition;
+	private DatabaseManager db;
+	private String which_db = "dictionary";
+	public SecondLfqActivity act2;
+	private SQLiteDatabase sql_dictionary_db;
+	private String PATH = "/assets/data/databases/zzjkoiua_alphabet_list";
+	private SQLiteDatabase.CursorFactory factory;
+	private Cursor c;
+	private String selwor;
+
+	public EditDictionary(SecondLfqActivity myAct2) {
+		act2 = myAct2;
+		act2.setContentView(R.layout.edit_dictionary);
+		db = new DatabaseManager(act2, which_db);
+		setViews();
+		setListeners();
+		sql_dictionary_db.openDatabase(PATH, factory, 1);
+	}
+
+	public void setViews() {
+		act2.setTitle("EDIT DICTIONARY");
+
+		layout = (RelativeLayout) act2
+				.findViewById(R.id.edit_dictionary_layout);
+		dictionary_word_input = (EditText) act2
+				.findViewById(R.id.dictionary_word_input);
+		select_speech = (Spinner) act2.findViewById(R.id.select_speech);
+		dictionary_definition = (EditText) act2
+				.findViewById(R.id.dictionary_definition);
+		suggested_words = (TextView) act2.findViewById(R.id.suggested_words);
+		dictionary_edit_choices = (RadioGroup) act2
+				.findViewById(R.id.dictionary_edit_choices);
+		get = (Button) act2.findViewById(R.id.get_definition);
+		edit_definition = (Button) act2.findViewById(R.id.edit_definition);
+	}
+
+	public void setListeners() {
+		dictionary_word_input.setOnKeyListener(new View.OnKeyListener() {
+
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				selwor = dictionary_word_input.getText().toString();
+				c = sql_dictionary_db
+		("SELECT Word From dictionarya WHERE Word LIKE '"
+								+ selwor + "%' ORDER BY Word");
+				c.moveToFirst();
+				while (c.moveToNext()) {
+					String possible_word = c.getString(c.getColumnIndex("Word"));
+					System.out.println(possible_word);
+				}
+
+				return false;
+			}
+		});
+
+	}
+
+}

@@ -1,0 +1,143 @@
+package com.lfq.learnfactsquick;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+
+public class DatabaseAcrostics extends SQLiteOpenHelper {
+	private static String DB_PATH = "";
+	private static final String DATABASE_NAME = "lfq_acrostics.db";
+	private static final int DATABASE_VERSION = 1;
+	Context myContext;
+	private static ContentValues values;
+	private static String status;
+	private List<Integer> images;
+
+	public DatabaseAcrostics(Context context) {
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		myContext = context;
+		values = new ContentValues();
+		status = "";
+		images = new ArrayList<Integer>();
+	}
+
+	@Override
+	public void onCreate(SQLiteDatabase database) {
+		InputStream insertsStream = myContext.getResources().openRawResource(
+				R.raw.acrostics);
+		BufferedReader insertReader = new BufferedReader(new InputStreamReader(
+				insertsStream));
+		String insertStmt = "GO!";
+		int ct = 0;
+		while (insertStmt != null) {
+			ct++;
+			try {
+				insertStmt = insertReader.readLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (insertStmt != null) {
+				database.execSQL(insertStmt);
+			}
+		}
+		System.out.println("# rows inserted=" + ct);
+		// INSERT ALL IMAGES:
+		getImages();
+		for (int image_resource : images) {
+			values.clear();
+			// GET IMAGE:
+			String uri = myContext.getResources().getResourceEntryName(
+					image_resource);
+			String[] uri_split = uri.split("___");
+			String[] uri_split2 = uri.split(".");			
+			//if (uri_split.length>0 && uri_split2.length>0) {
+				//System.out.println(uri);				
+				String table = uri_split[0];
+				String name = "";
+				if (uri_split.length>1){
+					if (uri_split[1].lastIndexOf(".")!=-1){
+						name = uri_split[1].substring(0,
+								uri_split[1].lastIndexOf("."));		
+					}
+					else{
+						continue;
+					}
+				}
+				else{
+					continue;
+				}
+				name = name.replace("_", " ");
+				System.out.println("table="+table+", name="+name);
+				int imageResource = myContext.getResources().getIdentifier(uri,
+						"drawable", myContext.getPackageName());
+				if (imageResource != 0) {
+					Drawable image = (Drawable) myContext.getResources()
+							.getDrawable(image_resource);
+					BitmapDrawable bitDw = ((BitmapDrawable) image);
+					if (bitDw != null) {
+						Bitmap bitmap = bitDw.getBitmap();
+						ByteArrayOutputStream stream = new ByteArrayOutputStream();
+						bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+						byte[] imageInByte = stream.toByteArray();
+						values.put("Image", imageInByte);
+						values.put("Has_Image", "yes");
+						database.update(table, values, "Name=?",
+								new String[] { name });
+					} else {
+						values.put("Has_Image", "no");
+						database.update(table, values, "Name=?",
+								new String[] { name });
+					}
+				} else {
+					values.put("Has_Image", "no");
+					database.update(table, values, "Name=?",
+							new String[] { name });
+				}
+			}
+		//}
+	}
+
+	private void getImages() {
+		R.drawable drawableResources = new R.drawable();
+		Class<R.drawable> c = R.drawable.class;
+		Field[] fields = c.getDeclaredFields();
+		images.clear();
+		for (int i = 0, max = fields.length; i < max; i++) {
+			int resourceId;
+			try {
+				resourceId = fields[i].getInt(drawableResources);
+			} catch (Exception e) {
+				continue;
+			}
+			images.add(resourceId);
+			/* make use of resourceId for accessing Drawables here */
+		}
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+	}
+
+}

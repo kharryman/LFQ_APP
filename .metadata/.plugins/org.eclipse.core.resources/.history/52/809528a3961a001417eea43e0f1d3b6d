@@ -1,0 +1,40 @@
+package com.lfq.learnfactsquick;
+
+import android.content.Context;
+import android.database.DatabaseErrorHandler;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.database.sqlite.SQLiteOpenHelper;
+
+public class DatabaseManager {
+	private SQLiteDatabase db;
+	private final String DB_NAME = "alphabet_db";
+	private final String TABLE_NAME = "database_table";
+	private final String TABLE_ROW_ID = "id";
+	private final String TABLE_ROW_ONE = "table_row_one";
+	private final String TABLE_ROW_TWO = "table_row_two";
+ 
+    private class CustomSQLiteOpenHelper extends SQLiteOpenHelper
+	{
+
+		public CustomSQLiteOpenHelper(Context context, String name,
+				CursorFactory factory, int version,
+				DatabaseErrorHandler errorHandler) {
+			super(context, name, factory, version, errorHandler);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public void onCreate(SQLiteDatabase db) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			// TODO Auto-generated method stub
+			
+		}
+	
+	}
+}

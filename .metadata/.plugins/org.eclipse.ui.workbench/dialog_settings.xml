@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="WorkbenchPreferenceDialogSettings">
+		<item value="8" key="DIALOG_Y_ORIGIN"/>
+		<item value="8" key="DIALOG_X_ORIGIN"/>
+	</section>
+	<section name="EditorSelectionDialog">
+		<item value="true" key="EditorSelectionDialog.STORE_ID_INTERNAL_EXTERNAL"/>
+	</section>
+	<section name="org.eclipse.ui.internal.QuickAccess">
+		<item value="526" key="dialogHeight"/>
+		<item value="1025" key="dialogWidth"/>
+		<list key="textEntries">
+		</list>
+		<list key="orderedElements">
+		</list>
+		<list key="orderedProviders">
+		</list>
+		<list key="textArray">
+		</list>
+	</section>
+	<section name="PreferencesImportWizard">
+	</section>
+	<section name="NewWizardAction">
+		<item value="org.eclipse.ui.wizards.new.project" key="NewWizardSelectionPage.STORE_SELECTED_ID"/>
+		<list key="NewWizardSelectionPage.STORE_EXPANDED_CATEGORIES_ID">
+			<item value="org.eclipse.ui.Basic"/>
+			<item value="com.android.ide.eclipse.wizards.category"/>
+			<item value="org.eclipse.jdt.ui.java"/>
+			<item value="org.eclipse.ui.Examples"/>
+		</list>
+	</section>
+	<section name="InstallationDialogSettings">
+		<item value="706" key="DIALOG_WIDTH"/>
+		<item value="1|微软雅黑|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|微软雅黑" key="DIALOG_FONT_NAME"/>
+		<item value="728" key="DIALOG_HEIGHT"/>
+		<item value="-80" key="DIALOG_Y_ORIGIN"/>
+		<item value="-12" key="DIALOG_X_ORIGIN"/>
+	</section>
+	<section name="ZipFileImportWizard">
+		<item value="false" key="WizardZipFileResourceImportPage1.STORE_OVERWRITE_EXISTING_RESOURCES_ID"/>
+		<list key="WizardZipFileResourceImportPage1.STORE_SOURCE_NAMES_ID">
+			<item value="C:\Users\Administrator\Downloads\commons-codec-1.10-bin\commons-codec-1.10\apidocs\org.zip"/>
+			<item value="C:\Users\Administrator\Downloads\commons-codec-1.10-bin.zip"/>
+			<item value="C:\Users\Administrator\Downloads\commons-codec-1.10-bin.tar.gz"/>
+			<item value="C:\Users\Administrator\Downloads\apache-mime4j-0.7.2-bin.zip"/>
+			<item value="C:\Users\Administrator\Downloads\httpcomponents-core-4.4.4-bin.tar.gz"/>
+		</list>
+	</section>
+	<section name="ShowViewDialog">
+		<item value="345" key="DIALOG_WIDTH"/>
+		<item value="1|微软雅黑|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|微软雅黑" key="DIALOG_FONT_NAME"/>
+		<item value="com.android.ide.eclipse.ddms.views.LogCatView" key="ShowViewDialog.STORE_SELECTED_VIEW_ID"/>
+		<item value="451" key="DIALOG_HEIGHT"/>
+		<item value="148" key="DIALOG_Y_ORIGIN"/>
+		<item value="368" key="DIALOG_X_ORIGIN"/>
+		<list key="ShowViewDialog.STORE_EXPANDED_CATEGORIES_ID">
+			<item value="com.android.ide.eclipse.ddms.views.category"/>
+			<item value="org.eclipse.cdt.ui.views"/>
+			<item value="org.eclipse.debug.ui"/>
+			<item value="org.eclipse.egit.ui.GitCategory"/>
+			<item value="org.eclipse.help.ui"/>
+			<item value="org.eclipse.jdt.ui.java"/>
+			<item value="org.eclipse.jdt.ui.java.browsing"/>
+			<item value="org.eclipse.cdt.make.ui"/>
+			<item value="org.eclipse.team.ui"/>
+			<item value="com.android.ide.eclipse.gltrace"/>
+			<item value="org.eclipse.wst.xml"/>
+			<item value="org.eclipse.ui.internal.otherCategory"/>
+		</list>
+	</section>
+	<section name="ImportExportAction">
+		<item value="com.android.ide.eclipse.adt.project.ExportWizard" key="ImportExportPage.STORE_SELECTED_EXPORT_WIZARD_ID"/>
+		<item value="com.android.ide.eclipse.adt.project.ImportProjectWizard" key="ImportExportPage.STORE_SELECTED_IMPORT_WIZARD_ID"/>
+		<list key="ImportExportPage.STORE_EXPANDED_IMPORT_CATEGORIES">
+			<item value="org.eclipse.ui.Basic"/>
+			<item value="com.android.ide.eclipse.wizards.category"/>
+		</list>
+		<list key="ImportExportPage.STORE_EXPANDED_EXPORT_CATEGORIES">
+			<item value="com.android.ide.eclipse.wizards.category"/>
+		</list>
+	</section>
+	<section name="FileSystemImportWizard">
+		<item value="false" key="WizardFileSystemResourceImportPage1.STORE_CREATE_CONTAINER_STRUCTURE_ID"/>
+		<item value="false" key="WizardFileSystemResourceImportPage1.STORE_OVERWRITE_EXISTING_RESOURCES_ID"/>
+		<list key="WizardFileSystemResourceImportPage1.STORE_SOURCE_NAMES_ID">
+			<item value="C:\Users\Administrator\Documents\NetBeansProjects\learning_lystem\src\Learning_System"/>
+		</list>
+	</section>
+</section>

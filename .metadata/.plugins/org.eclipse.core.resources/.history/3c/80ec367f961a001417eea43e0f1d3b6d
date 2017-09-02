@@ -1,0 +1,18 @@
+package com.lfq.learnfactsquick;
+
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+public class DatabaseManager {
+	private SQLiteDatabase db;
+	private final String DB_NAME = "alphabet_db";
+	private final String TABLE_NAME = "database_table";
+	private final String TABLE_ROW_ID = "id";
+	private final String TABLE_ROW_ONE = "table_row_one";
+	private final String TABLE_ROW_TWO = "table_row_two";
+ 
+    private class CustomSQLiteOpenHelper extends SQLiteOpenHelper
+	{
+	
+	}
+}

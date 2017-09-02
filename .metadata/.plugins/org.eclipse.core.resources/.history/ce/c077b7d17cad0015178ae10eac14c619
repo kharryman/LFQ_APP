@@ -1,0 +1,1085 @@
+package com.lfq.learnfactsquick;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnKeyListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import com.lfq.learnfactsquick.R;
+import com.lfq.learnfactsquick.EditAcrostics.SelectNameListener;
+
+public class EditEvents extends Activity {
+	private RelativeLayout layout;
+	private Spinner select_month, select_day, select_year;
+	private TextView results, event_results;
+	private EditText event_text, major_words_text, acrostics_text, input_year;
+	private RadioGroup event_edit_choices;
+	private RadioButton insert_event, delete_event, edit_event,
+			check_get_dates, check_get_years;
+	private Button get, edit, left, right, latest;
+	private SQLiteDatabase.CursorFactory factory;
+	private DatabaseEvents de;
+	private DatabaseSynchronize ds;
+
+	private static SQLiteDatabase events_db, sync_db;
+	private Cursor c = null, c2 = null;
+	private String edit_choice, event, major_words, acrostics, result;
+	private ArrayAdapter<String> yearsAdapter;
+	private List<String> dates, dates_years_list, years_list, months,
+			months_complete;
+	private String day, month, date, year;
+	private ContentValues values;
+	private String[] allColumns = { "_id", "Word", "PartSpeech", "Definition",
+			"Number", }, days;
+	private String sql, sql2, text, results_text, alerts_text, event_id;
+	private int date_ind, year_ind, ct_same_ind, ct_tot;
+	private HashMap<String, List<String>> years_dates_array;
+	private Boolean is_left_right_click, is_years_loaded;
+	Calendar tod;
+	private Activity this_act;
+	SharedPreferences sharedPref;
+	SharedPreferences.Editor editor;
+	private Helpers h;
+	private MenuItem menu_item_autosync_on, menu_item_autosync_off;
+	private String autosync_text;
+	private SelectNameListener select_year_listener;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		this_act = this;
+		sharedPref = getSharedPreferences(
+				getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+		editor = sharedPref.edit();
+		tod = Calendar.getInstance();
+		sql = "";
+		sql2 = "";
+		text = "";
+		day = "";
+		month = "";
+		date_ind = 0;
+		year_ind = 0;
+		ct_same_ind = 0;
+		ct_tot = 0;
+		date = "";
+		year = "";
+		results_text = "";
+		alerts_text = "";
+		is_left_right_click = false;
+		is_years_loaded = false;
+		years_dates_array = new HashMap<String, List<String>>();
+		select_year_listener = new SelectNameListener();
+
+		months = new ArrayList<String>();
+		months.addAll(Arrays.asList(new String[] { "jan", "feb", "mar", "apr",
+				"may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" }));
+		months_complete = new ArrayList<String>();
+		months_complete.addAll(Arrays.asList(new String[] { "January",
+				"February", "March", "April", "May", "June", "July", "August",
+				"September", "October", "November", "December" }));
+		dates = new ArrayList<String>();
+		days = new String[] { "jan1", "jan2", "jan3", "jan4", "jan5", "jan6",
+				"jan7", "jan8", "jan9", "jan10", "jan11", "jan12", "jan13",
+				"jan14", "jan15", "jan16", "jan17", "jan18", "jan19", "jan20",
+				"jan21", "jan22", "jan23", "jan24", "jan25", "jan26", "jan27",
+				"jan28", "jan29", "jan30", "jan31", "feb1", "feb2", "feb3",
+				"feb4", "feb5", "feb6", "feb7", "feb8", "feb9", "feb10",
+				"feb11", "feb12", "feb13", "feb14", "feb15", "feb16", "feb17",
+				"feb18", "feb19", "feb20", "feb21", "feb22", "feb23", "feb24",
+				"feb25", "feb26", "feb27", "feb28", "feb29", "mar1", "mar2",
+				"mar3", "mar4", "mar5", "mar6", "mar7", "mar8", "mar9",
+				"mar10", "mar11", "mar12", "mar13", "mar14", "mar15", "mar16",
+				"mar17", "mar18", "mar19", "mar20", "mar21", "mar22", "mar23",
+				"mar24", "mar25", "mar26", "mar27", "mar28", "mar29", "mar30",
+				"mar31", "apr1", "apr2", "apr3", "apr4", "apr5", "apr6",
+				"apr7", "apr8", "apr9", "apr10", "apr11", "apr12", "apr13",
+				"apr14", "apr15", "apr16", "apr17", "apr18", "apr19", "apr20",
+				"apr21", "apr22", "apr23", "apr24", "apr25", "apr26", "apr27",
+				"apr28", "apr29", "apr30", "may1", "may2", "may3", "may4",
+				"may5", "may6", "may7", "may8", "may9", "may10", "may11",
+				"may12", "may13", "may14", "may15", "may16", "may17", "may18",
+				"may19", "may20", "may21", "may22", "may23", "may24", "may25",
+				"may26", "may27", "may28", "may29", "may30", "may31", "jun1",
+				"jun2", "jun3", "jun4", "jun5", "jun6", "jun7", "jun8", "jun9",
+				"jun10", "jun11", "jun12", "jun13", "jun14", "jun15", "jun16",
+				"jun17", "jun18", "jun19", "jun20", "jun21", "jun22", "jun23",
+				"jun24", "jun25", "jun26", "jun27", "jun28", "jun29", "jun30",
+				"jul1", "jul2", "jul3", "jul4", "jul5", "jul6", "jul7", "jul8",
+				"jul9", "jul10", "jul11", "jul12", "jul13", "jul14", "jul15",
+				"jul16", "jul17", "jul18", "jul19", "jul20", "jul21", "jul22",
+				"jul23", "jul24", "jul25", "jul26", "jul27", "jul28", "jul29",
+				"jul30", "jul31", "aug1", "aug2", "aug3", "aug4", "aug5",
+				"aug6", "aug7", "aug8", "aug9", "aug10", "aug11", "aug12",
+				"aug13", "aug14", "aug15", "aug16", "aug17", "aug18", "aug19",
+				"aug20", "aug21", "aug22", "aug23", "aug24", "aug25", "aug26",
+				"aug27", "aug28", "aug29", "aug30", "aug31", "sep1", "sep2",
+				"sep3", "sep4", "sep5", "sep6", "sep7", "sep8", "sep9",
+				"sep10", "sep11", "sep12", "sep13", "sep14", "sep15", "sep16",
+				"sep17", "sep18", "sep19", "sep20", "sep21", "sep22", "sep23",
+				"sep24", "sep25", "sep26", "sep27", "sep28", "sep29", "sep30",
+				"oct1", "oct2", "oct3", "oct4", "oct5", "oct6", "oct7", "oct8",
+				"oct9", "oct10", "oct11", "oct12", "oct13", "oct14", "oct15",
+				"oct16", "oct17", "oct18", "oct19", "oct20", "oct21", "oct22",
+				"oct23", "oct24", "oct25", "oct26", "oct27", "oct28", "oct29",
+				"oct30", "oct31", "nov1", "nov2", "nov3", "nov4", "nov5",
+				"nov6", "nov7", "nov8", "nov9", "nov10", "nov11", "nov12",
+				"nov13", "nov14", "nov15", "nov16", "nov17", "nov18", "nov19",
+				"nov20", "nov21", "nov22", "nov23", "nov24", "nov25", "nov26",
+				"nov27", "nov28", "nov29", "nov30", "dec1", "dec2", "dec3",
+				"dec4", "dec5", "dec6", "dec7", "dec8", "dec9", "dec10",
+				"dec11", "dec12", "dec13", "dec14", "dec15", "dec16", "dec17",
+				"dec18", "dec19", "dec20", "dec21", "dec22", "dec23", "dec24",
+				"dec25", "dec26", "dec27", "dec28", "dec29", "dec30", "dec31" };
+		years_list = new ArrayList<String>();
+		dates_years_list = new ArrayList<String>();
+		values = new ContentValues();
+		new doLoadDatabases().execute();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main_lfq, menu);
+		MenuItem bg_color = menu.findItem(R.id.background_color_settings);
+		MenuItem button_color = menu.findItem(R.id.button_color_settings);
+		MenuItem go_back_item = menu.findItem(R.id.action_bar_go_back);
+		go_back_item.setVisible(true);
+		bg_color.setVisible(false);
+		button_color.setVisible(false);
+		RelativeLayout back_text_layout = (RelativeLayout) go_back_item
+				.getActionView();
+		final Activity mysuper = super.getParent();
+		int buttonDrawable = sharedPref.getInt("BG Button", R.drawable.button);
+		back_text_layout.setBackgroundResource(buttonDrawable);
+		back_text_layout.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {				
+				onBackPressed();
+			}
+		});
+		menu_item_autosync_off = menu.findItem(R.id.autosync_off);
+		menu_item_autosync_on = menu.findItem(R.id.autosync_on);
+		if (sharedPref.getBoolean("AUTO SYNC", false) == true
+				&& h.isNetworkAvailable()) {
+			menu_item_autosync_on.setChecked(true);
+			menu_item_autosync_off.setChecked(false);
+		} else {
+			editor.putBoolean("AUTO SYNC", false);
+			menu_item_autosync_on.setChecked(false);
+			menu_item_autosync_off.setChecked(true);
+		}
+		editor.commit();
+		return true;
+	}
+	
+	@Override
+	public void onBackPressed(){
+		saveChanges();
+		super.onBackPressed();
+	}
+
+	public void saveChanges() {
+		editor.putBoolean("EDIT EVENT CHECK INSERT", insert_event.isChecked());
+		editor.putBoolean("EDIT EVENT CHECK DELETE", delete_event.isChecked());
+		editor.putBoolean("EDIT EVENT CHECK EDIT", edit_event.isChecked());
+
+		editor.putBoolean("EDIT EVENT CHECK DATES", check_get_dates.isChecked());
+		editor.putBoolean("EDIT EVENT CHECK YEARS", check_get_years.isChecked());
+		editor.commit();
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		saveChanges();
+		super.onConfigurationChanged(newConfig);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		switch (id) {
+		case R.id.autosync_on:
+			if (h.isNetworkAvailable()) {
+				editor.putBoolean("AUTO SYNC", true);
+				menu_item_autosync_on.setChecked(true);
+				menu_item_autosync_off.setChecked(false);
+				editor.commit();
+			}
+			break;
+		case R.id.autosync_off:
+			editor.putBoolean("AUTO SYNC", false);
+			menu_item_autosync_on.setChecked(false);
+			menu_item_autosync_off.setChecked(true);
+			editor.commit();
+			break;
+		}
+		return true;
+	}
+
+	public void setViews() {
+
+		// LAYOUTS:
+		setTitle("EDIT EVENTS");
+		layout = (RelativeLayout) findViewById(R.id.edit_events_layout);
+
+		// BUTTONS:
+		get = (Button) findViewById(R.id.get_edit_events);
+		edit = (Button) findViewById(R.id.edit_edit_event);
+		left = (Button) findViewById(R.id.do_edit_event_left);
+		right = (Button) findViewById(R.id.do_edit_event_right);
+		latest = (Button) findViewById(R.id.do_edit_event_set_latest);
+
+		// EDITTEXTS:
+		event_text = (EditText) findViewById(R.id.edit_event_input);
+		major_words_text = (EditText) findViewById(R.id.edit_event_major_words_input);
+		acrostics_text = (EditText) findViewById(R.id.edit_event_acrostics_input);
+		input_year = (EditText) findViewById(R.id.edit_event_input_year);
+		input_year.setVisibility(View.GONE);
+
+		// SPINNERS:
+		select_month = (Spinner) findViewById(R.id.select_edit_event_month);
+		select_day = (Spinner) findViewById(R.id.select_edit_event_day);
+		select_month.setSelection(tod.get(Calendar.MONTH));
+		select_day.setSelection(tod.get(Calendar.DAY_OF_MONTH) - 1);
+
+		// RADIOBUTTONS:
+		insert_event = (RadioButton) findViewById(R.id.check_edit_event_insert);
+		delete_event = (RadioButton) findViewById(R.id.check_edit_event_delete);
+		edit_event = (RadioButton) findViewById(R.id.check_edit_event_edit);
+
+		check_get_dates = (RadioButton) findViewById(R.id.check_edit_event_get_dates);
+		check_get_years = (RadioButton) findViewById(R.id.check_edit_event_get_years);
+
+		// RADIOGROUPS:
+		event_edit_choices = (RadioGroup) findViewById(R.id.edit_event_choices);
+
+		// SPINNERS:
+		select_year = (Spinner) findViewById(R.id.select_edit_event_year);
+		select_year.setOnTouchListener(select_year_listener);
+		select_year.setOnItemSelectedListener(select_year_listener);
+		yearsAdapter = new ArrayAdapter<String>(this_act,
+				android.R.layout.simple_spinner_item, new ArrayList<String>());
+		yearsAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		select_year.setAdapter(yearsAdapter);
+
+		// TEXTVIEWS:
+		results = (TextView) findViewById(R.id.show_edit_event_results);
+		event_results = (TextView) findViewById(R.id.event_results);
+	}
+
+	public void loadButtons() {
+		get.setBackgroundResource(sharedPref.getInt("BG Button",
+				R.drawable.button));
+		edit.setBackgroundResource(sharedPref.getInt("BG Button",
+				R.drawable.button));
+		left.setBackgroundResource(sharedPref.getInt("BG Button",
+				R.drawable.button));
+		right.setBackgroundResource(sharedPref.getInt("BG Button",
+				R.drawable.button));
+		latest.setBackgroundResource(sharedPref.getInt("BG Button",
+				R.drawable.button));
+	}
+
+	public void setListeners() {
+
+		latest.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Calendar tod = Calendar.getInstance();
+				select_month.setSelection(tod.get(Calendar.MONTH));
+				select_day.setSelection(tod.get(Calendar.DAY_OF_MONTH) - 1);
+			}
+		});
+		left.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				is_left_right_click = true;
+				if (check_get_dates.isChecked()) {
+					if (date_ind <= 0) {
+						return;
+					}
+					date_ind--;
+					c = events_db.rawQuery("SELECT * FROM " + date
+							+ " WHERE Year='" + dates_years_list.get(date_ind)
+							+ "'", null);
+					if (!dates_years_list.get(date_ind).equals(
+							dates_years_list.get(date_ind + 1))) {
+						ct_same_ind = 1;
+					}
+					if (c.moveToFirst()) {
+						if (c.getCount() > 1 && ct_same_ind == 1) {
+							c2 = events_db.rawQuery(
+									"SELECT * FROM " + date + " WHERE Year='"
+											+ dates_years_list.get(date_ind)
+											+ "' ORDER BY _id DESC LIMIT 1",
+									null);
+							ct_same_ind++;
+
+						} else if (c.getCount() > 1
+								&& ct_same_ind <= c.getCount()) {
+							c2 = events_db.rawQuery(
+									"SELECT * FROM " + date + " WHERE Year='"
+											+ dates_years_list.get(date_ind)
+											+ "' AND _id<'" + event_id
+											+ "'  ORDER BY _id LIMIT 1", null);
+							ct_same_ind++;
+						} else {// COUNT IS 1
+							ct_same_ind = 1;
+							c2 = events_db.rawQuery(
+									"SELECT * FROM " + date + " WHERE Year='"
+											+ dates_years_list.get(date_ind)
+											+ "' ORDER BY _id DESC LIMIT 1",
+									null);
+						}
+						if (c2.moveToFirst()) {
+							event_text.setText(c2.getString(c2
+									.getColumnIndex("Event")));
+							major_words_text.setText(c2.getString(c2
+									.getColumnIndex("SaveWords")));
+							acrostics_text.setText(c2.getString(c2
+									.getColumnIndex("Acrostics")));
+							event_id = c2.getString(c2.getColumnIndex("_id"));
+						}
+						c2.close();
+						c.close();
+						results_text = "SHOWING " + (date_ind + 1) + " OF "
+								+ ct_tot + " EVENTS ON " + month + " " + day
+								+ ".";
+						results.setText(results_text);
+						select_year.setSelection(((ArrayAdapter) select_year
+						.getAdapter()).getPosition(dates_years_list
+						.get(date_ind)));
+					}
+				}
+				if (check_get_years.isChecked()) {
+					is_left_right_click = true;
+					if (year_ind <= 0) {
+						return;
+					}
+					year_ind--;
+					c = events_db.rawQuery("SELECT * FROM "
+							+ years_dates_array.get("year" + year)
+									.get(year_ind) + " WHERE Year='" + year
+							+ "'", null);
+					if (!years_dates_array
+							.get("year" + year)
+							.get(year_ind)
+							.equals(years_dates_array.get("year" + year).get(
+									year_ind + 1))) {
+						ct_same_ind = 1;
+					}
+					if (c.moveToFirst()) {
+						if (c.getCount() > 1 && ct_same_ind == 1) {
+							c2 = events_db.rawQuery(
+									"SELECT * FROM "
+											+ years_dates_array.get(
+													"year" + year)
+													.get(year_ind)
+											+ " WHERE Year='" + year
+											+ "' ORDER BY _id DESC LIMIT 1",
+									null);
+							ct_same_ind++;
+
+						} else if (c.getCount() > 1
+								&& ct_same_ind <= c.getCount()) {
+							c2 = events_db.rawQuery(
+									"SELECT * FROM "
+											+ years_dates_array.get(
+													"year" + year)
+													.get(year_ind)
+											+ " WHERE Year='" + year
+											+ "' AND _id<'" + event_id
+											+ "'  ORDER BY _id LIMIT 1", null);
+							ct_same_ind++;
+						} else {// COUNT IS 1
+							ct_same_ind = 1;
+							c2 = events_db.rawQuery(
+									"SELECT * FROM "
+											+ years_dates_array.get(
+													"year" + year)
+													.get(year_ind)
+											+ " WHERE Year='" + year
+											+ "' ORDER BY Year DESC LIMIT 1",
+									null);
+						}
+						if (c2.moveToFirst()) {
+							event_text.setText(c2.getString(c2
+									.getColumnIndex("Event")));
+							major_words_text.setText(c2.getString(c2
+									.getColumnIndex("SaveWords")));
+							acrostics_text.setText(c2.getString(c2
+									.getColumnIndex("Acrostics")));
+							event_id = c2.getString(c2.getColumnIndex("_id"));
+						}
+					}
+					c2.close();
+					c.close();
+					select_month.setSelection(((ArrayAdapter) select_month
+							.getAdapter()).getPosition(months_complete
+							.get(months.indexOf(years_dates_array
+									.get("year" + year).get(year_ind)
+									.substring(0, 3)))));
+					select_day.setSelection(((ArrayAdapter) select_day
+							.getAdapter()).getPosition(years_dates_array
+							.get("year" + year).get(year_ind).substring(3)));
+					results_text = "SHOWING " + (year_ind + 1) + " OF "
+							+ years_dates_array.get("year" + year).size()
+							+ " EVENTS IN " + year + ".";
+					results.setText(results_text);
+
+				}
+			}
+		});
+		right.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				is_left_right_click = true;
+				if (check_get_dates.isChecked()) {
+					if (date_ind >= (dates_years_list.size() - 1)) {
+						return;
+					}
+					date_ind++;
+					System.out.println("year(after date_ind++="
+							+ dates_years_list.get(date_ind) + ", ct_same_ind="
+							+ ct_same_ind);
+					c = events_db.rawQuery("SELECT * FROM " + date
+							+ " WHERE Year='" + dates_years_list.get(date_ind)
+							+ "'", null);
+					if (!dates_years_list.get(date_ind).equals(
+							dates_years_list.get(date_ind - 1))) {
+						ct_same_ind = 1;
+					}
+					if (c.moveToFirst()) {
+						if (c.getCount() > 1 && ct_same_ind == 1) {
+							c2 = events_db.rawQuery(
+									"SELECT * FROM " + date + " WHERE Year='"
+											+ dates_years_list.get(date_ind)
+											+ "' ORDER BY _id LIMIT 1", null);
+							ct_same_ind++;
+							System.out
+									.println("dates_year_list(ct_same_ind=1)="
+											+ dates_years_list.get(date_ind));
+						} else if (c.getCount() > 1
+								&& ct_same_ind <= c.getCount()) {
+							c2 = events_db.rawQuery(
+									"SELECT * FROM " + date + " WHERE Year='"
+											+ dates_years_list.get(date_ind)
+											+ "' AND _id>'" + event_id
+											+ "'  ORDER BY _id LIMIT 1", null);
+							ct_same_ind++;
+							System.out
+									.println("dates_year_list(ct_same_ind<=c.getCount())="
+											+ dates_years_list.get(date_ind));
+						} else {// COUNT IS 1 OR ct_same_ind>c.getCount()
+							ct_same_ind = 1;
+							c2 = events_db.rawQuery(
+									"SELECT * FROM " + date + " WHERE Year='"
+											+ dates_years_list.get(date_ind)
+											+ "' ORDER BY _id LIMIT 1", null);
+							System.out
+									.println("dates_year_list(c.getCount()==1)="
+											+ dates_years_list.get(date_ind));
+						}
+						if (c2.moveToFirst()) {
+							event_text.setText(c2.getString(c2
+									.getColumnIndex("Event")));
+							major_words_text.setText(c2.getString(c2
+									.getColumnIndex("SaveWords")));
+							acrostics_text.setText(c2.getString(c2
+									.getColumnIndex("Acrostics")));
+							event_id = c2.getString(c2.getColumnIndex("_id"));
+						}
+						c2.close();
+						c.close();
+						results_text = "SHOWING " + (date_ind + 1) + " OF "
+								+ ct_tot + " EVENTS ON " + month + " " + day
+								+ ".";
+						results.setText(results_text);
+						select_year.setSelection(((ArrayAdapter)select_year.getAdapter()).getPosition(dates_years_list.get(date_ind)));
+					}
+				}
+				if (check_get_years.isChecked()) {
+					is_left_right_click = true;
+					if (year_ind >= years_dates_array.get("year" + year).size() - 1) {
+						return;
+					}
+					year_ind++;
+					c = events_db.rawQuery("SELECT * FROM "
+							+ years_dates_array.get("year" + year)
+									.get(year_ind) + " WHERE Year='" + year
+							+ "'", null);
+					if (!years_dates_array
+							.get("year" + year)
+							.get(year_ind)
+							.equals(years_dates_array.get("year" + year).get(
+									year_ind - 1))) {
+						ct_same_ind = 1;
+					}
+					if (c.getCount() > 1 && ct_same_ind == 1) {
+						c2 = events_db.rawQuery(
+								"SELECT * FROM "
+										+ years_dates_array.get("year" + year)
+												.get(year_ind)
+										+ " WHERE Year='" + year
+										+ "' ORDER BY _id LIMIT 1", null);
+						ct_same_ind++;
+
+					} else if (c.getCount() > 1 && ct_same_ind <= c.getCount()) {
+						c2 = events_db.rawQuery(
+								"SELECT * FROM "
+										+ years_dates_array.get("year" + year)
+												.get(year_ind)
+										+ " WHERE Year='" + year
+										+ "' AND _id>'" + event_id
+										+ "'  ORDER BY _id LIMIT 1", null);
+						ct_same_ind++;
+					} else {// COUNT IS 1
+						ct_same_ind = 1;
+						c2 = events_db.rawQuery(
+								"SELECT * FROM "
+										+ years_dates_array.get("year" + year)
+												.get(year_ind)
+										+ " WHERE Year='" + year
+										+ "' ORDER BY _id LIMIT 1", null);
+					}
+					if (c2.moveToFirst()) {
+						event_text.setText(c2.getString(c2
+								.getColumnIndex("Event")));
+						major_words_text.setText(c2.getString(c2
+								.getColumnIndex("SaveWords")));
+						acrostics_text.setText(c2.getString(c2
+								.getColumnIndex("Acrostics")));
+						event_id = c2.getString(c2.getColumnIndex("_id"));
+					}
+					c2.close();
+					c.close();
+					select_month.setSelection(((ArrayAdapter) select_month
+							.getAdapter()).getPosition(months_complete
+							.get(months.indexOf(years_dates_array
+									.get("year" + year).get(year_ind)
+									.substring(0, 3)))));
+					select_day.setSelection(((ArrayAdapter) select_day
+							.getAdapter()).getPosition(years_dates_array
+							.get("year" + year).get(year_ind).substring(3)));
+					results_text = "SHOWING " + (year_ind + 1) + " OF "
+							+ years_dates_array.get("year" + year).size()
+							+ " EVENTS IN " + year + ".";
+					results.setText(results_text);
+				}// END IF check_get_years.isChecked()
+			}
+		});
+
+		select_month.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				if (check_get_dates.isChecked()) {
+					doGetDates();
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
+		select_day.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				if (check_get_dates.isChecked()) {
+					doGetDates();
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
+
+		check_get_dates.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				select_month.setEnabled(true);
+				select_day.setEnabled(true);
+				latest.setEnabled(true);
+				get.setEnabled(true);
+				edit.setEnabled(true);
+				doGetDates();
+			}
+		});
+		check_get_years.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (is_years_loaded == false) {
+					new doLoadSelectYears().execute();
+				} else {
+					yearsAdapter.clear();
+					for (int i = 0; i < years_list.size(); i++) {
+						yearsAdapter.add(years_list.get(i));
+					}
+					select_month.setSelection(((ArrayAdapter) select_month
+							.getAdapter()).getPosition(months_complete
+							.get(months.indexOf(years_dates_array
+									.get("year" + yearsAdapter.getItem(0))
+									.get(0).substring(0, 3)))));
+					select_day.setSelection(((ArrayAdapter) select_day
+							.getAdapter()).getPosition(years_dates_array
+							.get("year" + yearsAdapter.getItem(0)).get(0)
+							.substring(3)));
+					select_year.setSelection(0);
+					get.performClick();
+				}
+			}
+		});
+
+		edit.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				year = input_year.getText().toString();
+				if (insert_event.isChecked() && year.equals("")){
+					results.setText(Html.fromHtml("<b>MUST ENTER A YEAR</b>"));
+					return;
+				}
+				event = event_text.getText().toString();
+				major_words = major_words_text.getText().toString();
+				acrostics = acrostics_text.getText().toString();
+				day = select_day.getSelectedItem().toString();
+				month = select_month.getSelectedItem().toString();
+				if (insert_event.isChecked()) {
+					values.clear();
+					String date = month.substring(0, 3).toLowerCase() + day;
+					values.put("Year", year);
+					values.put("Event", event);
+					values.put("SaveWords", major_words);
+					long insertId = events_db.insert(date, null, values);
+
+					sql = "INSERT INTO zzjkoiua_events." + date
+							+ " (`Year`,`Event`,`SaveWords`,`Acrostics`) VALUES('" + year + "','" + event
+							+ "','" + major_words + "','" + acrostics + "')";
+					autosync_text = "";
+					if (sharedPref.getBoolean("AUTO SYNC", false) == false) {
+						values.clear();
+						values.put("SQL", sql);
+						sync_db.insert("sync_table", null, values);
+						autosync_text += " UPDATED SYNC TABLE.";
+					} else {
+						autosync_text += Synchronize.autoSync(sql,false,null,"","");
+					}
+
+					event_results.setText(Html.fromHtml("RESULTS: Inserted event:" + event + ".<br /> On date:" + date + "<br />" + autosync_text));				
+					
+				}
+				if (edit_event.isChecked()) {
+					String date = month.substring(0, 3).toLowerCase() + day;
+					values.clear();
+					values.put("Year", year);
+					values.put("Event", event);
+					values.put("SaveWords", major_words);
+					values.put("Acrostics", acrostics);
+					values.put("_id", event_id);
+					String[] selectionArgs = { event_id};
+					events_db.update(date, values, "_id=?",
+							selectionArgs);
+
+					sql = "UPDATE zzjkoiua_events." + date + " SET Year='"
+							+ year + "', Event='" + event + "', SaveWords='" + major_words + "', Acrostics='" + acrostics +"' WHERE Year='"
+							+ year + "' AND Event='" + event + "'";
+					autosync_text = "";
+					if (sharedPref.getBoolean("AUTO SYNC", false) == false) {
+						values.clear();
+						values.put("SQL", sql);
+						sync_db.insert("sync_table", null, values);
+						autosync_text += " UPDATED SYNC TABLE.";
+					} else {
+						autosync_text += Synchronize.autoSync(sql,false,null,"","");
+					}
+
+					c = events_db.rawQuery(
+							"SELECT * FROM date WHERE Year=? AND Event=?",
+							selectionArgs);
+					if (!c.moveToFirst()) {
+						event_results.setText("RESULTS: event doesn't exist."
+								+ autosync_text);
+					} else {
+						event_results.setText("RESULTS: Updated " + date
+								+ ". and new event is: " + event + "."
+								+ autosync_text);
+					}
+
+				}
+				if (delete_event.isChecked()) {
+					String date = month.substring(0, 3).toLowerCase() + day;
+					String[] selectionArgs = { year, event_id };
+					events_db.delete(date, "Year=? AND _id=?", selectionArgs);
+					//SYNC TO LFQ:					
+					autosync_text = "";
+					sql = "DELETE FROM zzjkoiua_events." + date + " WHERE Year='" + year + "' AND Event='" + event + "'";
+					if (sharedPref.getBoolean("AUTO SYNC", false) == false) {
+						values.clear();
+						values.put("SQL", sql);
+						sync_db.insert("sync_table", null, values);
+						autosync_text += " UPDATED SYNC TABLE.";
+					} else {
+						autosync_text += Synchronize.autoSync(sql,false,null,"","");
+					}					
+					event_results.setText(Html.fromHtml("RESULTS: Deleted event: " + event + ".<br />" + autosync_text));
+				}
+
+			}
+		});
+
+		get.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				day = select_day.getSelectedItem().toString();
+				month = select_month.getSelectedItem().toString();
+				year = select_year.getSelectedItem().toString();
+				date = month.toLowerCase().substring(0, 3) + day;
+				c = events_db.rawQuery("SELECT * FROM " + date
+						+ " WHERE Year='" + year + "'", null);
+				if (c.moveToFirst()) {
+					if (c.getColumnIndex("Event")!=-1){
+						if (c.getString(c.getColumnIndex("Event"))!=null){
+							event_text.setText(c.getString(c.getColumnIndex("Event")));
+						}
+					}
+					if (c.getColumnIndex("SaveWords")!=-1){
+						if (c.getString(c.getColumnIndex("SaveWords"))!=null){
+							major_words_text.setText(Html.fromHtml(c.getString(c.getColumnIndex("SaveWords"))));
+						}
+					}
+					if (c.getColumnIndex("Acrostics")!=-1){
+						if (c.getString(c.getColumnIndex("Acrostics"))!=null){
+							acrostics_text.setText(Html.fromHtml(c.getString(c.getColumnIndex("Acrostics"))));
+						}
+					}
+					event_id=c.getString(c.getColumnIndex("_id"));
+				}
+				c.close();
+				if (check_get_dates.isChecked()) {
+					results_text = "SHOWING " + (date_ind + 1) + " OF "
+							+ ct_tot + " EVENT(S) ON " + month + " " + day
+							+ ".";
+					results.setText(results_text);
+				}
+				if (check_get_years.isChecked()) {
+					results_text = "SHOWING " + (year_ind + 1) + " OF "
+							+ years_dates_array.get("year" + year).size()
+							+ " EVENTS IN " + year + ".";
+					results.setText(results_text);
+					is_left_right_click = false;
+				}
+			}
+		});
+		
+		insert_event.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View v) {			
+			input_year.setVisibility(View.VISIBLE);	
+			}
+		});
+		delete_event.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View v) {			
+			input_year.setVisibility(View.GONE);	
+			}
+		});
+		edit_event.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View v) {			
+			input_year.setVisibility(View.GONE);	
+			}
+		});
+
+	}
+
+
+
+	class doLoadDatabases extends AsyncTask<String, String, String> {
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			setContentView(R.layout.edit_events);
+			setViews();
+			loadButtons();
+			text = "Loading databases. Please wait...";
+			results.setText(Html.fromHtml("<b>" + text + "<b>"));
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+			text += "<br />Loading synchronize database...";
+			publishProgress(text);
+			if (MainLfqActivity.getSyncDb() == null) {
+				ds = new DatabaseSynchronize(this_act);
+				sync_db = ds.getWritableDatabase();
+				MainLfqActivity.setSyncDb(sync_db);
+			} else {
+				sync_db = MainLfqActivity.getSyncDb();
+			}
+			text += "LOADED.<br />";
+			publishProgress(text);
+
+			text += "Loading events database...";
+			publishProgress(text);
+			if (MainLfqActivity.getEventsDb() == null) {
+				de = new DatabaseEvents(this_act);
+				events_db = de.getWritableDatabase();
+				MainLfqActivity.setEventsDb(events_db);
+			} else {
+				events_db = MainLfqActivity.getEventsDb();
+			}
+			text += "LOADED.<br />";
+			publishProgress(text);
+
+			return null;
+		}
+
+		@Override
+		protected void onProgressUpdate(String... values) {
+			results.setText(Html.fromHtml(values[0]));
+		}
+
+		@Override
+		protected void onPostExecute(String file_url) {
+			setListeners();		
+			
+
+			if (sharedPref.getInt("EDIT EVENT CHOICES RADIOS",
+					R.id.check_edit_event_edit) != -1) {
+				((RadioButton) findViewById(sharedPref
+						.getInt("EDIT EVENT CHOICES RADIOS",
+								R.id.check_edit_event_edit))).setChecked(true);
+			} else {
+				edit_event.setChecked(true);
+			}
+			insert_event.setChecked(sharedPref.getBoolean(
+					"EDIT EVENT CHECK INSERT", false));
+			delete_event.setChecked(sharedPref.getBoolean(
+					"EDIT EVENT CHECK DELETE", false));
+			edit_event.setChecked(sharedPref.getBoolean(
+					"EDIT EVENT CHECK EDIT", false));
+
+			check_get_dates.setChecked(sharedPref.getBoolean(
+					"EDIT EVENT CHECK DATES", false));
+			check_get_years.setChecked(sharedPref.getBoolean(
+					"EDIT EVENT CHECK YEARS", false));
+			check_get_dates.performClick();
+		}
+
+	}
+
+	class doLoadSelectYears extends AsyncTask<String, String, String> {
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			yearsAdapter.clear();
+			select_month.setEnabled(false);
+			select_day.setEnabled(false);
+			latest.setEnabled(false);
+			get.setEnabled(false);
+			edit.setEnabled(false);
+			check_get_years.setEnabled(false);
+			event_text.setEnabled(false);
+			major_words_text.setEnabled(false);
+			acrostics_text.setEnabled(false);
+			left.setEnabled(false);
+			right.setEnabled(false);			
+			results.setText(Html.fromHtml("<b>LOADING YEARS...</b>"));
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+			sql = "SELECT DISTINCT Year FROM (SELECT Year FROM " + days[0];
+			for (int i = 1; i < days.length; i++) {
+				sql += " UNION SELECT Year FROM " + days[i];
+			}
+			sql += ") ORDER BY Year";
+			c = events_db.rawQuery(sql, null);
+			sql2 = "";
+			String edited_year = "";
+			years_dates_array.clear();
+			years_list.clear();
+			if (c.moveToFirst()) {
+				do {
+					if (c.getString(0).contains("BC")) {
+						continue;
+					}
+					edited_year = c.getString(0);
+					if (!years_dates_array.containsKey("year" + edited_year)) {
+						years_dates_array.put("year" + edited_year,
+								new ArrayList<String>());
+					}
+					publishProgress(edited_year);
+					years_list.add(edited_year);
+					sql2 += ",'" + c.getString(0) + "'";
+				} while (c.moveToNext());
+			}
+			c.close();
+			sql2 = sql2.substring(1);// strip 1st comma
+
+			for (int i = 0; i < days.length; i++) {
+				c = events_db.rawQuery("SELECT Year FROM " + days[i]
+						+ " WHERE Year IN (" + sql2 + ")", null);
+				if (c.moveToFirst()) {
+					do {
+						if (c.getString(0).contains("BC")) {
+							continue;
+						}
+						edited_year = c.getString(0);
+						years_dates_array.get("year" + edited_year)
+								.add(days[i]);
+					} while (c.moveToNext());
+				}
+				c.close();
+			}
+			year_ind = 0;
+			return null;
+		}
+
+		@Override
+		protected void onProgressUpdate(String... values) {
+			yearsAdapter.add(values[0]);
+		}
+
+		@Override
+		protected void onPostExecute(String file_url) {
+			select_month
+					.setSelection(((ArrayAdapter) select_month.getAdapter())
+							.getPosition(months_complete.get(months
+									.indexOf(years_dates_array
+											.get("year"
+													+ yearsAdapter.getItem(0))
+											.get(0).substring(0, 3)))));
+			select_day.setSelection(((ArrayAdapter) select_day.getAdapter())
+					.getPosition(years_dates_array
+							.get("year" + yearsAdapter.getItem(0)).get(0)
+							.substring(3)));
+			latest.setEnabled(true);
+			get.setEnabled(true);
+			edit.setEnabled(true);
+			check_get_years.setEnabled(true);
+			event_text.setEnabled(true);
+			major_words_text.setEnabled(true);
+			acrostics_text.setEnabled(true);
+			left.setEnabled(true);
+			right.setEnabled(true);
+			is_years_loaded = true;			
+			get.performClick();
+		}
+
+	}
+
+	public void doGetDates() {
+		day = select_day.getSelectedItem().toString();
+		month = select_month.getSelectedItem().toString();
+		date = month.substring(0, 3).toLowerCase() + day;
+		yearsAdapter.clear();
+		dates_years_list.clear();
+		c = events_db.rawQuery("SELECT DISTINCT Year FROM " + date
+				+ " ORDER BY Year", null);
+		ct_same_ind = 1;
+		if (c.moveToFirst()) {
+			do {
+				yearsAdapter.add(c.getString(0));
+			} while (c.moveToNext());
+		}
+		c.close();
+		c2 = events_db.rawQuery("SELECT Year FROM " + date + " ORDER BY Year",
+				null);
+		ct_tot = c2.getCount();
+		if (c2.moveToFirst()) {
+			do {
+				dates_years_list.add(c2.getString(0));
+			} while (c2.moveToNext());
+		}
+		c2.close();
+		date_ind = 0;
+		select_year.setSelection(0);
+		//results.setText("SHOWING 1 OF " + ct_tot + " EVENTS ON " + month + " "
+		//		+ day + ".");
+		get.performClick();
+		
+	}
+
+	public class SelectNameListener implements
+			AdapterView.OnItemSelectedListener, View.OnTouchListener {
+		boolean userSelect = false;
+
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			userSelect = true;
+			return false;
+		}
+
+		@Override
+		public void onItemSelected(AdapterView<?> parent, View view, int pos,
+				long id) {
+			if (userSelect) {
+				if (check_get_years.isChecked()) {
+					year = select_year.getSelectedItem().toString();
+					select_month.setSelection(((ArrayAdapter) select_month
+							.getAdapter()).getPosition(months_complete
+							.get(months.indexOf(years_dates_array
+									.get("year" + year).get(0).substring(0, 3)))));
+					select_day.setSelection(((ArrayAdapter) select_day
+							.getAdapter()).getPosition(years_dates_array
+							.get("year" + year).get(0).substring(3)));
+					year_ind = 0;
+					get.performClick();
+				}
+				if (check_get_dates.isChecked()) {
+					date_ind = select_year.getSelectedItemPosition();
+					if (is_left_right_click == false) {
+						get.performClick();
+					}
+				}
+				userSelect = false;
+			}
+		}
+
+		@Override
+		public void onNothingSelected(AdapterView<?> arg0) {
+		}
+	}
+
+}

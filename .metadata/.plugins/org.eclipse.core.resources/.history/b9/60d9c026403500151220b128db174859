@@ -1,0 +1,149 @@
+package com.lfq.learnfactsquick;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+
+import android.app.ListActivity;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.text.Html;
+import android.util.Log;
+
+public class Synchronize extends SecondLfqActivity {
+	private RelativeLayout layout;
+	private TextView sync_results, prompt_sync, sql_queries;
+	private Button do_sync, back;
+	public SecondLfqActivity act2;
+	private ProgressDialog pDialog;
+	private JSONParser jParser;
+	private String ret_str, text;
+	private DatabaseSynchronize ds;
+	private SQLiteDatabase sync_db;
+	JSONArray results = null;
+	private int ct;
+	
+	
+	private static String url = "http://www.learnfactsquick.com/lfq_app_php/synchronize.php";
+	
+	ArrayList<HashMap<String,String>> row_params;
+
+	public Synchronize(SecondLfqActivity myAct2) {
+		act2 = myAct2;
+		act2.setContentView(R.layout.synchronize);
+		ds = new DatabaseSynchronize(act2);
+		sync_db = ds.getWritableDatabase();
+		row_params = new ArrayList<HashMap<String,String>>();
+		setViews();
+		setListeners();
+	}
+
+	public void setViews() {
+		layout = (RelativeLayout) act2.findViewById(R.id.sync_layout);
+		act2.setTitle("SYNCHRONIZE TO LFQ.com");
+		prompt_sync = (TextView) act2.findViewById(R.id.prompt_sync);
+		sql_queries = (TextView) act2.findViewById(R.id.sync_sql_queries);
+        doShowQueries();
+		do_sync = (Button) act2.findViewById(R.id.do_sync);
+		sync_results = (TextView) act2.findViewById(R.id.sync_results);
+		back = (Button) act2.findViewById(R.id.sync_back);
+	}
+
+	public void setListeners() {
+		do_sync.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				int success;
+				try{
+					List<NameValuePair> params = new ArrayList<NameValuePair>();
+	                Cursor c_sync = sync_db.rawQuery("SELECT * FROM `sync_table`", null);
+	                int ctsql=0;	                 
+	                List<String> sql_array = new ArrayList<String>();
+	                sync_results.setText("");
+	                String output="";
+	                if (c_sync.moveToFirst()){
+	                	do{	                		                		
+	                		sql_array.add(c_sync.getString(c_sync.getColumnIndex("SQL")));
+	                		params.add(new BasicNameValuePair("SQL" + ctsql, c_sync.getString(c_sync.getColumnIndex("SQL"))));
+	                		output+=ctsql+". "+c_sync.getString(c_sync.getColumnIndex("SQL"))+"\n\n";	                		
+	                		ctsql++;
+	                	}while (c_sync.moveToNext());
+	                }
+	                sync_results.setText(output);
+	                //params.add(new BasicNameValuePair("username", c_sync.getString(c_sync.getColumnIndex("username"))));
+            		//params.add(new BasicNameValuePair("password", c_sync.getString(c_sync.getColumnIndex("password"))));
+	                
+            		params.add(new BasicNameValuePair("sql_count", String.valueOf(ctsql)));
+            		
+            		//sync_db.execSQL("DELETE FROM `sync_table`");
+					
+					JSONObject json = jParser.makeHttpRequest(url, "POST",
+							params);
+									
+						text="";
+						results= json.getJSONArray("results");
+						ct=1;
+						for (int i=0;i<results.length();i++){
+							JSONObject res = results.getJSONObject(i);
+							text+=ct + ". " + sql_array.get(i) + " " + res.getString("result") + "\n\n";
+						}
+						sync_results.setText(text);
+										
+					
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				
+				
+			}
+
+		});
+
+		back.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				act2.onBackPressed();
+
+			}
+		});
+
+	}
+	
+	public void doShowQueries(){
+		Cursor c_get_sqls=sync_db.rawQuery("SELECT * FROM `sync_table`", null);
+		String queries="";
+		if (c_get_sqls.moveToFirst()){
+			do{
+				queries+=c_get_sqls.getString(c_get_sqls.getColumnIndex("SQL"))+"<br />";
+			}while(c_get_sqls.moveToNext());
+		}
+		c_get_sqls.close();
+		sql_queries.setText(Html.fromHtml("<b>"+queries+"</b>"));
+	}
+
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename package &apos;com.example.learnfactsquick&apos; to &apos;com.lfq.learnfactsquick&apos;&#x0D;&#x0A;- Original project: &apos;LearnFactsQuick&apos;&#x0D;&#x0A;- Original element: &apos;LearnFactsQuick/src/com.example.learnfactsquick&apos;&#x0D;&#x0A;- Renamed element: &apos;LearnFactsQuick/src/com.lfq.learnfactsquick&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename package &apos;com.example.learnfactsquick&apos;" flags="589830" hierarchical="false" id="org.eclipse.jdt.ui.rename.package" input="/src&lt;com.example.learnfactsquick" name="com.lfq.learnfactsquick" qualified="false" references="true" stamp="1405706213931" textual="false" version="1.0"/>
+</session>

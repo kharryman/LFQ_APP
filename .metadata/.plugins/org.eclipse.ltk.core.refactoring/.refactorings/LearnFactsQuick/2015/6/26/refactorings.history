@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;LearnFactsQuick/res/drawable/headerl_shape.xml&apos; to &apos;header_shape.xml&apos;" description="Rename resource &apos;headerl_shape.xml&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="res/drawable/headerl_shape.xml" name="header_shape.xml" stamp="1435248049603" updateReferences="true"/>
+</session>

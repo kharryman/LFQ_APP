@@ -1,0 +1,122 @@
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edit_events_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.lfq.learnfactsquick.SecondLfqActivity"
+    tools:ignore="TextFields" >
+
+    <Spinner
+        android:id="@+id/select_month"
+        android:layout_height="wrap_content"
+        android:layout_margin="4px"
+        android:layout_width="200px"
+        android:drawSelectorOnTop="true"
+        android:entries="@array/month_options" />
+    
+    <Spinner
+        android:id="@+id/select_day"
+        android:layout_width="70px"
+        android:layout_height="wrap_content"
+        android:layout_margin="4px"
+        android:layout_toRightOf="@+id/select_month"
+        android:drawSelectorOnTop="true"
+        android:entries="@array/day_options"
+         />
+    
+    <EditText
+        android:id="@+id/year_input"
+        android:layout_width="100px"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_edittext"
+        android:inputType="text"
+        android:layout_toRightOf="@+id/select_day"
+        android:padding="5dip" />
+
+    
+    <TextView
+        android:id="@+id/prompt_year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text=":INPUT YEAR"
+        android:layout_toRightOf="@+id/year_input"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp" />
+    
+        
+
+    <EditText
+        android:id="@+id/event_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/select_month"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/rounded_edittext"
+        android:gravity="top|left"
+        android:inputType="textMultiLine"
+        android:lines="10"
+        android:scrollHorizontally="false"
+        android:singleLine="false" />
+
+    <RadioGroup
+        android:id="@+id/event_edit_choices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/event_text" 
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/insert_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Insert" />
+
+        <RadioButton
+            android:id="@+id/delete_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete" />
+
+        <RadioButton
+            android:id="@+id/edit_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/get_events"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/event_edit_choices"
+        android:layout_marginTop="20dp"
+        android:text="Get Events" />
+
+    <Button
+        android:id="@+id/edit_specific_event"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/event_edit_choices"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@+id/get_events"
+        android:text="Edit Event" />
+    
+        <TextView
+        android:id="@+id/show_event_results"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/get_events"
+        android:layout_alignParentLeft="true"
+        android:text="RESULTS:"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp" />
+
+</RelativeLayout>

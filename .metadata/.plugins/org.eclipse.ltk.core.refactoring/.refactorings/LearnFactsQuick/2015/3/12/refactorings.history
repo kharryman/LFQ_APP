@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename compilation unit &apos;com.lfq.learnfactsquick.CelebtritiesToNumbers.java&apos; to &apos;CelebritiesToNumbers.java&apos;&#x0D;&#x0A;- Original project: &apos;LearnFactsQuick&apos;&#x0D;&#x0A;- Original element: &apos;com.lfq.learnfactsquick.CelebtritiesToNumbers.java&apos;&#x0D;&#x0A;- Renamed element: &apos;com.lfq.learnfactsquick.CelebritiesToNumbers.java&apos;" description="Rename compilation unit &apos;CelebtritiesToNumbers.java&apos;" flags="2" id="org.eclipse.jdt.ui.rename.compilationunit" input="/src&lt;com.lfq.learnfactsquick{CelebtritiesToNumbers.java" name="CelebritiesToNumbers.java" references="false" stamp="1426641765294" version="1.0"/>
+</session>

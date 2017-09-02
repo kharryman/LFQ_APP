@@ -1,0 +1,144 @@
+package com.lfq.learnfactsquick;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.text.Html;
+import android.view.View;
+import android.widget.TableRow;
+
+public class DatabaseMisc extends SQLiteOpenHelper {
+	private static String DB_PATH = "";
+	private static final String DATABASE_NAME = "lfq_misc.db";
+	private static final int DATABASE_VERSION = 1;
+	private ContentValues values;
+	Context myContext;
+	private static SQLiteDatabase acr_db;
+	private DatabaseAcrostics da;	
+
+	public DatabaseMisc(Context context) {
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		myContext = context;
+		values=new ContentValues();
+		new doLoadDB().execute();
+	}
+
+	@Override
+	public void onCreate(SQLiteDatabase database) {
+		InputStream insertsStream = myContext.getResources().openRawResource(
+				R.raw.misc);
+		BufferedReader insertReader = new BufferedReader(new InputStreamReader(
+				insertsStream));
+		String insertStmt = "GO!";	
+		int ct = 0;
+		while (insertStmt!=null) {
+			ct++;
+			try {
+				insertStmt=insertReader.readLine();
+			} catch (IOException e) {
+			
+				e.printStackTrace();
+			}
+			if (insertStmt!=null){
+				database.execSQL(insertStmt);
+			}
+		}
+		Cursor c = acr_db.rawQuery("SELECT name FROM sqlite_master "
+				+ " WHERE type='table' ORDER BY name", null);
+		if (c.moveToFirst()) {
+			do {
+				if (!c.getString(0).equals("android_metadata")
+						&& !c.getString(0).equals("sqlite_sequence")) {
+					Cursor c2 = database.rawQuery(
+							"SELECT Name FROM " + c.getString(0)
+									+ " ORDER BY Name", null);
+					if (c2.moveToFirst()) {
+						do {
+							values.clear();							
+							// GET IMAGE:
+							String uri = "drawable/"
+									+ c.getString(0)
+									+ "___"
+									+ c2.getString(0).replace(" ", "_")
+											.toLowerCase();
+							int imageResource = myContext.getResources()
+									.getIdentifier(uri, "drawable",
+											myContext.getPackageName());
+							if (imageResource != 0) {
+								Drawable image = myContext.getResources()
+										.getDrawable(imageResource);
+								BitmapDrawable bitDw = ((BitmapDrawable) image);
+								if (bitDw!=null){
+								Bitmap bitmap = bitDw.getBitmap();
+								ByteArrayOutputStream stream = new ByteArrayOutputStream();
+								bitmap.compress(Bitmap.CompressFormat.JPEG,
+										100, stream);
+								byte[] imageInByte = stream.toByteArray();
+								values.put("Image", imageInByte);
+								database.update(c.getString(0), values, "Name=?",new String[]{c2.getString(0)});
+								}
+							}							
+
+						} while (c2.moveToNext());
+						c2.close();
+					}
+				}
+			}while(c.moveToNext());
+			c.close();
+		}
+    System.out.println("# rows inserted="+ct);    
+	}
+
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+	}
+}
+	
+	class doLoadDB extends AsyncTask<String, String, String> {
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+
+		}
+	
+	@Override
+	protected String doInBackground(String... params) {		
+		if (MainLfqActivity.getAcrDb()==null){
+		da = new DatabaseAcrostics(this_act);
+		acr_db = da.getWritableDatabase();
+		MainLfqActivity.setAcrDb(acr_db);
+		}
+		else{
+			acr_db=MainLfqActivity.getAcrDb();
+		}	
+		
+		return null;
+	}
+
+	@Override
+	protected void onProgressUpdate(String... values) {		
+	}
+
+	@Override
+	protected void onPostExecute(String file_url) {
+		
+	}
+
+}
+
+

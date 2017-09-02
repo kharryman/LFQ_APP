@@ -1,0 +1,1469 @@
+package com.lfq.learnfactsquick;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TableRow.LayoutParams;
+import android.widget.TextView;
+
+public class Timeline {
+	private RelativeLayout layout, above_controls;
+	private LinearLayout event_layout, words_layout, dates_layout,
+			years_layout, savewords_layout, prompt_events_layout;
+	private TextView prompt_timeline, prompt_timeline_completed,
+			prompt_timeline_date, prompt_timeline_choose_number,
+			prompt_timeline_year, prompt_timeline_event, prompt_timeline_words,
+			results, results2, login_status;
+	private TextView event_tv;
+	private Spinner select_timeline_completed, select_timeline_month,
+			select_timeline_day, select_timeline_number_major_words;
+	private Spinner select_number_major_words_again;
+	private EditText input_timeline_year, input_username, input_password;
+	private EditText event_edit_et;
+	private CheckBox check_condensed_words, check_timeline_get_words,
+			check_save_timeline_global, check_save_timeline_personal;
+	private Button do_timeline_get_date_events, do_timeline_get_year_events,
+			do_timeline_show_date_saved, do_timeline_show_year_saved,
+			do_timeline_show_all_saved, do_timeline_left, do_timeline_right,
+			back, do_edit_timeline_event, do_save_words, do_login, do_logout,
+			do_timeline_above;
+	private ScrollView timeline_event_scroll, timeline_words_scroll;
+
+	public SecondLfqActivity act2;
+	private SQLiteDatabase dictionary_db, events_db, num_db, sync_db;
+	private DatabaseDictionary dd;
+	private DatabaseSynchronize ds;
+	private DatabaseEvents de;
+	private DatabaseNumbers dn;	
+	private Cursor c = null, c2 = null, c3 = null;
+	private android.widget.RelativeLayout.LayoutParams params;
+	private android.widget.TableLayout.LayoutParams tableParams;
+	private android.widget.TableRow.LayoutParams rowParams, cellParams;
+	private ArrayAdapter<String> entreesAdapter;
+	private Helpers h;
+	private Boolean is_event_edit, logged_in, display_savedwords;	
+	private List<String> saved_years, input_saved_words, months,
+			months_complete;
+	private int saved_years_ind, saved_dates_ind, ct_tot,ct_all;
+	private String out, begnum, midnum, endnum, saved_dates_year_ind,
+			which_events, event_id, edit_save_words, ign_lets, dbl_lets,
+			username, password, input, wriwor, edit_year, edit_date,
+			edit_date_number, event, display_date;
+	private int year_count, date_count, ct_same_years, own_word_ind;
+	private String[] days = null;
+	private List<EditText> input_words;
+	private List<RadioGroup> radio_groups;
+	private ArrayAdapter<String> timesDoneAdapter;
+
+	public Timeline(SecondLfqActivity myAct2) {
+		act2 = myAct2;
+		h = new Helpers(act2);
+		dd = new DatabaseDictionary(act2);
+		de = new DatabaseEvents(act2);
+		dn = new DatabaseNumbers(act2);
+		ds = new DatabaseSynchronize(act2);
+		dictionary_db = dd.getReadableDatabase();
+		events_db = de.getWritableDatabase();
+		num_db = dn.getWritableDatabase();
+		sync_db = ds.getWritableDatabase();
+		act2.setContentView(R.layout.timeline);
+		act2.setTitle("TIMELINE");
+		logged_in = false;
+		display_savedwords=true;
+		edit_year = "";
+		edit_date = "";
+		edit_date_number = "";
+		ign_lets = "aeiouwxy";
+		dbl_lets = "cgpst";
+		display_date = "";
+		out = "";
+		which_events = "";
+		edit_save_words = "";
+		event_id = "";
+		year_count = 0;
+		date_count = 0;
+		ct_same_years = 0;
+		own_word_ind = 0;
+		username = "";
+		password = "";
+		months = new ArrayList<String>();
+		months_complete = new ArrayList<String>();
+		input_words = new ArrayList<EditText>();
+		radio_groups = new ArrayList<RadioGroup>();
+		input_saved_words = new ArrayList<String>();
+		saved_years = new ArrayList<String>();
+		months.addAll(Arrays.asList(new String[] { "jan", "feb", "mar", "apr",
+				"may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" }));
+		months_complete.addAll(Arrays.asList(new String[] { "January",
+				"February", "March", "April", "May", "June", "July", "August",
+				"September", "October", "November", "December" }));
+		days = new String[] { "jan1", "jan2", "jan3", "jan4", "jan5", "jan6",
+				"jan7", "jan8", "jan9", "jan10", "jan11", "jan12", "jan13",
+				"jan14", "jan15", "jan16", "jan17", "jan18", "jan19", "jan20",
+				"jan21", "jan22", "jan23", "jan24", "jan25", "jan26", "jan27",
+				"jan28", "jan29", "jan30", "jan31", "feb1", "feb2", "feb3",
+				"feb4", "feb5", "feb6", "feb7", "feb8", "feb9", "feb10",
+				"feb11", "feb12", "feb13", "feb14", "feb15", "feb16", "feb17",
+				"feb18", "feb19", "feb20", "feb21", "feb22", "feb23", "feb24",
+				"feb25", "feb26", "feb27", "feb28", "feb29", "mar1", "mar2",
+				"mar3", "mar4", "mar5", "mar6", "mar7", "mar8", "mar9",
+				"mar10", "mar11", "mar12", "mar13", "mar14", "mar15", "mar16",
+				"mar17", "mar18", "mar19", "mar20", "mar21", "mar22", "mar23",
+				"mar24", "mar25", "mar26", "mar27", "mar28", "mar29", "mar30",
+				"mar31", "apr1", "apr2", "apr3", "apr4", "apr5", "apr6",
+				"apr7", "apr8", "apr9", "apr10", "apr11", "apr12", "apr13",
+				"apr14", "apr15", "apr16", "apr17", "apr18", "apr19", "apr20",
+				"apr21", "apr22", "apr23", "apr24", "apr25", "apr26", "apr27",
+				"apr28", "apr29", "apr30", "may1", "may2", "may3", "may4",
+				"may5", "may6", "may7", "may8", "may9", "may10", "may11",
+				"may12", "may13", "may14", "may15", "may16", "may17", "may18",
+				"may19", "may20", "may21", "may22", "may23", "may24", "may25",
+				"may26", "may27", "may28", "may29", "may30", "may31", "jun1",
+				"jun2", "jun3", "jun4", "jun5", "jun6", "jun7", "jun8", "jun9",
+				"jun10", "jun11", "jun12", "jun13", "jun14", "jun15", "jun16",
+				"jun17", "jun18", "jun19", "jun20", "jun21", "jun22", "jun23",
+				"jun24", "jun25", "jun26", "jun27", "jun28", "jun29", "jun30",
+				"jul1", "jul2", "jul3", "jul4", "jul5", "jul6", "jul7", "jul8",
+				"jul9", "jul10", "jul11", "jul12", "jul13", "jul14", "jul15",
+				"jul16", "jul17", "jul18", "jul19", "jul20", "jul21", "jul22",
+				"jul23", "jul24", "jul25", "jul26", "jul27", "jul28", "jul29",
+				"jul30", "jul31", "aug1", "aug2", "aug3", "aug4", "aug5",
+				"aug6", "aug7", "aug8", "aug9", "aug10", "aug11", "aug12",
+				"aug13", "aug14", "aug15", "aug16", "aug17", "aug18", "aug19",
+				"aug20", "aug21", "aug22", "aug23", "aug24", "aug25", "aug26",
+				"aug27", "aug28", "aug29", "aug30", "aug31", "sep1", "sep2",
+				"sep3", "sep4", "sep5", "sep6", "sep7", "sep8", "sep9",
+				"sep10", "sep11", "sep12", "sep13", "sep14", "sep15", "sep16",
+				"sep17", "sep18", "sep19", "sep20", "sep21", "sep22", "sep23",
+				"sep24", "sep25", "sep26", "sep27", "sep28", "sep29", "sep30",
+				"oct1", "oct2", "oct3", "oct4", "oct5", "oct6", "oct7", "oct8",
+				"oct9", "oct10", "oct11", "oct12", "oct13", "oct14", "oct15",
+				"oct16", "oct17", "oct18", "oct19", "oct20", "oct21", "oct22",
+				"oct23", "oct24", "oct25", "oct26", "oct27", "oct28", "oct29",
+				"oct30", "oct31", "nov1", "nov2", "nov3", "nov4", "nov5",
+				"nov6", "nov7", "nov8", "nov9", "nov10", "nov11", "nov12",
+				"nov13", "nov14", "nov15", "nov16", "nov17", "nov18", "nov19",
+				"nov20", "nov21", "nov22", "nov23", "nov24", "nov25", "nov26",
+				"nov27", "nov28", "nov29", "nov30", "dec1", "dec2", "dec3",
+				"dec4", "dec5", "dec6", "dec7", "dec8", "dec9", "dec10",
+				"dec11", "dec12", "dec13", "dec14", "dec15", "dec16", "dec17",
+				"dec18", "dec19", "dec20", "dec21", "dec22", "dec23", "dec24",
+				"dec25", "dec26", "dec27", "dec28", "dec29", "dec30", "dec31" };
+		saved_years_ind = 0;
+		saved_dates_ind = 0;
+		saved_dates_year_ind = "";
+		setViews();
+		setListeners();
+		initializeSpinners();
+		is_event_edit = false;
+		prompt_timeline_event.setText(Html.fromHtml("<b><u>EVENT:</u></b>"));
+		prompt_timeline_words.setText(Html
+				.fromHtml("<u><b>SELECT MAJOR WORDS FOR DATE:</b></u>"));
+	}
+
+	public void setViews() {
+
+		// TEXT VIEWS
+		login_status = (TextView) act2.findViewById(R.id.timeline_login_status);
+		prompt_timeline = (TextView) act2.findViewById(R.id.prompt_timeline);
+		prompt_timeline_completed = (TextView) act2
+				.findViewById(R.id.prompt_timeline_completed);
+		prompt_timeline_date = (TextView) act2
+				.findViewById(R.id.prompt_timeline_date);
+		prompt_timeline_choose_number = (TextView) act2
+				.findViewById(R.id.prompt_timeline_choose_number);
+		prompt_timeline_year = (TextView) act2
+				.findViewById(R.id.prompt_timeline_year);
+		prompt_timeline_event = (TextView) act2
+				.findViewById(R.id.prompt_timeline_event);
+		prompt_timeline_words = (TextView) act2
+				.findViewById(R.id.prompt_timeline_words);
+		results = (TextView) act2.findViewById(R.id.timeline_results);
+		results2 = (TextView) act2.findViewById(R.id.timeline_results2);
+
+		// LAYOUTS
+		event_layout = (LinearLayout) act2
+				.findViewById(R.id.timeline_event_layout);
+		words_layout = (LinearLayout) act2
+				.findViewById(R.id.timeline_words_layout);
+		savewords_layout = (LinearLayout) act2
+				.findViewById(R.id.timeline_savewords_layout);
+		savewords_layout.setId(1);
+		prompt_events_layout = (LinearLayout) act2
+				.findViewById(R.id.prompt_timeline_events_layout);
+		above_controls = (RelativeLayout) act2
+				.findViewById(R.id.timeline_above_controls);
+		above_controls.setVisibility(View.VISIBLE);
+
+		// SPINNERS
+		select_timeline_completed = (Spinner) act2
+				.findViewById(R.id.select_timeline_completed);
+		timesDoneAdapter = new ArrayAdapter<String>(act2,
+				android.R.layout.simple_spinner_item, new ArrayList<String>());
+		timesDoneAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		select_timeline_completed.setAdapter(timesDoneAdapter);
+		select_timeline_month = (Spinner) act2
+				.findViewById(R.id.select_timeline_month);
+		select_timeline_day = (Spinner) act2
+				.findViewById(R.id.select_timeline_day);
+		select_timeline_number_major_words = (Spinner) act2
+				.findViewById(R.id.select_timeline_number_major_words);
+
+		// EDITTEXTS
+		input_timeline_year = (EditText) act2
+				.findViewById(R.id.input_timeline_year);
+		input_username = (EditText) act2.findViewById(R.id.timeline_username);
+		input_password = (EditText) act2.findViewById(R.id.timeline_password);
+
+		// CHECKBOXES
+		check_condensed_words = (CheckBox) act2
+				.findViewById(R.id.check_condensed_words);
+
+		check_timeline_get_words = (CheckBox) act2
+				.findViewById(R.id.check_timeline_get_words);
+		check_timeline_get_words.setChecked(true);
+		check_save_timeline_global = (CheckBox) act2
+				.findViewById(R.id.check_save_timeline_global);
+		check_save_timeline_personal = (CheckBox) act2
+				.findViewById(R.id.check_save_timeline_personal);
+
+		// BUTTONS:
+		back = (Button) act2.findViewById(R.id.timeline_back);
+		do_login = (Button) act2.findViewById(R.id.timeline_login);
+		do_logout = (Button) act2.findViewById(R.id.timeline_logout);
+		do_timeline_above = (Button) act2.findViewById(R.id.do_timeline_above);
+		do_timeline_above.setVisibility(View.GONE);
+		do_timeline_above.setId(2);
+		do_timeline_get_date_events = (Button) act2
+				.findViewById(R.id.do_timeline_get_date_events);
+		do_timeline_get_year_events = (Button) act2
+				.findViewById(R.id.do_timeline_get_year_events);
+		do_timeline_show_all_saved = (Button) act2
+				.findViewById(R.id.do_timeline_show_all_saved);
+		do_timeline_left = (Button) act2.findViewById(R.id.do_timeline_left);
+		do_timeline_right = (Button) act2.findViewById(R.id.do_timeline_right);
+		do_edit_timeline_event = (Button) act2
+				.findViewById(R.id.do_edit_timeline_event);
+		do_save_words = (Button) act2.findViewById(R.id.do_save_timeline_words);
+
+		// SCROLLVIEWS
+		timeline_event_scroll = (ScrollView) act2
+				.findViewById(R.id.timeline_event_scroll);
+		timeline_words_scroll = (ScrollView) act2
+				.findViewById(R.id.timeline_words_scroll);
+	}
+
+	public void setListeners() {
+		back.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dictionary_db.close();
+				events_db.close();
+				num_db.close();
+				act2.onBackPressed();
+			}
+		});
+
+		do_login.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				password = input_password.getText().toString();
+				username = input_username.getText().toString();
+				String login_results = h.login(username, password);
+				String[] login_spl = login_results.split("@@@");
+				if (login_spl[0].equals("true")) {
+					logged_in = true;
+				}
+				login_status.setText(login_spl[1]);
+			}
+		});
+
+		do_logout.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				logged_in = false;
+				login_status.setText("LOGGED OUT. BYE BYE " + username);
+			}
+		});
+
+		do_timeline_above.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				above_controls.setVisibility(View.VISIBLE);
+				prompt_timeline_words.setVisibility(View.VISIBLE);
+				event_layout.setVisibility(View.VISIBLE);
+				do_timeline_left.setVisibility(View.VISIBLE);
+				do_timeline_right.setVisibility(View.VISIBLE);
+				prompt_events_layout.setVisibility(View.VISIBLE);
+				savewords_layout.setVisibility(View.VISIBLE);
+				do_timeline_above.setVisibility(View.GONE);
+				params = new RelativeLayout.LayoutParams(
+						RelativeLayout.LayoutParams.MATCH_PARENT, 60);
+				params.addRule(RelativeLayout.BELOW, savewords_layout.getId());
+				timeline_words_scroll.setLayoutParams(params);
+			}
+		});
+		
+		check_save_timeline_personal.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				if (check_save_timeline_personal.isChecked()){
+					if (logged_in==false){
+						results.setText(Html.fromHtml("<b><u>SORRY, NOT LOGGED IN!</u></b>"));
+						check_save_timeline_personal.setChecked(false);
+					}
+				}
+			}
+		});
+
+		do_timeline_get_date_events
+				.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						display_savedwords=true;
+						String month = select_timeline_month.getSelectedItem()
+								.toString().substring(0, 3);
+						String day = select_timeline_day.getSelectedItem()
+								.toString();
+						String month_num = String.valueOf(select_timeline_month
+								.getSelectedItemPosition() + 1);
+						String input_year = "";
+						String get_date = month + day;
+						String get_date_number = month_num + day;
+						if (check_timeline_get_words.isChecked()) {
+							prompt_timeline_words.setVisibility(View.VISIBLE);
+							event_layout.setVisibility(View.VISIBLE);
+							do_timeline_left.setVisibility(View.VISIBLE);
+							do_timeline_right.setVisibility(View.VISIBLE);
+							prompt_events_layout.setVisibility(View.VISIBLE);
+							savewords_layout.setVisibility(View.VISIBLE);
+							results.setText("");
+							results2.setText("");
+							which_events = "date events";
+							ct_same_years = 1;
+							event_layout.removeAllViews();
+
+							// ADD EVENT TEXTVIEW:
+							String event = "";
+							String event_id = "";
+							String saved_words = "";
+							event_tv = new TextView(act2);
+							event_layout.addView(event_tv);
+							is_event_edit = false;
+							c2 = events_db.rawQuery("SELECT Year FROM "
+									+ get_date, null);
+							date_count = c2.getCount();
+							saved_years.clear();
+							if (c2.moveToFirst()) {
+								do {
+									saved_years.add(c2.getString(0));
+								} while (c2.moveToNext());
+							}
+							c2.close();
+							c = events_db.rawQuery("SELECT * FROM " + get_date
+									+ " ORDER BY Year LIMIT 1", null);
+							display_date = months_complete
+									.get(select_timeline_month
+											.getSelectedItemPosition())
+									+ " " + day;
+							if (c.moveToFirst()) {
+								event_id = c.getString(c.getColumnIndex("_id"));
+								event = c.getString(c.getColumnIndex("Event"));
+								input_year = c.getString(c
+										.getColumnIndex("Year"));
+								event_tv.setText(event);
+								saved_words = c.getString(c
+										.getColumnIndex("SaveWords"));
+							}
+							saved_dates_ind = 0;
+							c.close();
+							results2.setText(Html.fromHtml("<b>1 OF "
+									+ date_count + " EVENTS.</b>"));
+							edit_year = input_year;
+							edit_date = get_date;
+
+							getMajorWords(input_year, get_date,
+									get_date_number, saved_words);
+						}
+						if (!check_timeline_get_words.isChecked()) {
+							prompt_timeline_words.setVisibility(View.GONE);
+							event_layout.setVisibility(View.GONE);
+							do_timeline_left.setVisibility(View.GONE);
+							do_timeline_right.setVisibility(View.GONE);
+							do_timeline_above.setVisibility(View.VISIBLE);
+							prompt_events_layout.setVisibility(View.GONE);
+							savewords_layout.setVisibility(View.GONE);
+							above_controls.setVisibility(View.GONE);
+							params = new RelativeLayout.LayoutParams(
+									RelativeLayout.LayoutParams.MATCH_PARENT,
+									600);
+							params.addRule(RelativeLayout.BELOW,
+									savewords_layout.getId());
+							timeline_words_scroll.setLayoutParams(params);
+							c = events_db.rawQuery("SELECT * FROM " + get_date
+									+ " WHERE SaveWords<>''", null);
+							words_layout.removeAllViews();
+							event_layout.removeAllViews();
+							int ct_events=c.getCount();
+							if (c.moveToFirst()) {
+								System.out.println("FIRT SAVE WORDS(DATES)!!!");
+								do {
+									TextView tv = new TextView(act2);
+									tv.setTextSize(15);
+									tv.setText(Html.fromHtml("<b>DATE:"
+											+ c.getString(c
+													.getColumnIndex("Year"))+", "+get_date
+											+ "<br/>EVENT:<br/>"
+											+ c.getString(c
+													.getColumnIndex("Event"))
+											+ "<br/>SAVED WORDS:<br/>"
+											+ c.getString(c
+													.getColumnIndex("SaveWords"))
+											+ "<br/></b>"));
+									words_layout.addView(tv);
+								} while (c.moveToNext());
+							}
+							results.setText(Html.fromHtml("<b>SHOWING "+ct_events+" TOTAL EVENTS."));
+	                        results2.setText("");
+							c.close();
+						}	
+						}
+				});
+
+		do_timeline_get_year_events
+				.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						display_savedwords=true;
+						which_events = "year events";
+						String input_year = input_timeline_year.getText()
+								.toString();
+						if (input_year.length() == 0) {
+							results.setText(Html
+									.fromHtml("<b>MUST ENTER A YEAR/b>"));
+							return;
+						}
+
+						if (check_timeline_get_words.isChecked()) {
+							prompt_timeline_words.setVisibility(View.VISIBLE);
+							event_layout.setVisibility(View.VISIBLE);
+							do_timeline_left.setVisibility(View.VISIBLE);
+							do_timeline_right.setVisibility(View.VISIBLE);
+							prompt_events_layout.setVisibility(View.VISIBLE);
+							savewords_layout.setVisibility(View.VISIBLE);
+							ct_same_years = 1;
+							saved_years.clear();
+							year_count = 0;
+
+							for (int i = 0; i < days.length; i++) {
+
+								Cursor check_year = events_db.rawQuery(
+										"SELECT Year FROM " + days[i]
+												+ " WHERE Year='" + input_year
+												+ "'", null);
+								if (check_year.moveToFirst()) {
+									year_count += check_year.getCount();
+									for (int j = 0; j < check_year.getCount(); j++) {
+										saved_years.add(days[i]);
+									}
+
+								}
+								check_year.close();
+							}
+
+							saved_years_ind = 0;
+							int month_ind = months.indexOf(saved_years.get(0)
+									.substring(0, 3)) + 1;
+							String get_date_number = month_ind
+									+ saved_years.get(0).substring(3);
+							event_layout.removeAllViews();
+							event_tv = new TextView(act2);
+							event_layout.addView(event_tv);
+							is_event_edit = false;
+							c = events_db.rawQuery("SELECT * FROM "
+									+ saved_years.get(0) + " WHERE Year='"
+									+ input_year + "' ORDER BY _id LIMIT 1",
+									null);
+							display_date = months_complete.get(month_ind - 1)
+									+ " "
+									+ saved_years.get(saved_years_ind)
+											.substring(3);
+							String saved_words = "";
+							if (c.moveToFirst()) {
+								event_tv.setText(c.getString(c
+										.getColumnIndex("Event")));
+								event_id = c.getString(c.getColumnIndex("_id"));
+								saved_words = c.getString(c
+										.getColumnIndex("SaveWords"));
+							}
+							c.close();
+							results2.setText(Html.fromHtml("<b>1 OF "
+									+ year_count + " EVENTS.</b>"));
+							edit_year = input_year;
+							edit_date = saved_years.get(0);
+							getMajorWords(input_year, saved_years.get(0),
+									get_date_number, saved_words);
+						}
+						if (!check_timeline_get_words.isChecked()) {
+							prompt_timeline_words.setVisibility(View.GONE);
+							above_controls.setVisibility(View.GONE);
+							event_layout.setVisibility(View.GONE);
+							do_timeline_left.setVisibility(View.GONE);
+							do_timeline_right.setVisibility(View.GONE);
+							prompt_events_layout.setVisibility(View.GONE);
+							savewords_layout.setVisibility(View.GONE);
+							do_timeline_above.setVisibility(View.VISIBLE);
+							params = new RelativeLayout.LayoutParams(
+									RelativeLayout.LayoutParams.MATCH_PARENT,
+									600);
+							params.addRule(RelativeLayout.BELOW,
+									savewords_layout.getId());
+							timeline_words_scroll.setLayoutParams(params);
+							words_layout.removeAllViews();
+							event_layout.removeAllViews();
+							int ct_events=0;
+							for (int i = 0; i < days.length; i++) {
+								c = events_db.rawQuery("SELECT * FROM "
+										+ days[i] + " WHERE Year='"
+										+ input_year + "' AND SaveWords<>''",
+										null);
+								ct_events+=c.getCount();
+								if (c.moveToFirst()) {
+                                     do{
+									TextView tv = new TextView(act2);
+									tv.setTextSize(15);
+									tv.setText(Html.fromHtml("<b>DATE:"
+											+ days[i]
+											+ "<br/>EVENT:<br/>"
+											+ c.getString(c
+													.getColumnIndex("Event"))
+											+ "<br/>SAVED WORDS:<br/>"
+											+ c.getString(c
+													.getColumnIndex("SaveWords"))
+											+ "<br/></b>"));
+									words_layout.addView(tv);
+                                     }while(c.moveToNext());
+								}
+								c.close();
+							}
+							results.setText(Html.fromHtml("<b>SHOWING "+ct_events+" TOTAL EVENTS."));
+                            results2.setText("");
+						}
+					}
+
+				});
+
+		do_timeline_show_all_saved
+				.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						prompt_timeline_words.setVisibility(View.GONE);
+						above_controls.setVisibility(View.GONE);
+						event_layout.setVisibility(View.GONE);
+						do_timeline_left.setVisibility(View.GONE);
+						do_timeline_right.setVisibility(View.GONE);
+						prompt_events_layout.setVisibility(View.GONE);
+						savewords_layout.setVisibility(View.GONE);
+						do_timeline_above.setVisibility(View.VISIBLE);
+						params = new RelativeLayout.LayoutParams(
+								RelativeLayout.LayoutParams.MATCH_PARENT, 600);
+						params.addRule(RelativeLayout.BELOW,
+								savewords_layout.getId());
+						timeline_words_scroll.setLayoutParams(params);
+						words_layout.removeAllViews();
+						event_layout.removeAllViews();
+                        
+						for (int i = 0; i < days.length; i++) {
+							c = events_db.rawQuery("SELECT * FROM " + days[i]
+									+ " WHERE SaveWords<>''", null);
+							
+							if (c.moveToFirst()) {
+								do {
+									TextView tv = new TextView(act2);
+									tv.setTextSize(15);
+									tv.setText(Html.fromHtml("<b>DATE:"
+											+ days[i]
+											+ "<br/>EVENT:<br/>"
+											+ c.getString(c
+													.getColumnIndex("Event"))
+											+ "<br/>SAVED WORDS:<br/>"
+											+ c.getString(c
+													.getColumnIndex("SaveWords"))
+											+ "<br/></b>"));
+									words_layout.addView(tv);
+								} while (c.moveToNext());
+							}
+							c.close();
+						}
+						results.setText(ct_tot+" OF "+ct_all+" EVENTS");
+						results2.setText("");
+					}
+				});
+
+		do_timeline_left.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				display_savedwords=true;
+				if (which_events.equals("year events")) {
+					if (saved_years_ind <= 0) {
+						return;
+					} else {
+						String input_year = input_timeline_year.getText()
+								.toString();
+						if (input_year.length() == 0) {
+							results.setText(Html
+									.fromHtml("<b>MUST ENTER A YEAR</b>"));
+							return;
+						}
+						saved_years_ind--;
+						int month_ind = months.indexOf(saved_years.get(
+								saved_years_ind).substring(0, 3)) + 1;
+						String get_date_number = month_ind
+								+ saved_years.get(saved_years_ind).substring(3);
+						event_layout.removeAllViews();
+						event_tv = new TextView(act2);
+						event_layout.addView(event_tv);
+						is_event_edit = false;
+						c2 = events_db.rawQuery(
+								"SELECT * FROM "
+										+ saved_years.get(saved_years_ind)
+										+ " WHERE Year='" + input_year + "'",
+								null);
+
+						if (c2.getCount() > 1 && ct_same_years == 1) {
+							c = events_db.rawQuery("SELECT * FROM "
+									+ saved_years.get(saved_years_ind)
+									+ " WHERE Year='" + input_year
+									+ "'  ORDER BY _id DESC LIMIT 1", null);
+							ct_same_years++;
+						} else if (c2.getCount() > 1
+								&& ct_same_years <= c2.getCount()) {
+							c = events_db.rawQuery("SELECT * FROM "
+									+ saved_years.get(saved_years_ind)
+									+ " WHERE Year='" + input_year
+									+ "' AND _id<'" + event_id
+									+ "'  ORDER BY _id LIMIT 1", null);
+							ct_same_years++;
+						} else {// COUNT IS 1
+							ct_same_years = 1;
+							c = events_db.rawQuery("SELECT * FROM "
+									+ saved_years.get(saved_years_ind)
+									+ " WHERE Year='" + input_year
+									+ "' ORDER BY _id LIMIT 1", null);
+						}
+						c2.close();
+						String saved_words = "";
+						display_date = months_complete.get(month_ind - 1) + " "
+								+ saved_years.get(saved_years_ind).substring(3);
+						if (c.moveToFirst()) {
+							event_tv.setText(c.getString(c
+									.getColumnIndex("Event")));
+							event_id = c.getString(c.getColumnIndex("_id"));
+							saved_words = c.getString(c
+									.getColumnIndex("SaveWords"));
+						}
+						c.close();
+						int year_ind = saved_years_ind + 1;
+						results2.setText(Html.fromHtml("<b>" + year_ind
+								+ " OF " + year_count + " EVENTS.</b>"));
+						edit_year = input_year;
+						edit_date = saved_years.get(saved_years_ind);
+						getMajorWords(input_year,
+								saved_years.get(saved_years_ind),
+								get_date_number, saved_words);
+
+					}
+				}
+				if (which_events.equals("date events")) {
+					if (saved_dates_ind <= 0) {
+						return;
+					}
+					saved_dates_ind--;
+					String month = select_timeline_month.getSelectedItem()
+							.toString().substring(0, 3);
+					String day = select_timeline_day.getSelectedItem()
+							.toString();
+					String month_num = String.valueOf(select_timeline_month
+							.getSelectedItemPosition() + 1);
+					String get_date = month + day;
+					String get_date_number = month_num + day;
+					event_layout.removeAllViews();
+					event_tv = new TextView(act2);
+					event_layout.addView(event_tv);
+					is_event_edit = false;
+					String display_date = months_complete
+							.get(select_timeline_month
+									.getSelectedItemPosition())
+							+ " " + day;
+					c2 = events_db.rawQuery(
+							"SELECT * FROM " + get_date + " WHERE Year='"
+									+ saved_years.get(saved_dates_ind) + "'",
+							null);
+
+					if (c2.getCount() > 1 && ct_same_years == 1) {
+						c = events_db.rawQuery(
+								"SELECT * FROM " + get_date + " WHERE Year='"
+										+ saved_years.get(saved_dates_ind)
+										+ "'  ORDER BY _id DESC LIMIT 1", null);
+						ct_same_years++;
+					} else if (c2.getCount() > 1
+							&& ct_same_years <= c2.getCount()) {
+						c = events_db.rawQuery(
+								"SELECT * FROM " + get_date + " WHERE Year='"
+										+ saved_years.get(saved_dates_ind)
+										+ "' AND _id<'" + event_id
+										+ "'  ORDER BY _id LIMIT 1", null);
+						ct_same_years++;
+					} else {// COUNT IS 1
+						ct_same_years = 1;
+						c = events_db.rawQuery(
+								"SELECT * FROM " + get_date + " WHERE Year='"
+										+ saved_years.get(saved_dates_ind)
+										+ "' ORDER BY Year DESC LIMIT 1", null);
+					}
+
+					String saved_words = "";
+					if (c.moveToFirst()) {
+						event_tv.setText(c.getString(c.getColumnIndex("Event")));
+						event_id = c.getString(c.getColumnIndex("_id"));
+						saved_words = c.getString(c.getColumnIndex("SaveWords"));
+					}
+					c.close();
+					int date_ind = saved_dates_ind + 1;
+					results2.setText(Html.fromHtml("<b>" + date_ind + " OF "
+							+ date_count + " EVENTS.</b>"));
+					c2.close();
+					edit_year = saved_years.get(saved_dates_ind);
+					edit_date = get_date;
+					getMajorWords(saved_years.get(saved_dates_ind), get_date,
+							get_date_number, saved_words);
+
+				}
+			}
+		});
+
+		do_timeline_right.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				display_savedwords=true;
+				if (which_events.equals("year events")) {
+					if (saved_years_ind >= year_count) {
+						return;
+					} else {
+						String input_year = input_timeline_year.getText()
+								.toString();
+						if (input_year.length() == 0) {
+							results.setText(Html
+									.fromHtml("<b>MUST ENTER A YEAR/b>"));
+							return;
+						}
+						saved_years_ind++;
+						int month_ind = months.indexOf(saved_years.get(
+								saved_years_ind).substring(0, 3)) + 1;
+						String get_date_number = month_ind
+								+ saved_years.get(saved_years_ind).substring(3);
+						event_layout.removeAllViews();
+						event_tv = new TextView(act2);
+						event_layout.addView(event_tv);
+						is_event_edit = false;
+						String display_date = months_complete
+								.get(month_ind - 1)
+								+ " "
+								+ saved_years.get(saved_years_ind).substring(3);
+						c2 = events_db.rawQuery(
+								"SELECT * FROM "
+										+ saved_years.get(saved_years_ind)
+										+ " WHERE Year='" + input_year + "'",
+								null);
+						if (c2.getCount() > 1 && ct_same_years == 1) {
+							c = events_db.rawQuery("SELECT * FROM "
+									+ saved_years.get(saved_years_ind)
+									+ " WHERE Year='" + input_year
+									+ "'  ORDER BY _id LIMIT 1", null);
+							ct_same_years++;
+						} else if (c2.getCount() > 1
+								&& ct_same_years <= c2.getCount()) {
+							c = events_db.rawQuery("SELECT * FROM "
+									+ saved_years.get(saved_years_ind)
+									+ " WHERE Year='" + input_year
+									+ "' AND _id>'" + event_id
+									+ "'  ORDER BY _id LIMIT 1", null);
+							ct_same_years++;
+						} else {// COUNT IS 1
+							ct_same_years = 1;
+							c = events_db.rawQuery("SELECT * FROM "
+									+ saved_years.get(saved_years_ind)
+									+ " WHERE Year='" + input_year
+									+ "' ORDER BY _id LIMIT 1", null);
+						}
+						c2.close();
+						String saved_words = "";
+						if (c.moveToFirst()) {
+							event_tv.setText(c.getString(c
+									.getColumnIndex("Event")));
+							event_id = c.getString(c.getColumnIndex("_id"));
+							saved_words = c.getString(c
+									.getColumnIndex("SaveWords"));
+						}
+						c.close();
+
+						int year_ind = saved_years_ind + 1;
+						results2.setText(Html.fromHtml("<b>" + year_ind
+								+ " OF " + year_count + " EVENTS."));
+
+						edit_year = input_year;
+						edit_date = saved_years.get(saved_years_ind);
+						getMajorWords(input_year,
+								saved_years.get(saved_years_ind),
+								get_date_number, saved_words);
+
+					}
+				}
+				if (which_events.equals("date events")) {
+					if (saved_dates_ind >= (date_count - 1)) {
+						return;
+					}
+					saved_dates_ind++;
+					String month = select_timeline_month.getSelectedItem()
+							.toString().substring(0, 3);
+					String day = select_timeline_day.getSelectedItem()
+							.toString();
+					String month_num = String.valueOf(select_timeline_month
+							.getSelectedItemPosition() + 1);
+					String get_date = month + day;
+					String get_date_number = month_num + day;
+					event_layout.removeAllViews();
+					event_tv = new TextView(act2);
+					event_layout.addView(event_tv);
+					is_event_edit = false;
+					String display_date = months_complete
+							.get(select_timeline_month
+									.getSelectedItemPosition())
+							+ " " + day;
+					c2 = events_db.rawQuery(
+							"SELECT * FROM " + get_date + " WHERE Year='"
+									+ saved_years.get(saved_dates_ind) + "'",
+							null);
+
+					if (c2.getCount() > 1 && ct_same_years == 1) {
+						c = events_db.rawQuery(
+								"SELECT * FROM " + get_date + " WHERE Year='"
+										+ saved_years.get(saved_dates_ind)
+										+ "'  ORDER BY _id LIMIT 1", null);
+						ct_same_years++;
+					} else if (c2.getCount() > 1
+							&& ct_same_years <= c2.getCount()) {
+						c = events_db.rawQuery(
+								"SELECT * FROM " + get_date + " WHERE Year='"
+										+ saved_years.get(saved_dates_ind)
+										+ "' AND _id>'" + event_id
+										+ "'  ORDER BY _id LIMIT 1", null);
+						ct_same_years++;
+					} else {// COUNT IS 1
+						ct_same_years = 1;
+						c = events_db.rawQuery(
+								"SELECT * FROM " + get_date + " WHERE Year='"
+										+ saved_years.get(saved_dates_ind)
+										+ "' ORDER BY Year LIMIT 1", null);
+					}
+					c2.close();
+					String saved_words = "";
+					if (c.moveToFirst()) {
+						event_tv.setText(c.getString(c.getColumnIndex("Event")));
+						event_id = c.getString(c.getColumnIndex("_id"));
+						saved_words = c.getString(c.getColumnIndex("SaveWords"));
+					}
+					c.close();
+					int date_ind = saved_dates_ind + 1;
+					results2.setText(Html.fromHtml("<b>" + date_ind + " OF "
+							+ date_count + " EVENTS."));
+					edit_year = saved_years.get(saved_dates_ind);
+					edit_date = get_date;
+					getMajorWords(saved_years.get(saved_dates_ind), get_date,
+							get_date_number, saved_words);
+
+				}
+			}
+		});
+
+		do_edit_timeline_event.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (is_event_edit == false) {
+					String event = event_tv.getText().toString();
+					event_layout.removeAllViews();
+					event_edit_et = new EditText(act2);
+					event_edit_et
+							.setBackgroundResource(R.drawable.rounded_edittext_red);
+					event_edit_et.setMaxLines(2);
+					event_edit_et.setText(event);
+					event_layout.addView(event_edit_et);
+					is_event_edit = true;
+				} else {
+					String event = event_edit_et.getText().toString();
+					event_layout.removeAllViews();
+					event_tv = new TextView(act2);
+					event_tv.setText(event);
+					ContentValues values = new ContentValues();
+					values.put("Event", event);
+					events_db.update(edit_date, values, "Year=?",
+							new String[] { edit_year });
+					results.setText(Html.fromHtml("<b>EVENT " + edit_year + " "
+							+ edit_date + " UPDATED."));
+					event_layout.addView(event_tv);
+					is_event_edit = false;
+				}
+			}
+		});
+
+		do_save_words.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				int rb_click_count = 0;
+				for (int i = 0; i < own_word_ind; i++) {
+					if (radio_groups.get(i).getCheckedRadioButtonId() != -1) {
+						rb_click_count++;
+					}
+				}
+				if (rb_click_count != own_word_ind) {
+					results.setText(Html
+							.fromHtml("<b><u>PLEASE SELECT WORDS! own_wor_ind="
+									+ own_word_ind + ", click="
+									+ rb_click_count + "</u></b>"));
+					return;
+				}
+				ContentValues values = new ContentValues();
+				values.put("SaveWords", edit_save_words);
+				events_db.update(edit_date, values, "Year=?",
+						new String[] { edit_year });
+				String save_results = "UPDATED SAVED WORDS ON " + display_date
+						+ ", " + edit_year + ".";
+				//SYNCHRONIZE EVENTS DB
+                values.clear();
+                values.put("SQL", "UPDATE "+edit_date+" SET SaveWords='"+edit_save_words+" WHERE Year='"+edit_year+"'");
+                sync_db.insert("sync_table", null, values);
+				if (check_save_timeline_global.isChecked()
+						|| check_save_timeline_personal.isChecked()) {
+					if (is_event_edit == false) {
+						event = event_tv.getText().toString();
+					} else {
+						event = event_edit_et.getText().toString();
+					}
+					values.clear();
+					values.put("Number", edit_date_number);
+					values.put("NumInf", event);
+					values.put("NumWors", edit_save_words);
+					values.put("Type", "HISTORICAL NUMBERS");
+					if (check_save_timeline_global.isChecked()) {
+						num_db.insert("global_number_table", null, values);
+						save_results += " INSERTED INTO GLOBAL NUMBER TABLE.";
+						//SYNCHRONIZE NUMBER GLOBAL TABLE
+		                values.clear();
+		                values.put("SQL", "INSERT INTO global_number_table (Number, NumInf, NumWors, Type) VALUES("+edit_date_number+","+event+","+edit_save_words+",HISTORICAL NUMBERS)");
+		                sync_db.insert("sync_table", null, values);
+					}
+					if (check_save_timeline_personal.isChecked()) {
+						String numbers_table = username + "_historical";
+						num_db.insert(numbers_table, null, values);
+						save_results += " INSERTED INTO " + username
+								+ "'S HISTORICAL TABLE.";
+						//SYNCHRONIZE NUMBER PERSONAL HISTORICAL TABLE
+		                values.clear();
+		                values.put("SQL", "INSERT INTO global_number_table (Number, NumInf, NumWors, Type) VALUES("+edit_date_number+","+event+","+edit_save_words+",HISTORICAL NUMBERS)");
+		                sync_db.insert("sync_table", null, values);
+					}
+				}
+				results.setText(Html.fromHtml("<b>" + save_results + "</b>."));
+			}
+		});
+
+	}
+
+	public void initializeSpinners() {
+		Calendar tod = Calendar.getInstance();
+		select_timeline_month.setSelection(tod.get(Calendar.MONTH));
+		select_timeline_day.setSelection(tod.get(Calendar.DAY_OF_MONTH) - 1);
+		timesDoneAdapter.clear();
+		ct_tot = 0;
+		ct_all = 0;
+		for (int i = 0; i < days.length; i++) {
+			c = events_db.rawQuery("SELECT _id FROM " + days[i], null);
+			ct_all += c.getCount();
+			c.close();
+		}
+		for (int i = 0; i < days.length; i++) {
+			c = events_db.rawQuery("SELECT _id FROM " + days[i]
+					+ " WHERE SaveWords<>''", null);
+			timesDoneAdapter.add(days[i] + " HAS " + c.getCount()
+					+ " SAVED WORDS.");
+			ct_tot += c.getCount();
+			c.close();
+		}
+		timesDoneAdapter.insert(ct_tot + " OF " + ct_all, 0);
+	}
+
+	public void getMajorWords(String myYear, String myDate,
+			String myDateNumber, String saved_words) {
+		do_timeline_above.setVisibility(View.VISIBLE);
+		above_controls.setVisibility(View.GONE);
+		params = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.MATCH_PARENT, 500);
+		params.addRule(RelativeLayout.BELOW, savewords_layout.getId());
+		timeline_words_scroll.setLayoutParams(params);
+		own_word_ind = 0;
+		input_words.clear();
+		input_saved_words.clear();
+		radio_groups.clear();
+		edit_save_words = "";
+		String date = myDate;
+		String date_num = myDateNumber;
+		String num_wors_str=select_timeline_number_major_words
+				.getSelectedItem().toString();
+		if (display_savedwords==false){		
+		num_wors_str = select_number_major_words_again.getSelectedItem().toString();
+		}
+		
+		if (!num_wors_str.equals("ALL")){
+		int num_wors = Integer.parseInt(num_wors_str);
+        }
+
+		int num_wors = 0;
+		int num_wors2 = 0;
+		int num_wors3 = 0;
+		if (num_wors != 1 && !num_wors_str.equals("ALL")) {
+			num_wors2 = num_wors / 2;
+			num_wors3 = num_wors / 3;
+		}
+		if (num_wors_str.equals("ALL")) {
+			num_wors = 100;
+			num_wors2 = 75;
+			num_wors3 = 50;
+		}
+		if (num_wors == 1) {
+			num_wors2 = 1;
+			num_wors3 = 1;
+		}
+		int begnumlen = 0;
+		int midnumlen = 0;
+		int endnumlen = 0;
+
+		out = "";
+		results.setText(out);
+		words_layout.removeAllViews();
+
+		String original_year = myYear;
+		String[] seanumyeaspl = h.explode(myYear);
+		String seanumyea = original_year;
+		if (seanumyeaspl[0].equals("0") && !seanumyeaspl[1].equals("0")) {
+			seanumyea = seanumyea.substring(1);
+		}
+		if (seanumyeaspl[0].equals("0") && seanumyeaspl[1].equals("0")
+				&& !seanumyeaspl[2].equals("0")) {
+			seanumyea = seanumyea.substring(2);
+		}
+		if (seanumyeaspl[0].equals("0") && seanumyeaspl[1].equals("0")
+				&& seanumyeaspl[2].equals("0")) {
+			seanumyea = seanumyea.substring(3);
+		}
+		edit_date_number = seanumyea + date_num;
+
+		if (display_savedwords==false || saved_words.equals("")) {
+			// BEGIN IF NOT CONDENSED(DATE AND YEAR IS
+			// SEPARATE...
+			// ******************************************************************************************
+			Boolean found4 = false;
+			if (!check_condensed_words.isChecked()) {
+				// ADD RADIOGROUPS FOR YEAR OF EVENT:
+				// ************************************************
+
+				RadioGroup rgy_all = new RadioGroup(act2);
+				found4 = addRadioGroup(rgy_all, "YEAR(" + seanumyea + "):",
+						seanumyea, num_wors);
+
+				if (found4 == false) {
+					String yeabeg2 = original_year.substring(0, 2);
+					String yealas2 = original_year.substring(2, 4);
+					RadioGroup rgya = new RadioGroup(act2);
+					addRadioGroup(rgya, "Year(" + yeabeg2 + "):", yeabeg2,
+							num_wors2);
+					RadioGroup rgyb = new RadioGroup(act2);
+					addRadioGroup(rgyb, "Year(" + yealas2 + "):", yealas2,
+							num_wors2);
+				}
+				// ADD RADIOGROUPS FOR DATE OF EVENT:
+				// ************************************************
+
+				RadioGroup rg = new RadioGroup(act2);
+				found4 = addRadioGroup(rg, "DATE(" + date_num + "):", date_num,
+						num_wors);
+				if (found4 == false) {
+					if (date_num.length() == 3) {
+						date_num += "0";
+					} else if (date_num.length() == 2) {
+						date_num += "00";
+					}
+					String seldatnumbeg2 = date_num.substring(0, 2);
+					RadioGroup rga = new RadioGroup(act2);
+					addRadioGroup(rga, "DATE(" + seldatnumbeg2 + "):",
+							seldatnumbeg2, num_wors2);
+					// *****************************************************
+					String seldatnumlas2 = date_num.substring(2, 4);
+					addRadioGroup(rga, "DATE(" + seldatnumlas2 + "):",
+							seldatnumlas2, num_wors2);
+				}
+
+			}// END IF NOT CONDENSED(DATE AND YEAR IS SEPERATE
+				// BEGIN IF CONDENSED(DATE AND YEAR IS SEPERATE
+				// ****************************************************************************
+			if (check_condensed_words.isChecked()) {
+				boolean foundall = false;
+				boolean foundyear = false;
+				boolean founddate = false;
+				String compnumb = seanumyea + date_num;
+				int comnumlen = compnumb.length();
+				int yearlen = seanumyea.length();
+				int datelen = date_num.length();
+				RadioGroup rgall = new RadioGroup(act2);
+				foundall = addRadioGroup(rgall, "COMPLETE DATE(" + compnumb
+						+ "):", compnumb, num_wors);
+				if (foundall == false) {
+					RadioGroup rgyea = new RadioGroup(act2);
+					foundyear = addRadioGroup(rgyea,
+							"YEAR(" + seanumyea + "):", seanumyea, num_wors2);
+					if (foundyear == true) {
+						RadioGroup rgdat = new RadioGroup(act2);
+						founddate = addRadioGroup(rgdat, "DATE(" + date_num
+								+ "):", date_num, num_wors);
+					}
+					if (founddate == false || foundyear == false) {
+						if (comnumlen == 5 || comnumlen == 6) {
+							String begnum = compnumb.substring(0, 3);
+							String endnum = compnumb.substring(3);
+							begnumlen = begnum.length();
+							endnumlen = endnum.length();
+							RadioGroup rg56_beg = new RadioGroup(act2);
+							addRadioGroup(rg56_beg, "COMBO(" + begnum + " of "
+									+ compnumb + "):", begnum, num_wors2);
+							RadioGroup rg56_end = new RadioGroup(act2);
+							addRadioGroup(rg56_end, "COMBO(" + endnum + " of "
+									+ compnumb + "):", endnum, num_wors2);
+						}
+						if (comnumlen == 7) {
+							if (datelen == 4 && founddate == false) {
+								begnum = compnumb.substring(0, 4);
+								endnum = compnumb.substring(4);
+							}
+							if (yearlen == 4 && foundyear == false) {
+								begnum = compnumb.substring(0, 3);
+								endnum = compnumb.substring(3);
+							}
+							begnumlen = begnum.length();
+							endnumlen = endnum.length();
+							Boolean foundbeg = false;
+							Boolean foundend = false;
+							RadioGroup rg7_beg = new RadioGroup(act2);
+							foundbeg = addRadioGroup(rg7_beg, "COMBO(" + begnum
+									+ " of " + compnumb + "):", begnum,
+									num_wors2);
+							RadioGroup rg7_end = new RadioGroup(act2);
+							foundend = addRadioGroup(rg7_end, "COMBO(" + endnum
+									+ " of " + compnumb + "):", endnum,
+									num_wors2);
+							if (foundbeg == false || foundend == false) {
+								begnum = compnumb.substring(0, 3);
+								midnum = compnumb.substring(3, 5);
+								endnum = compnumb.substring(5, 7);
+								begnumlen = begnum.length();
+								midnumlen = midnum.length();
+								endnumlen = endnum.length();
+								RadioGroup rg7_beg2 = new RadioGroup(act2);
+								addRadioGroup(rg7_beg2, "COMBO(" + begnum
+										+ " of " + compnumb + "):", begnum,
+										num_wors3);
+								RadioGroup rg7_mid = new RadioGroup(act2);
+								addRadioGroup(rg7_mid, "COMBO(" + midnum
+										+ " of " + compnumb + "):", midnum,
+										num_wors3);
+								RadioGroup rg7_end2 = new RadioGroup(act2);
+								addRadioGroup(rg7_end2, "COMBO(" + endnum
+										+ " of " + compnumb + "):", endnum,
+										num_wors3);
+							}
+						}
+						if (comnumlen == 8) {
+							Boolean found8_beg_half = false;
+							Boolean found8_end_half = false;
+							if (foundyear == false) {
+								begnum = compnumb.substring(0, 3);
+								endnum = compnumb.substring(3);
+							}
+							if (founddate == false) {
+								begnum = compnumb.substring(0, 5);
+								endnum = compnumb.substring(5);
+							}
+							begnumlen = begnum.length();
+							endnumlen = begnum.length();
+							RadioGroup rg8_beg_half = new RadioGroup(act2);
+							found8_beg_half = addRadioGroup(rg8_beg_half,
+									"COMBO(" + begnum + " of " + compnumb
+											+ "):", begnum, num_wors2);
+							if (found8_beg_half == true) {
+								RadioGroup rg8_end_half = new RadioGroup(act2);
+								found8_end_half = addRadioGroup(rg8_end_half,
+										"COMBO(" + endnum + " of " + compnumb
+												+ "):", endnum, num_wors2);
+
+							}
+							if (!found8_beg_half || !found8_end_half) {
+
+								begnum = compnumb.substring(0, 3);
+								midnum = compnumb.substring(3, 6);
+								endnum = compnumb.substring(6, 8);
+								begnumlen = begnum.length();
+								midnumlen = midnum.length();
+								endnumlen = begnum.length();
+								RadioGroup rg8_beg = new RadioGroup(act2);
+								addRadioGroup(rg8_beg, "COMBO(" + begnum
+										+ " of " + compnumb + "):", begnum,
+										num_wors3);
+								RadioGroup rg8_mid = new RadioGroup(act2);
+								addRadioGroup(rg8_mid, "COMBO(" + midnum
+										+ " of " + compnumb + "):", midnum,
+										num_wors3);
+								RadioGroup rg8_end = new RadioGroup(act2);
+								addRadioGroup(rg8_end, "COMBO(" + endnum
+										+ " of " + compnumb + "):", endnum,
+										num_wors3);
+							}
+						}// ENDS IF COMPLETE DATE IS 8
+					}// END IF founddate or foundyear is false
+				}// ENDS IF foundall is false
+			}// ENDS IF check_condensed_words is checked
+		}// ENDS IF SaveWords=="" is true
+		if (display_savedwords==true || !saved_words.equals("")) {
+			if (display_savedwords==true){
+			savewords_layout.setVisibility(View.GONE);
+			}
+			display_savedwords=false;
+			TextView prompt_saved_words = new TextView(act2);
+			prompt_saved_words.setText("SAVED WORDS:");
+			words_layout.addView(prompt_saved_words);
+			TextView saved_words_tv = new TextView(act2);
+			saved_words_tv.setText(Html.fromHtml("<b><u>" + saved_words
+					+ "</u></b>"));
+			words_layout.addView(saved_words_tv);
+			
+			LinearLayout do_again_layout=new LinearLayout(act2);
+			do_again_layout.setOrientation(LinearLayout.HORIZONTAL);
+			Button do_words_again = new Button(act2);
+			do_words_again.setText("Choose Words Again?");
+			final String final_myYear = myYear;
+			final String final_myDate = myDate;
+			final String final_myDateNumber = myDateNumber;
+			final String final_saved_words = saved_words;
+			do_words_again.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					savewords_layout.setVisibility(View.VISIBLE);
+					getMajorWords(final_myYear, final_myDate,
+							final_myDateNumber, final_saved_words);
+				}
+			});			
+			do_again_layout.addView(do_words_again);
+			do_words_again.setTextSize(11);
+			TextView prompt_again_number=new TextView(act2);
+			prompt_again_number.setText("  How Many?");			
+			do_again_layout.addView(prompt_again_number);
+			select_number_major_words_again = new Spinner(act2);
+			ArrayAdapter<CharSequence> numberMajorWords = ArrayAdapter
+					.createFromResource(act2, R.array.number_timeline_words,
+							android.R.layout.simple_spinner_item);
+			numberMajorWords
+					.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			select_number_major_words_again.setAdapter(numberMajorWords);
+			do_again_layout.addView(select_number_major_words_again);
+			words_layout.addView(do_again_layout);
+		}
+
+	}
+
+	public String formatWord(String[] worspl, int mark_max) {
+		int worct = worspl.length;
+		int marletct = 0;
+		String wriwor = "";
+		// ignlets=aeiouwxy
+
+		marletct = 0;
+		for (int i = 0; i < worct; i++) {
+			if (ign_lets.contains(worspl[i])
+					|| (marletct == mark_max && !worspl[i].equals("h"))) {
+				wriwor += worspl[i].toLowerCase();
+			}
+			if (marletct < mark_max
+					|| (marletct == mark_max && (worspl[i].toLowerCase()
+							.equals("h") || worspl[i].toLowerCase().equals("g")))) {
+				if (!ign_lets.contains(worspl[i])
+						&& !worspl[i].toLowerCase().equals("h")) {
+					wriwor += worspl[i].toUpperCase();
+					marletct++;
+				}
+				if (worspl[i].toLowerCase().equals("h") && i == 0) {
+					wriwor += worspl[i].toLowerCase();
+				}
+				if (i > 0) {
+					if (worspl[i].equals("g") && worspl[i - 1].equals("g")) {
+						marletct--;
+					}
+					if (worspl[i].equals("h")
+							&& dbl_lets.contains(worspl[i - 1]) != false) {
+						wriwor += worspl[i].toUpperCase();
+					}
+					if (worspl[i].equals("h")
+							&& dbl_lets.contains(worspl[i - 1]) == false) {
+						wriwor += worspl[i].toLowerCase();
+					}
+				}
+			}// end if marletct<numct
+		}// end for loop format letters
+		return wriwor;
+	}
+
+	public boolean addRadioGroup(RadioGroup rg, String prompt,
+			String find_word, int limit) {
+		Cursor myc = dictionary_db.rawQuery(
+				"SELECT * FROM dictionarya WHERE Number LIKE '" + find_word
+						+ "%' ORDER BY Number LIMIT " + limit, null);
+		boolean flag = false;
+		final int final_find_word_length = find_word.length();
+		if (myc.moveToFirst()) {
+
+			TextView prompt_tv = new TextView(act2);
+			prompt_tv.setText(Html.fromHtml("<b>" + prompt + "</b>"));
+
+			LinearLayout own_word_layout = new LinearLayout(act2);
+			own_word_layout.setOrientation(LinearLayout.HORIZONTAL);
+			TextView prompt_own_word = new TextView(act2);
+			prompt_own_word.setText(Html.fromHtml("<b>Input Word: </b>"));
+			EditText input_own_word = new EditText(act2);
+			input_own_word.setWidth(300);
+			input_words.add(input_own_word);
+			input_saved_words.add("");
+			input_own_word
+					.setBackgroundResource(R.drawable.rounded_edittext_red);
+			own_word_layout.addView(prompt_own_word);
+			own_word_layout.addView(input_own_word);
+			final int final_own_word_ind = own_word_ind;
+			input_own_word.addTextChangedListener(new TextWatcher() {
+				@Override
+				public void afterTextChanged(Editable arg0) {
+					input_saved_words.set(
+							final_own_word_ind,
+							formatWord(
+									h.explode(input_words
+											.get(final_own_word_ind).getText()
+											.toString()),
+									final_find_word_length));
+					edit_save_words = "";
+					for (int i = 0; i < own_word_ind; i++) {
+						edit_save_words += input_saved_words.get(i) + " ";
+					}
+					results.setText(Html.fromHtml("<b>SAVE WORDS:"
+							+ edit_save_words + "</b>"));
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence arg0, int arg1,
+						int arg2, int arg3) {
+				}
+
+				@Override
+				public void onTextChanged(CharSequence arg0, int arg1,
+						int arg2, int arg3) {
+				}
+
+			});
+
+			do {
+				wriwor = formatWord(
+						h.explode(myc.getString(myc.getColumnIndex("Word"))),
+						find_word.length());
+				RadioButton rb = new RadioButton(act2);
+				rb.setText(find_word + " " + wriwor + " "
+						+ myc.getString(myc.getColumnIndex("Definition")));
+				rg.addView(rb);
+
+				rb.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						input_words.get(final_own_word_ind).setEnabled(false);
+						input_words.get(final_own_word_ind)
+								.setBackgroundResource(
+										R.drawable.rounded_edittext);
+						input_saved_words.set(final_own_word_ind,
+								((RadioButton) v).getText().toString());
+						edit_save_words = "";
+						for (int i = 0; i < own_word_ind; i++) {
+							edit_save_words += input_saved_words.get(i) + " ";
+						}
+						results.setText(Html.fromHtml("<b>SAVED WORDS:" + edit_save_words
+								+ "</b>"));
+					}
+				});
+				flag = true;
+			} while (myc.moveToNext());
+			RadioButton rb_end = new RadioButton(act2);
+			rb_end.setText(Html.fromHtml("<b>Write Own Word?(" + prompt
+					+ ")</b>"));
+			rg.addView(rb_end);
+
+			words_layout.addView(prompt_tv);
+			words_layout.addView(rg);
+			words_layout.addView(own_word_layout);
+			rb_end.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					input_words.get(final_own_word_ind).setEnabled(true);
+					input_words.get(final_own_word_ind).setBackgroundResource(
+							R.drawable.rounded_edittext_red);
+					input_saved_words.set(final_own_word_ind,
+							input_words.get(final_own_word_ind).getText()
+									.toString());
+					edit_save_words = "SAVED WORDS:";
+					for (int i = 0; i < own_word_ind; i++) {
+						edit_save_words += input_saved_words.get(i) + " ";
+					}
+					results.setText(Html.fromHtml("<b>" + edit_save_words
+							+ "</b>"));
+				}
+			});
+			radio_groups.add(rg);
+			own_word_ind++;
+		}// END IF myc.moveToFirst();
+		myc.close();
+		return flag;
+	}
+
+}

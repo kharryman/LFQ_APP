@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;com.lfq.learnfactsquick.NewWords&apos; to &apos;EditNewWords&apos;&#x0D;&#x0A;- Original project: &apos;LearnFactsQuick&apos;&#x0D;&#x0A;- Original element: &apos;com.lfq.learnfactsquick.NewWords&apos;&#x0D;&#x0A;- Renamed element: &apos;com.lfq.learnfactsquick.EditNewWords&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;NewWords&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;com.lfq.learnfactsquick{NewWords.java[NewWords" matchStrategy="1" name="EditNewWords" qualified="false" references="true" similarDeclarations="false" stamp="1428502714682" textual="false" version="1.0"/>
+</session>

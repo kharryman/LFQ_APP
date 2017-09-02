@@ -1,0 +1,271 @@
+package com.lfq.learnfactsquick;
+
+import java.util.ArrayList;
+
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+public class AnagramGenerator {
+	private RelativeLayout layout;
+	private TextView prompt_anagram, prompt_number_letters, results;
+	private EditText anagram_input, input_number_letters;
+	private CheckBox check_all_combos, check_like_vowels,
+			check_limited_letters;
+	private Button make_anagrams;
+	public SecondLfqActivity act2;
+	private SQLiteDatabase dictionary_db;
+	private SQLiteDatabase.CursorFactory factory;
+	private Cursor cursor;
+	private String alpent, adjective, letter, index, table_name, category;
+	private DatabaseAlphabetFunctions daf;
+	ArrayAdapter<String> dataAdapter;
+	private DatabaseDictionary dd;
+
+	private String input;
+	private Boolean is_all_combos, is_like_vowels, is_limited_letters;
+	private int number_letters;
+
+	public AnagramGenerator(SecondLfqActivity myAct2) {
+		dd = new DatabaseDictionary(myAct2);
+		dictionary_db = dd.getWritableDatabase();
+		act2 = myAct2;
+		act2.setContentView(R.layout.show_anagrams);
+		setViews();
+		setListeners();
+	}
+
+	public void setViews() {
+		layout = (RelativeLayout) act2.findViewById(R.id.show_anagrams_layout);
+		act2.setTitle("MAKE ANAGRAMS!");
+		prompt_anagram = (TextView) act2.findViewById(R.id.prompt_anagram);
+		anagram_input = (EditText) act2.findViewById(R.id.anagram_input);
+		make_anagrams = (Button) act2.findViewById(R.id.make_anagrams);
+		check_all_combos = (CheckBox) act2.findViewById(R.id.check_all_combos);
+		check_like_vowels = (CheckBox) act2
+				.findViewById(R.id.check_like_vowels);
+		check_limited_letters = (CheckBox) act2
+				.findViewById(R.id.check_limited_letters);
+		prompt_number_letters = (TextView) act2
+				.findViewById(R.id.prompt_number_letters);
+		input_number_letters = (EditText) act2
+				.findViewById(R.id.input_number_letters);
+		results = (TextView) act2.findViewById(R.id.show_anagram_results);
+
+	}
+
+	public void setListeners() {
+		make_anagrams.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				input = anagram_input.getText().toString();
+				is_all_combos = check_all_combos.isChecked();
+				is_like_vowels = check_like_vowels.isChecked();
+				is_limited_letters = check_limited_letters.isChecked();
+				if (is_limited_letters){
+					number_letters = Integer.parseInt(input_number_letters
+				}
+						.getText().toString());
+				String[] acrspl = input.split("");
+				int al = acrspl.length;
+				System.out.println("al=" + al);
+				if (is_limited_letters) {
+					al = number_letters;
+				}
+				String vowexp = ".*[aeiou].*";
+				boolean matvow = false;
+				String outtex = "";
+				if (input.matches(vowexp)) {
+					matvow = true;
+					System.out.println("matvow");
+				}
+				boolean done = false;
+				if (matvow || is_like_vowels) {
+					System.out.println("matvow or is_conval");
+					for (int inc = 1; inc < 8; inc++) {
+						Cursor c_sel = dictionary_db.rawQuery(
+								"SELECT * FROM dictionarya", null);
+						if (c_sel.moveToFirst()) {
+							while (c_sel.moveToNext()) {
+								String[] worspl = c_sel.getString(1).split("");
+								int wl = worspl.length;
+								int vowct = 0;
+								int ct = 0;
+								int acrind = 0;
+								String spcwor = "";
+								String acronym2 = input;
+								for (int k = 0; k < wl; k++) {
+									if (k != vowct || ct == al) {
+										spcwor = spcwor
+												+ worspl[k].toLowerCase();
+									}
+									if (is_all_combos) {
+										if (acronym2.matches(".*"
+												+ worspl[vowct] + ".*") == false
+												&& k == vowct && ct != al) {
+											break;
+										}
+										if (acronym2.matches(".*"
+												+ worspl[vowct] + ".*") != false
+												&& k == vowct && ct != al) {
+											String[] acr2spl = acronym2
+													.split("");
+											int start = acronym2
+													.indexOf(worspl[vowct]);
+											
+											spliceArray(acr2spl, start);
+											acronym2 = acr2spl.toString();
+											if ((vowct + inc) < worspl.length) {
+												vowct = vowct + inc;
+											}
+											ct++;
+											spcwor = spcwor
+													+ worspl[k].toUpperCase();
+										}
+									}
+									if (is_all_combos == false) {
+										if (!worspl[vowct]
+												.equals(acrspl[acrind])
+												&& k == vowct && ct != al) {
+											break;
+										}
+										if (worspl[vowct]
+												.equals(acrspl[acrind])
+												&& k == vowct && ct != al) {
+											if ((vowct + inc) < worspl.length) {
+												vowct = vowct + inc;
+											}
+											if ((acrind + 1) < al) {
+												acrind++;
+											}
+											ct++;
+											spcwor = spcwor
+													+ worspl[k].toUpperCase();
+										}
+									}
+								}
+								if (ct == al) {
+									done = true;
+									String newtex = "";
+									newtex = newtex + spcwor;
+									if (c_sel.getString(1) != "") {
+										newtex = newtex + "("
+												+ c_sel.getString(2) + ")";
+									}
+									if (c_sel.getString(2).equals("")) {
+										newtex = newtex + c_sel.getString(2);
+									}
+									results.setText("Results:");
+								}
+							}// while for each word in Dictionary
+						}
+					}
+				}
+				if (matvow == false && is_like_vowels == false) {
+					Cursor c_sel2 = dictionary_db.rawQuery(
+							"SELECT * FROM dictionarya", null);
+					if (c_sel2.moveToFirst()) {
+						while (c_sel2.moveToNext()) {
+							String wor = c_sel2.getString(1);
+							String[] worspl = wor.split("");
+							int wl = worspl.length;
+							if (wl >= al) {
+								int ct = 0;
+								int acrind = 0;
+								String spcwor = "";
+								String acronym2 = input;
+								for (int k = 0; k < wl; k++) {
+									if (worspl[k].matches(vowexp) != false
+											|| ct == al) {
+										spcwor = spcwor
+												+ worspl[k].toLowerCase();
+									}
+									if (is_all_combos) {
+										if (acronym2.matches(".*" + worspl[k]
+												+ ".*") != false) {
+											ct++;
+											String[] acr2spl = acronym2
+													.split("");
+											int start = acronym2
+													.indexOf(worspl[k]);
+											spliceArray(acr2spl, start);
+											acronym2 = acr2spl.toString();
+											spcwor = spcwor
+													+ worspl[k].toUpperCase();
+											continue;
+										}
+										if (acronym2.matches(".*" + worspl[k]
+												+ ".*") == false
+												&& worspl[k].matches(vowexp) == false
+												&& ct != al) {
+											break;
+										}
+									}
+									if (is_all_combos == false) {
+										if (!worspl[k].equals(acrspl[acrind])
+												&& worspl[k].matches(vowexp) == false
+												&& ct != al) {
+											break;
+										}
+										if (worspl[k].equals(acrspl[acrind])
+												&& ct != al) {
+											ct++;
+											if ((acrind + 1) < al) {
+												acrind++;
+											}
+											spcwor = spcwor
+													+ worspl[k].toUpperCase();
+										}
+									}
+								}
+								if (ct == al) {
+									done = true;
+									String newtex = "";
+									newtex = newtex + ";" + spcwor;
+									if (!c_sel2.getString(2).equals("")) {
+										newtex = newtex + ";" + "("
+												+ c_sel2.getString(2) + ")";
+									}
+									if (c_sel2.getString(2).equals("")) {
+										newtex = newtex + ";"
+												+ c_sel2.getString(0);
+									}
+									results.setText("RESULTS:");
+								}
+							}
+						}
+					}
+					if (done == true) {
+					}
+					if (done == false) {
+						results.setText("SORRY TRY AGAIN");
+					}
+				}
+			}
+		});
+	}
+
+	String[] spliceArray(String[] arr, int ind) {
+		String[] makarr = new String[arr.length - 1];
+		int ct = 0;
+		for (int i = 0; i < arr.length; i++) {
+			if (i != ind) {
+				makarr[ct] = arr[i];
+				ct++;
+			}
+		}
+		return makarr;
+	}
+
+}

@@ -1,0 +1,891 @@
+package com.lfq.learnfactsquick;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import com.lfq.learnfactsquick.MultiSpinner.multispinnerListener;
+
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TableRow;
+import android.widget.TextView;
+
+public class EditUsers implements multispinnerListener {
+	private TextView prompt_edit_user, prompt_user_newword_tables,
+			login_status, prompt_not_loggedin_delete_newwords;
+	private TextView edit_user_results, delete_user_studylist_results,
+			add_user_studylist_results, clear_reviewed_results;
+	private EditText username_input, password_input;
+	private Button do_edit_user, user_login, user_logout,
+			do_delete_user_studylist, do_add_user_studylist,
+			do_clear_user_reviewed;
+	private RadioButton check_add_user, check_delete_user, check_edit_user;
+	private RadioButton check_delete_tables, check_delete_words,
+			check_add_tables, check_add_words, check_clear_tables,
+			check_clear_words;
+	private Spinner select_user_delete_tables, select_user_add_tables,
+			select_user_reviewed_tables;
+	private MultiSpinner select_user_delete_multi_tables,
+			select_user_delete_words, select_user_add_multi_tables,
+			select_user_add_words, select_user_reviewed_multi_tables,
+			select_user_reviewed_words;
+	public SecondLfqActivity act2;
+	private SQLiteDatabase users_db, acro_db, nw_db;
+	private DatabaseUsers du;
+	private DatabaseAcrostics da;
+	private DatabaseNewwords dn;
+	private RelativeLayout layout;
+	private ArrayAdapter<String> deleteTablesAdapter, addTablesAdapter,
+			clearTablesAdapter;
+	private List<String> table_list, tmp_list;
+	private String user_table_str = "", words = "";
+	private String username, password, user_delete_table, user_newwords_table;
+	private List<String> delete_list = new ArrayList<String>();
+	private List<String> add_list = new ArrayList<String>();
+	private List<String> clear_list = new ArrayList<String>();
+	private List<String> delete_word_list = new ArrayList<String>();
+	private List<String> add_word_list = new ArrayList<String>();
+	private List<String> clear_word_list = new ArrayList<String>();
+	private List<String> list = new ArrayList<String>();
+	private boolean[] checked;
+
+	public EditUsers(SecondLfqActivity myAct2) {
+		act2 = myAct2;
+		act2.setTitle("EDIT USERS");
+		act2.setContentView(R.layout.edit_users);
+		du = new DatabaseUsers(act2);
+		da = new DatabaseAcrostics(act2);
+		dn = new DatabaseNewwords(act2);
+		users_db = du.getWritableDatabase();
+		acro_db = da.getWritableDatabase();
+		nw_db = dn.getWritableDatabase();
+		layout = (RelativeLayout) act2.findViewById(R.id.edit_users_layout);
+		setViews();
+		setListeners();
+	}
+
+	public void setViews() {
+
+		prompt_edit_user = (TextView) act2.findViewById(R.id.prompt_edit_user);
+		prompt_user_newword_tables = (TextView) act2
+				.findViewById(R.id.prompt_user_newword_tables);
+		prompt_not_loggedin_delete_newwords = (TextView) act2
+				.findViewById(R.id.prompt_not_loggedin_delete_newwords);
+		login_status = (TextView) act2.findViewById(R.id.login_status);
+		username_input = (EditText) act2.findViewById(R.id.username);
+		password_input = (EditText) act2.findViewById(R.id.password);
+		do_edit_user = (Button) act2.findViewById(R.id.do_edit_user);
+		edit_user_results = (TextView) act2
+				.findViewById(R.id.edit_user_results);
+		user_login = (Button) act2.findViewById(R.id.user_login);
+		user_logout = (Button) act2.findViewById(R.id.user_logout);
+		do_delete_user_studylist = (Button) act2
+				.findViewById(R.id.do_delete_user_studylist);
+		do_add_user_studylist = (Button) act2
+				.findViewById(R.id.do_add_user_studylist);
+		do_clear_user_reviewed = (Button) act2
+				.findViewById(R.id.do_clear_user_reviewed);
+		check_add_user = (RadioButton) act2.findViewById(R.id.check_add_user);
+		check_delete_user = (RadioButton) act2
+				.findViewById(R.id.check_delete_user);
+		check_edit_user = (RadioButton) act2.findViewById(R.id.check_edit_user);
+
+		check_delete_tables = (RadioButton) act2
+				.findViewById(R.id.check_delete_tables);
+		check_delete_words = (RadioButton) act2
+				.findViewById(R.id.check_delete_words);
+
+		check_add_tables = (RadioButton) act2
+				.findViewById(R.id.check_add_tables);
+		check_add_words = (RadioButton) act2.findViewById(R.id.check_add_words);
+		check_clear_tables = (RadioButton) act2
+				.findViewById(R.id.check_clear_tables);
+		check_clear_words = (RadioButton) act2
+				.findViewById(R.id.check_clear_words);
+		select_user_delete_multi_tables = (MultiSpinner) act2
+				.findViewById(R.id.select_user_delete_multi_tables);
+		select_user_delete_tables = (Spinner) act2
+				.findViewById(R.id.select_user_delete_tables);
+		select_user_delete_words = (MultiSpinner) act2
+				.findViewById(R.id.select_user_delete_words);
+		select_user_add_multi_tables = (MultiSpinner) act2
+				.findViewById(R.id.select_user_add_multi_tables);
+		select_user_add_tables = (Spinner) act2
+				.findViewById(R.id.select_user_add_tables);
+		select_user_add_words = (MultiSpinner) act2
+				.findViewById(R.id.select_user_add_words);
+		select_user_reviewed_multi_tables = (MultiSpinner) act2
+				.findViewById(R.id.select_user_reviewed_multi_tables);
+		select_user_reviewed_tables = (Spinner) act2
+				.findViewById(R.id.select_user_reviewed_tables);
+		select_user_reviewed_words = (MultiSpinner) act2
+				.findViewById(R.id.select_user_reviewed_words);
+		delete_user_studylist_results = (TextView) act2
+				.findViewById(R.id.delete_user_studylist_results);
+		add_user_studylist_results = (TextView) act2
+				.findViewById(R.id.add_user_studylist_results);
+		clear_reviewed_results = (TextView) act2
+				.findViewById(R.id.clear_reviewed_results);
+		deleteTablesAdapter = new ArrayAdapter<String>(act2,
+				android.R.layout.simple_spinner_item, new ArrayList<String>());
+		deleteTablesAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		select_user_delete_tables.setAdapter(deleteTablesAdapter);
+		addTablesAdapter = new ArrayAdapter<String>(act2,
+				android.R.layout.simple_spinner_item, new ArrayList<String>());
+		addTablesAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		select_user_add_tables.setAdapter(addTablesAdapter);
+
+		clearTablesAdapter = new ArrayAdapter<String>(act2,
+				android.R.layout.simple_spinner_item, new ArrayList<String>());
+		clearTablesAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		select_user_reviewed_tables.setAdapter(clearTablesAdapter);
+
+		// CREATE COMPLETE LIST OF TABLES
+		Cursor c_acr_tables = acro_db.rawQuery(
+				"SELECT name FROM sqlite_master "
+						+ " WHERE type='table' ORDER BY name", null);
+		table_list = new ArrayList<String>();
+
+		if (c_acr_tables.moveToFirst()) {
+			do {
+				if (!c_acr_tables.getString(0).equals("android_metadata")
+						&& !c_acr_tables.getString(0).equals("sqlite_sequence")) {
+					table_list.add(c_acr_tables.getString(0));
+				}
+			} while (c_acr_tables.moveToNext());
+		}
+
+		words = "";
+	}
+
+	public void setListeners() {
+		user_login.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				password = password_input.getText().toString();
+				username = username_input.getText().toString();
+				user_delete_table = username + "_deleted_tables_words";
+				user_newwords_table = username + "_savednewwords";
+				if (password.length() < 4 || username.length() < 4) {
+					edit_user_results
+							.setText("USERNAME AND PASSWORD LENGTH MUST BE GREATER THAN 3.");
+					return;
+				}
+				MessageDigest md = null;
+				try {
+					md = MessageDigest.getInstance("MD5");
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				}
+				md.update(password_input.getText().toString().getBytes());
+				byte byteData[] = md.digest();
+				StringBuffer sb = new StringBuffer();
+				for (int i = 0; i < byteData.length; i++) {
+					sb.append(Integer
+							.toString((byteData[i] & 0xff) + 0x100, 16)
+							.substring(1));
+				}
+				String md5_password = sb.toString();
+				Cursor c_get_user = users_db.rawQuery(
+						"SELECT * FROM `userdata` WHERE UserName='" + username
+								+ "' AND Password='" + md5_password
+								+ "' LIMIT 1", null);
+				if (c_get_user.moveToFirst()) {
+					prompt_not_loggedin_delete_newwords
+							.setVisibility(View.GONE);
+					login_status.setText("LOGGED IN");
+					edit_user_results.setText("WELCOME " + username);
+					
+					//CLEAR ALL LISTS:
+					deleteTablesAdapter.clear();
+					delete_list.clear();
+					delete_word_list.clear();
+					addTablesAdapter.clear();
+					add_list.clear();
+					add_word_list.clear();
+					clearTablesAdapter.clear();
+					clear_list.clear();
+					clear_word_list.clear();
+					
+					//GET TABLES WITH DELETABLE WORDS
+					Cursor c_to_del_tabs = users_db.rawQuery(
+							"SELECT Tables FROM `" + user_delete_table
+									+ "` WHERE Words<>'ALL DELETED!';", null);
+					//ADD DELETABLE TABLE LIST
+					if (c_to_del_tabs.moveToFirst()) {
+						do {
+							delete_list.add(c_to_del_tabs.getString(0));
+							deleteTablesAdapter.add(c_to_del_tabs.getString(0));
+						} while (c_to_del_tabs.moveToNext());
+					}
+					if (delete_list.size() > 0) {
+						select_user_delete_multi_tables.setItems(delete_list,
+								delete_list.get(0), act2);
+					}
+					
+					//GET DELETED TABLES
+					Cursor c_to_add_tabs = users_db.rawQuery(
+							"SELECT Tables FROM `" + user_delete_table
+									+ "` WHERE Words='ALL DELETED!';", null);
+					//ADD ADDABLE TABLE LIST
+					if (c_to_add_tabs.moveToFirst()) {
+						do {
+							add_list.add(c_to_add_tabs.getString(0));
+							addTablesAdapter.add(c_to_add_tabs.getString(0));
+						} while (c_to_add_tabs.moveToNext());
+					}
+					if (add_list.size() > 0) {
+						select_user_add_multi_tables.setItems(add_list,
+								add_list.get(0), act2);
+					}
+					
+					//GET REVIEWED TABLES
+					Cursor c_nw_tables = nw_db.rawQuery(
+							"SELECT DISTINCT Table_name FROM `"
+									+ user_newwords_table
+									+ "` ORDER BY Table_name;", null);
+					if (c_nw_tables.moveToFirst()) {
+						do {
+							clear_list.add(c_nw_tables.getString(0));
+						} while (c_nw_tables.moveToNext());
+					}
+					if (clear_list.size() > 0) {
+						clear_list.remove(0);
+						select_user_reviewed_multi_tables.setItems(clear_list,
+								clear_list.get(0), act2);
+					}
+					
+					
+					//SETTING VISIBILITY OF DROP BOXES:
+					if (check_delete_tables.isChecked()) {
+						if (delete_list.size() > 0) {
+							select_user_delete_multi_tables
+									.setVisibility(View.VISIBLE);
+						}
+						select_user_delete_tables.setVisibility(View.GONE);
+					} else {
+						if (deleteTablesAdapter.getCount() > 0) {
+							select_user_delete_tables
+									.setVisibility(View.VISIBLE);
+						}
+						select_user_delete_multi_tables
+								.setVisibility(View.GONE);
+					}
+					if (check_add_tables.isChecked()) {
+						if (add_list.size() > 0) {
+							select_user_add_multi_tables
+									.setVisibility(View.VISIBLE);
+						}
+						select_user_add_tables.setVisibility(View.GONE);
+					} else {
+						if (addTablesAdapter.getCount() > 0) {
+							select_user_add_tables.setVisibility(View.VISIBLE);
+						}
+						select_user_add_multi_tables.setVisibility(View.GONE);
+					}
+					if (check_clear_tables.isChecked()) {
+						if (clear_list.size() > 0) {
+							select_user_reviewed_multi_tables
+									.setVisibility(View.VISIBLE);
+						}
+						select_user_reviewed_tables.setVisibility(View.GONE);
+					} else {
+						if (clearTablesAdapter.getCount() > 0) {
+							select_user_reviewed_tables
+									.setVisibility(View.VISIBLE);
+						}
+						select_user_reviewed_multi_tables
+								.setVisibility(View.GONE);
+					}
+
+				}
+			}
+		});
+
+		user_logout.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				select_user_delete_tables.setVisibility(View.GONE);
+				edit_user_results.setText("BYE BYE " + username);
+				login_status.setText("LOGGED OUT");
+				prompt_not_loggedin_delete_newwords.setVisibility(View.VISIBLE);
+			}
+		});
+
+		do_edit_user.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				if (check_add_user.isChecked()) {
+					password = password_input.getText().toString();
+					username = username_input.getText().toString();
+					user_delete_table = username + "_deleted_tables_words";
+					if (password.length() < 4 || username.length() < 4) {
+						edit_user_results
+								.setText("USERNAME AND PASSWORD LENGTH MUST BE GREATER THAN 3.");
+						return;
+					}
+					MessageDigest md = null;
+					try {
+						md = MessageDigest.getInstance("MD5");
+					} catch (NoSuchAlgorithmException e) {
+						e.printStackTrace();
+					}
+					md.update(password_input.getText().toString().getBytes());
+					byte byteData[] = md.digest();
+					StringBuffer sb = new StringBuffer();
+					for (int i = 0; i < byteData.length; i++) {
+						sb.append(Integer.toString(
+								(byteData[i] & 0xff) + 0x100, 16).substring(1));
+					}
+					String md5_password = sb.toString();
+					users_db.execSQL("INSERT INTO `userdata` (`UserName`,`Password`) VALUES('"
+							+ username + "','" + md5_password + "');");
+
+					users_db.execSQL("CREATE TABLE IF NOT EXISTS `"
+							+ user_delete_table
+							+ "` (`_id` integer PRIMARY KEY AUTOINCREMENT,`Tables` tinytext,`Words` longtext NOT NULL);");
+					deleteTablesAdapter.clear();
+					delete_list.clear();
+					for (String table : table_list) {
+						deleteTablesAdapter.add(table);
+						delete_list.add(table);
+						users_db.execSQL("INSERT INTO `" + user_delete_table
+								+ "` (`Tables`,`Words`) VALUES('" + table
+								+ "','');");
+					}
+					select_user_delete_multi_tables.setItems(delete_list,
+							delete_list.get(0), act2);
+					select_user_delete_tables.setVisibility(View.VISIBLE);
+					prompt_not_loggedin_delete_newwords
+							.setVisibility(View.GONE);
+					edit_user_results.setText("WELCOME " + username);
+					login_status.setText("LOGGED IN");
+
+				}
+				if (check_delete_user.isChecked()) {
+					users_db.execSQL("DELETE FROM `userdata` WHERE UserName='"
+							+ username + "';");
+					users_db.execSQL("DROP TABLE IF EXISTS `"
+							+ user_delete_table + "`;");
+					user_logout.performClick();
+				}
+				if (check_edit_user.isChecked()) {
+
+				}
+
+			}
+		});
+
+		do_delete_user_studylist.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				delete_user_studylist_results.setText("");
+				if (login_status.getText().toString().equals("LOGGED IN")) {
+
+					user_delete_table = username + "_deleted_tables_words";
+
+					// FOR IF DELETE TABLE
+					if (check_delete_tables.isChecked()) {
+						checked = select_user_delete_multi_tables.getChecked();
+						add_list.clear();
+						for (int i = 0; i < delete_list.size(); i++) {
+							if (checked[i] == true) {
+								add_list.add(delete_list.get(i));
+							}
+
+						}
+						users_db.execSQL("UPDATE `" + user_delete_table
+								+ "` SET Words='ALL DELETED!' WHERE Tables IN ("
+								+ joinListQuoted(add_list, ",") + ");");
+						addTablesAdapter.addAll(add_list);
+						if (add_list.size()>0){
+						select_user_add_multi_tables.setItems(add_list,
+								add_list.get(0), act2);
+						}
+						check_add_tables.performClick();						
+						
+						Cursor c_col_nams = users_db.rawQuery(
+								"SELECT Tables FROM `" + user_delete_table
+										+ "` WHERE Words<>'ALL DELETED!'", null);
+						delete_list.clear();
+						if (c_col_nams.moveToFirst()) {
+							do {
+								delete_list.add(c_col_nams.getString(0));
+							} while (c_col_nams.moveToNext());
+							if (delete_list.size()>0){
+							select_user_delete_multi_tables.setItems(
+									delete_list, delete_list.get(0), act2);
+							}
+						}
+					}
+					if (check_delete_words.isChecked()) {
+						checked = select_user_delete_words.getChecked();
+						list.clear();
+						for (int i = 0; i < delete_word_list.size(); i++) {
+							if (checked[i] == true) {
+								list.add(delete_word_list.get(i));
+							}
+
+						}
+						Cursor c_del_wors = users_db.rawQuery(
+								"SELECT Words FROM `"
+										+ user_delete_table
+										+ "` WHERE Tables='"
+										+ select_user_delete_tables
+												.getSelectedItem().toString()
+										+ "'", null);
+						if (c_del_wors.moveToFirst()) {
+							words = c_del_wors.getString(0);
+						}
+						if (!words.equals("ALL DELETED!")) {
+							words += joinList(list, "@@");
+						}
+						users_db.execSQL("UPDATE `"
+								+ user_delete_table
+								+ " SET Words='"
+								+ words
+								+ "' WHERE Tables='"
+								+ select_user_delete_tables.getSelectedItem()
+										.toString() + "';");
+
+						delete_word_list.clear();
+						delete_word_list.addAll(Arrays.asList(words.split("@@")));
+						select_user_delete_words.setItems(delete_word_list,
+								delete_word_list.get(0), act2);
+					}
+				} else {
+					delete_user_studylist_results.setText("NOT LOGGED IN.");
+				}
+			}
+		});
+
+		do_add_user_studylist.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				add_user_studylist_results.setText("");
+				if (login_status.getText().toString().equals("LOGGED IN")) {
+					user_delete_table = username + "_deleted_tables_words";
+					// FOR IF ADD TABLE(S)
+					if (check_add_tables.isChecked()) {
+						checked = select_user_add_multi_tables.getChecked();
+						Cursor c_get_deleted_tables = users_db.rawQuery(
+								"SELECT Tables FROM `" + user_delete_table
+										+ "` WHERE Words='ALL DELETED!';", null);
+						add_list.clear();
+						if (c_get_deleted_tables.moveToFirst()) {
+							do {
+								add_list.add(c_get_deleted_tables.getString(0));
+							} while (c_get_deleted_tables.moveToNext());
+						}
+						list.clear();
+						
+						for (int i = 0; i < add_list.size(); i++) {
+							if (checked[i] == true) {
+								list.add(add_list.get(i));
+							}
+
+						}
+						users_db.execSQL("UPDATE `" + user_delete_table
+								+ "` SET Words='' WHERE Tables IN ("
+								+ joinListQuoted(list, ",") + ");");
+						add_list.removeAll(list);
+						addTablesAdapter.clear();
+						addTablesAdapter.addAll(add_list);
+						if (add_list.size() > 0) {
+							select_user_add_multi_tables.setItems(add_list,
+									add_list.get(0), act2);
+						} else {
+							select_user_add_multi_tables
+									.setVisibility(View.GONE);
+						}
+						Cursor c_to_del_tabs = users_db.rawQuery(
+								"SELECT Tables FROM `" + user_delete_table
+										+ "` WHERE Words<>'ALL DELETED!';", null);
+						if (c_to_del_tabs.moveToFirst()){
+							delete_list.clear();
+							deleteTablesAdapter.clear();
+							do{
+								delete_list.add(c_to_del_tabs.getString(0));
+								deleteTablesAdapter.add(c_to_del_tabs.getString(0));
+							}while(c_to_del_tabs.moveToNext());
+							if (delete_list.size()>0){
+								select_user_delete_multi_tables.setItems(delete_list, delete_list.get(0), act2);
+							}
+						}
+						check_delete_tables.performClick();
+						if (add_list.size()==0){
+							select_user_add_words.setVisibility(View.GONE);
+						}
+
+					}
+
+					if (check_add_words.isChecked()) {
+						checked = select_user_add_words.getChecked();
+						list.clear();
+						for (int i = 0; i < add_word_list.size(); i++) {
+							if (checked[i] == true) {
+								list.add(add_word_list.get(i));
+							}
+
+						}
+						Cursor c_add_wors = users_db.rawQuery(
+								"SELECT Words FROM `"
+										+ user_delete_table
+										+ "` WHERE Tables='"
+										+ select_user_delete_tables
+												.getSelectedItem().toString()
+										+ "'", null);
+						if (c_add_wors.moveToFirst()) {
+							words = c_add_wors.getString(0);
+							if (!words.equals("ALL DELETED!")) {
+								words += joinList(list, "@@");
+							} else {
+								words = joinList(list, "@@");
+							}
+						}
+						users_db.execSQL("UPDATE `"
+								+ user_delete_table
+								+ " SET Words='"
+								+ joinList(list, "@@")
+								+ "' WHERE Tables='"
+								+ select_user_delete_tables.getSelectedItem()
+										.toString() + "';");
+						add_word_list.removeAll(list);
+						select_user_add_words.setItems(add_word_list,
+								add_word_list.get(0), act2);
+					}
+				}
+			}
+		});
+
+		select_user_delete_tables
+				.setOnItemClickListener(new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> arg0, View arg1,
+							int arg2, long arg3) {
+						Cursor c_get_words = acro_db.rawQuery(
+								"SELECT Name FROM "
+										+ select_user_delete_tables
+												.getSelectedItem().toString()
+										+ " ORDER BY Name", null);
+						c_get_words.moveToFirst();
+
+						Cursor c_get_deleted_words = users_db.rawQuery(
+								"SELECT Words FROM `"
+										+ user_delete_table
+										+ "` WHERE Tables='"
+										+ select_user_delete_tables
+												.getSelectedItem().toString()
+										+ "'", null);
+						if (!check_delete_tables.isChecked()) {
+							select_user_delete_words
+									.setVisibility(View.VISIBLE);
+						}
+						words = "";
+						list.clear();
+						delete_word_list.clear();
+
+						if (c_get_deleted_words.moveToFirst()) {
+							words = c_get_deleted_words.getString(0);
+							System.out.println("words=" + words);
+							if (!words.equals("ALL DELETED!") && !words.equals("")) {
+								list.addAll(Arrays.asList(words.split("@@")));
+							} else {
+								do {
+
+									if (!list.contains(c_get_words.getString(0))) {
+										delete_word_list.add(c_get_words
+												.getString(0));
+
+									}
+								} while (c_get_words.moveToNext());
+							}
+						}
+						select_user_delete_words.setVisibility(View.VISIBLE);
+						if (delete_word_list.size() > 0) {
+							select_user_delete_words.setItems(delete_word_list,
+									delete_word_list.get(0), act2);
+						}
+			
+					}
+
+				});
+
+		select_user_add_tables
+				.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+					@Override
+					public void onItemSelected(AdapterView<?> arg0, View arg1,
+							int arg2, long arg3) {
+
+						if (select_user_add_tables.getCount() < 1
+								|| select_user_add_tables.getSelectedItem()
+										.toString().equals("")) {
+							return;
+						}
+						Cursor c_get_deleted_words = users_db.rawQuery(
+								"SELECT Words FROM `"
+										+ user_delete_table
+										+ "` WHERE Tables='"
+										+ select_user_add_tables
+												.getSelectedItem().toString()
+										+ "'", null);
+
+						add_word_list.clear();
+						if (c_get_deleted_words.moveToFirst()) {
+							words = c_get_deleted_words.getString(0);
+							if (words.equals("")) {
+								return;
+							} else if (!words.equals("ALL DELETED!")
+									&& !words.equals("")) {
+								add_word_list.addAll(Arrays.asList(words
+										.split("@@")));
+							} else {
+								Cursor c_get_all_words = acro_db.rawQuery(
+										"SELECT Name FROM `"
+												+ select_user_add_tables
+														.getSelectedItem()
+														.toString()
+												+ "` ORDER BY Name", null);
+								if (c_get_all_words.moveToFirst()) {
+									do {
+										add_word_list.add(c_get_all_words
+												.getString(0));
+									} while (c_get_all_words.moveToNext());
+								}
+							}
+
+						}
+						select_user_add_words.setVisibility(View.VISIBLE);
+						if (add_word_list.size() > 0) {
+							select_user_add_words.setItems(add_word_list,
+									add_word_list.get(0), act2);
+						}
+
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+						// TODO Auto-generated method stub
+
+					}
+
+				});
+
+		select_user_reviewed_tables
+				.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+					@Override
+					public void onItemSelected(AdapterView<?> arg0, View arg1,
+							int arg2, long arg3) {
+
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+
+					}
+
+				});
+
+		check_delete_tables
+				.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						if (delete_list.size() > 0) {
+							select_user_delete_multi_tables
+									.setVisibility(View.VISIBLE);
+						} else {
+							select_user_delete_multi_tables
+									.setVisibility(View.GONE);
+							select_user_delete_words
+									.setVisibility(View.GONE);
+						}
+						select_user_delete_tables.setVisibility(View.GONE);
+					}			    
+				});
+
+		check_add_tables
+				.setOnClickListener(new OnClickListener() {
+    				@Override
+					public void onClick(View v) {
+						if (add_list.size() > 0) {
+							select_user_add_multi_tables
+									.setVisibility(View.VISIBLE);
+						} else {
+							select_user_add_multi_tables
+									.setVisibility(View.GONE);
+							select_user_add_words.setVisibility(View.GONE);
+						}
+						select_user_add_tables.setVisibility(View.GONE);
+					}
+				});
+
+		check_clear_tables
+				.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+							if (clear_list.size() > 0) {
+								select_user_reviewed_multi_tables
+										.setVisibility(View.VISIBLE);
+							} else {
+								select_user_reviewed_multi_tables
+										.setVisibility(View.GONE);
+								select_user_reviewed_words
+										.setVisibility(View.GONE);
+							}
+							select_user_reviewed_tables.setVisibility(View.GONE);
+
+					}
+				});
+
+		check_delete_words
+				.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						select_user_delete_multi_tables.setVisibility(View.GONE);
+						if (deleteTablesAdapter.getCount()>0){
+							select_user_delete_tables.setVisibility(View.VISIBLE);	
+						}
+						if (delete_list.size() > 0) {
+							if (delete_word_list.size() > 0) {
+								select_user_delete_words
+										.setVisibility(View.VISIBLE);
+							} else {
+								select_user_delete_words
+										.setVisibility(View.GONE);
+							}
+						}
+						
+					}
+
+				});
+		check_add_words
+				.setOnClickListener(new OnClickListener() {
+
+
+					@Override
+					public void onClick(View v) {
+						select_user_add_multi_tables.setVisibility(View.GONE);
+						if (addTablesAdapter.getCount()>0){
+							select_user_add_tables.setVisibility(View.VISIBLE);	
+						}
+						if (add_list.size() > 0) {
+							if (add_word_list.size() > 0) {
+								select_user_add_words
+										.setVisibility(View.VISIBLE);
+							} else {
+								select_user_add_words.setVisibility(View.GONE);
+							}
+						}
+						
+					}
+
+				});
+		check_clear_words
+				.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						select_user_reviewed_multi_tables.setVisibility(View.GONE);
+						if (clearTablesAdapter.getCount()>0){
+							select_user_reviewed_tables.setVisibility(View.VISIBLE);	
+						}
+						if (clear_list.size() > 0) {
+							if (clear_word_list.size() > 0) {
+								select_user_reviewed_words
+										.setVisibility(View.VISIBLE);
+							} else {
+								select_user_reviewed_words
+										.setVisibility(View.GONE);
+							}
+						}						
+					}
+
+				});
+
+	}
+
+	public String joinListQuoted(List<String> list, String delimiter) {
+		String str = "";
+		for (int i = 0; i < list.size(); i++) {
+			str += "'" + list.get(i) + "'";
+			if (i != list.size() - 1) {
+				str += delimiter;
+			}
+		}
+		return str;
+	}
+
+	public String joinList(List<String> list, String delimiter) {
+		String str = "";
+		for (int i = 0; i < list.size(); i++) {
+			str += list.get(i);
+			if (i != list.size() - 1) {
+				str += delimiter;
+			}
+		}
+		return str;
+	}
+
+	public String joinList(String[] list, String delimiter) {
+		String str = "";
+		for (int i = 0; i < list.length; i++) {
+			str += list[i];
+			if (i != list.length - 1) {
+				str += delimiter;
+			}
+		}
+		return str;
+	}
+
+	public String[] spliceString(String[] array, String find) {
+		String[] new_array = new String[array.length - 1];
+		int ctNewArr = 0;
+		for (int ctArr = 0; ctArr < array.length; ctArr++) {
+			if (!array[ctArr].equals(find)) {
+				new_array[ctNewArr] = array[ctArr];
+				ctNewArr++;
+			}
+
+		}
+		return new_array;
+	}
+
+	@Override
+	public void onItemschecked(boolean[] checked) {
+		for (int i = 0; i < checked.length; i++) {
+			System.out.println("checked" + i + "=" + checked[i]);
+		}
+
+	}
+
+}

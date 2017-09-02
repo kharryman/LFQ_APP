@@ -1,0 +1,756 @@
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edit_newwords_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.lfq.learnfactsquick.SecondLfqActivity"
+    tools:ignore="TextFields" >
+
+    <Spinner
+        android:id="@+id/select_year_newwords"
+        android:layout_width="75dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp" >
+    </Spinner>
+
+    <Spinner
+        android:id="@+id/select_month_newwords"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/select_year_newwords"
+        android:entries="@array/month_options"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp" >
+    </Spinner>
+
+    <Spinner
+        android:id="@+id/select_day_newwords"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/select_month_newwords"
+        android:entries="@array/day_options"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp" >
+    </Spinner>
+
+    <TextView
+        android:id="@+id/prompt_change_date"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/select_year_newwords"
+        android:text="CHANGE DATE?"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12sp" />
+
+    <Spinner
+        android:id="@+id/select_days_before"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/select_year_newwords"
+        android:layout_toRightOf="@+id/prompt_change_date" />
+
+    <Button
+        android:id="@+id/get_last_newwords"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/select_year_newwords"
+        android:layout_toRightOf="@+id/select_days_before"
+        android:text="@string/go_left" >
+    </Button>
+
+    <Button
+        android:id="@+id/get_next_newwords"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/select_year_newwords"
+        android:layout_toRightOf="@+id/get_last_newwords"
+        android:text="@string/go_right" >
+    </Button>
+
+    <Button
+        android:id="@+id/latest_newwords"
+        android:layout_width="90dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/select_year_newwords"
+        android:layout_toRightOf="@+id/get_next_newwords"
+        android:text="LATEST"
+        android:textSize="10sp" >
+    </Button>
+
+    <TextView
+        android:id="@+id/prompt_number_newwords"
+        android:layout_width="90dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/prompt_change_date"
+        android:text="HOW MANY WORDS?" >
+    </TextView>
+
+    <EditText
+        android:id="@+id/input_number_newwords"
+        android:layout_width="30dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/prompt_change_date"
+        android:layout_toRightOf="@+id/prompt_number_newwords"
+        android:background="@drawable/rounded_edittext" >
+    </EditText>
+
+    <CheckBox
+        android:id="@+id/check_auto_newwords"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/prompt_change_date"
+        android:layout_toRightOf="@+id/input_number_newwords"
+        android:text="AUTO CHOOSE?"
+        android:textSize="10sp" >
+    </CheckBox>
+
+    <CheckBox
+        android:id="@+id/check_change_review_times"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/prompt_change_date"
+        android:layout_toRightOf="@+id/check_auto_newwords"
+        android:text="CHANGE REVIEW TIMES?"
+        android:textSize="10sp" >
+    </CheckBox>
+
+    <ScrollView
+        android:id="@+id/scroll_edit_review"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/prompt_number_newwords"
+        android:text="REVIEW 1:" >
+
+        <RelativeLayout
+            android:id="@+id/review_newwords_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/prompt_review1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="REVIEW 1:"
+                android:visibility="gone" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/review1"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/prompt_review1"
+                android:background="@drawable/rounded_edittext"
+                android:padding="3px"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_review2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/review1"
+                android:text="REVIEW 2:"
+                android:visibility="gone" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/review2"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/prompt_review2"
+                android:background="@drawable/rounded_edittext"
+                android:padding="3px"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_review3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review1"
+                android:text="REVIEW 3:"
+                android:visibility="gone" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/review3"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review1"
+                android:layout_toRightOf="@+id/prompt_review3"
+                android:background="@drawable/rounded_edittext"
+                android:padding="3px"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_review4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review1"
+                android:layout_toRightOf="@+id/review3"
+                android:text="REVIEW 4:"
+                android:visibility="gone" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/review4"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review1"
+                android:layout_toRightOf="@+id/prompt_review4"
+                android:background="@drawable/rounded_edittext"
+                android:padding="3px"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_review5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review3"
+                android:text="REVIEW 5:"
+                android:visibility="gone" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/review5"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review3"
+                android:layout_toRightOf="@+id/prompt_review5"
+                android:background="@drawable/rounded_edittext"
+                android:padding="3px"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_review6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review3"
+                android:layout_toRightOf="@+id/review5"
+                android:text="REVIEW 6:"
+                android:visibility="gone" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/review6"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review3"
+                android:layout_toRightOf="@+id/prompt_review6"
+                android:background="@drawable/rounded_edittext"
+                android:padding="3px"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_review7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review5"
+                android:text="REVIEW 7:"
+                android:visibility="gone" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/review7"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review5"
+                android:layout_toRightOf="@+id/prompt_review7"
+                android:background="@drawable/rounded_edittext"
+                android:padding="3px"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_review8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review5"
+                android:layout_toRightOf="@+id/review7"
+                android:text="REVIEW 8:"
+                android:visibility="gone" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/review8"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review5"
+                android:layout_toRightOf="@+id/prompt_review8"
+                android:background="@drawable/rounded_edittext"
+                android:padding="3px"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_review9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review7"
+                android:text="REVIEW 9:"
+                android:visibility="gone" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/review9"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review7"
+                android:layout_toRightOf="@+id/prompt_review9"
+                android:background="@drawable/rounded_edittext"
+                android:padding="3px"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_review10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review7"
+                android:layout_toRightOf="@+id/review9"
+                android:text="REVIEW 10:"
+                android:visibility="gone" >
+            </TextView>
+
+            <EditText
+                android:id="@+id/review10"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review7"
+                android:layout_toRightOf="@+id/prompt_review10"
+                android:background="@drawable/rounded_edittext"
+                android:padding="3px"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_newword1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review9"
+                android:text="1."
+                android:visibility="gone" >
+            </TextView>
+
+            <Spinner
+                android:id="@+id/newword_table_select1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review9"
+                android:visibility="gone" >
+            </Spinner>
+
+            <Spinner
+                android:id="@+id/newword_word_select1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review9"
+                android:layout_toRightOf="@+id/newword_table_select1"
+                android:visibility="gone" >
+            </Spinner>
+
+            <EditText
+                android:id="@+id/edit_newword1"
+                android:layout_width="100px"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prompt_review9"
+                android:layout_toRightOf="@+id/newword_word_select1"
+                android:background="@drawable/rounded_edittext"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_newword2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select1"
+                android:text="2."
+                android:visibility="gone" >
+            </TextView>
+
+            <Spinner
+                android:id="@+id/newword_table_select2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select1"
+                android:visibility="gone" >
+            </Spinner>
+
+            <Spinner
+                android:id="@+id/newword_word_select2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select1"
+                android:layout_toRightOf="@+id/newword_table_select1"
+                android:visibility="gone" >
+            </Spinner>
+
+            <EditText
+                android:id="@+id/edit_newword2"
+                android:layout_width="100px"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select1"
+                android:layout_toRightOf="@+id/newword_word_select1"
+                android:background="@drawable/rounded_edittext"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_newword3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select2"
+                android:text="3."
+                android:visibility="gone" >
+            </TextView>
+
+            <Spinner
+                android:id="@+id/newword_table_select3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select2"
+                android:visibility="gone" >
+            </Spinner>
+
+            <Spinner
+                android:id="@+id/newword_word_select3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select2"
+                android:layout_toRightOf="@+id/newword_table_select1"
+                android:visibility="gone" >
+            </Spinner>
+
+            <EditText
+                android:id="@+id/edit_newword3"
+                android:layout_width="100px"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select2"
+                android:layout_toRightOf="@+id/newword_word_select1"
+                android:background="@drawable/rounded_edittext"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_newword4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select3"
+                android:text="4."
+                android:visibility="gone" >
+            </TextView>
+
+            <Spinner
+                android:id="@+id/newword_table_select4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select3"
+                android:visibility="gone" >
+            </Spinner>
+
+            <Spinner
+                android:id="@+id/newword_word_select4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select3"
+                android:layout_toRightOf="@+id/newword_table_select1"
+                android:visibility="gone" >
+            </Spinner>
+
+            <EditText
+                android:id="@+id/edit_newword4"
+                android:layout_width="100px"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select3"
+                android:layout_toRightOf="@+id/newword_word_select1"
+                android:background="@drawable/rounded_edittext"
+                android:visibility="gone" >
+            </EditText>
+            
+            <TextView
+                android:id="@+id/prompt_newword5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"                
+                android:visibility="gone"
+                android:text="5."                
+                android:layout_below="@+id/newword_table_select4">                
+            </TextView>
+
+            <Spinner
+                android:id="@+id/newword_table_select5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select4"
+                android:visibility="gone" >
+            </Spinner>
+
+            <Spinner
+                android:id="@+id/newword_word_select5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select4"
+                android:layout_toRightOf="@+id/newword_table_select1"
+                android:visibility="gone" >
+            </Spinner>
+
+            <EditText
+                android:id="@+id/edit_newword5"
+                android:layout_width="100px"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select4"
+                android:layout_toRightOf="@+id/newword_word_select1"
+                android:background="@drawable/rounded_edittext"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_newword6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"                
+                android:visibility="gone"
+                android:text="6."                
+                android:layout_below="@+id/newword_table_select5">                
+            </TextView>
+            <Spinner
+                android:id="@+id/newword_table_select6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select5"
+                android:visibility="gone" >
+            </Spinner>
+
+            <Spinner
+                android:id="@+id/newword_word_select6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select5"
+                android:layout_toRightOf="@+id/newword_table_select1"
+                android:visibility="gone" >
+            </Spinner>
+
+            <EditText
+                android:id="@+id/edit_newword6"
+                android:layout_width="100px"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select5"
+                android:layout_toRightOf="@+id/newword_word_select1"
+                android:background="@drawable/rounded_edittext"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_newword7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"                
+                android:visibility="gone"
+                android:text="7."                
+                android:layout_below="@+id/newword_table_select6">                
+            </TextView>
+            <Spinner
+                android:id="@+id/newword_table_select7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select6"
+                android:visibility="gone" >
+            </Spinner>
+
+            <Spinner
+                android:id="@+id/newword_word_select7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select6"
+                android:layout_toRightOf="@+id/newword_table_select1"
+                android:visibility="gone" >
+            </Spinner>
+
+            <EditText
+                android:id="@+id/edit_newword7"
+                android:layout_width="100px"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select6"
+                android:layout_toRightOf="@+id/newword_word_select1"
+                android:background="@drawable/rounded_edittext"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_newword8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"                
+                android:visibility="gone"
+                android:text="8."                
+                android:layout_below="@+id/newword_table_select7">                
+            </TextView>
+            <Spinner
+                android:id="@+id/newword_table_select8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select7"
+                android:visibility="gone" >
+            </Spinner>
+
+            <Spinner
+                android:id="@+id/newword_word_select8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select7"
+                android:layout_toRightOf="@+id/newword_table_select1"
+                android:visibility="gone" >
+            </Spinner>
+
+            <EditText
+                android:id="@+id/edit_newword8"
+                android:layout_width="100px"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select7"
+                android:layout_toRightOf="@+id/newword_word_select1"
+                android:background="@drawable/rounded_edittext"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_newword9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"                
+                android:visibility="gone"
+                android:text="9."                
+                android:layout_below="@+id/newword_table_select8">                
+            </TextView>
+            <Spinner
+                android:id="@+id/newword_table_select9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select8"
+                android:visibility="gone" >
+            </Spinner>
+
+            <Spinner
+                android:id="@+id/newword_word_select9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select8"
+                android:layout_toRightOf="@+id/newword_table_select1"
+                android:visibility="gone" >
+            </Spinner>
+
+            <EditText
+                android:id="@+id/edit_newword9"
+                android:layout_width="100px"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select8"
+                android:layout_toRightOf="@+id/newword_word_select1"
+                android:background="@drawable/rounded_edittext"
+                android:visibility="gone" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/prompt_newword10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"                
+                android:visibility="gone"
+                android:text="10."                
+                android:layout_below="@+id/newword_table_select9">                
+            </TextView>
+            <Spinner
+                android:id="@+id/newword_table_select10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select9"
+                android:visibility="gone" >
+            </Spinner>
+
+            <Spinner
+                android:id="@+id/newword_word_select10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select9"
+                android:layout_toRightOf="@+id/newword_table_select1"
+                android:visibility="gone" >
+            </Spinner>
+
+            <EditText
+                android:id="@+id/edit_newword10"
+                android:layout_width="100px"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newword_table_select9"
+                android:layout_toRightOf="@+id/newword_word_select1"
+                android:background="@drawable/rounded_edittext"
+                android:visibility="gone" >
+            </EditText>
+
+            <EditText
+                android:id="@+id/input_newwords"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edit_newword10"
+                android:background="@drawable/rounded_edittext"
+                android:inputType="textMultiLine"
+                android:lines="10"
+                android:scrollHorizontally="false"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="12sp" />
+
+            <RadioGroup
+                android:id="@+id/newwords_edit_choices"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/input_newwords"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@+id/get_newwords"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="GET" />
+
+                <RadioButton
+                    android:id="@+id/insert_newwords"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="INSERT" />
+
+                <RadioButton
+                    android:id="@+id/edit_newwords"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="EDIT" />
+
+                <RadioButton
+                    android:id="@+id/delete_newwords"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DELETE" />
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/do_edit_newwords"
+                android:layout_width="250dp"
+                android:layout_height="60dp"
+                android:layout_below="@+id/newwords_edit_choices"
+                android:text="EDIT NEW WORDS" />
+
+            <ScrollView
+                android:id="@+id/show_newword_results"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/do_edit_newwords" >
+
+                <TextView
+                    android:id="@+id/newword_results"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" >
+                </TextView>
+            </ScrollView>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,115 @@
+package com.lfq.learnfactsquick;
+
+import java.util.List;
+
+import android.app.Activity;
+import android.text.Html;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+public class CustomAdapter extends ArrayAdapter<String> {
+
+	private final Activity context;
+	private final List<String> myList;
+	private final int myImageId[];
+	private TextView tv, tv_from, tv_to;
+
+	public CustomAdapter(Activity context, List<String> list, int imageId[]) {
+		super(context, R.layout.list_item, list);
+		this.context = context;
+		this.myList = list;
+		this.myImageId = imageId;
+
+	}
+
+	@Override
+	public View getView(int position, View view, ViewGroup parent) {
+		LayoutInflater inflater = context.getLayoutInflater();
+		Button do_arrive_pickup;
+		View rowView = null;
+
+		if (this.context.getClass().getSimpleName().equals("CompletedBOLs")) {
+			/*
+			 * if (CompletedBOLs.getListItemType(position).equals("JOB_HEADER"))
+			 * { System.out.println("BOL JOB HEADER!!!!!"); rowView =
+			 * inflater.inflate(R.layout.list_place_header, null, true);
+			 * System.out.println("PLACE HEADER!!!!!"); tv = (TextView)
+			 * rowView.findViewById(R.id.list_header_tv); do_arrive_pickup =
+			 * (Button) rowView.findViewById(R.id.do_arrive_pickup);
+			 * do_arrive_pickup.setVisibility(View.GONE);
+			 * tv.setText(Html.fromHtml("<b>" + myList.get(position) + "</b>"));
+			 * } else if (CompletedBOLs.getListItemType(position).equals("BOL"))
+			 * {
+			 */
+			rowView = inflater.inflate(R.layout.list_bol_item, null, true);
+			tv = (TextView) rowView.findViewById(R.id.list_item_tv);
+			tv.setText(myList.get(position));
+			System.out.println("JOB ITEM!!!!!");
+			// }
+		} else {
+			if (BOL.getListItemType(position).equals("PLACE")) {
+				rowView = inflater.inflate(R.layout.list_place_header, null,
+						true);
+				System.out.println("PLACE HEADER!!!!!");
+
+				tv_from = (TextView) rowView
+						.findViewById(R.id.list_header_from_tv);
+				tv_to = (TextView) rowView.findViewById(R.id.list_header_to_tv);
+				do_arrive_pickup = (Button) rowView
+						.findViewById(R.id.do_arrive_pickup);
+				String[] place_status_array = BOL.getPlaceStatus(position)
+						.split(",");
+				if (place_status_array[1] != null) {// shows status time:
+					do_arrive_pickup.setText(place_status_array[0]
+							+ place_status_array[1]);
+				} else {
+					do_arrive_pickup.setText(place_status_array[0]);
+				}
+
+				final int final_position = position;
+				do_arrive_pickup.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View arg0) {
+						BOL.startJob(final_position);
+					}
+				});
+				if (place_status_array[0].equals(STATES.DELIVERED)
+						|| place_status_array[0].equals(STATES.SPLIT_LOAD)) {
+					do_arrive_pickup.setEnabled(false);
+				} else {
+					do_arrive_pickup.setEnabled(true);
+				}
+				System.out.println(myList.get(position));
+				tv_from.setText(Html.fromHtml("<b>"
+						+ myList.get(position).split("--")[0] + "</b>"));
+				tv_to.setText(Html.fromHtml("<b>"
+						+ myList.get(position).split("--")[1] + "</b>"));
+			}
+
+			else if (BOL.getListItemType(position).equals("JOB")) {
+				rowView = inflater.inflate(R.layout.list_header, null, true);
+				System.out.println("JOB HEADER!!!!!");
+				tv = (TextView) rowView.findViewById(R.id.list_header_tv);
+				tv.setText(Html.fromHtml("<b>" + myList.get(position) + "</b>"));
+			} else if (BOL.getListItemType(position).equals("CAR")) {
+				rowView = inflater.inflate(R.layout.list_item, null, true);
+				ImageView imageView = (ImageView) rowView
+						.findViewById(R.id.item_image);
+				imageView.setBackgroundResource(myImageId[position]);
+				tv = (TextView) rowView.findViewById(R.id.list_item_tv);
+				tv.setText(myList.get(position));
+				System.out.println("JOB ITEM!!!!!");
+			}
+		}
+		return rowView;
+	}
+
+	public void setImage() {
+
+	}
+}
