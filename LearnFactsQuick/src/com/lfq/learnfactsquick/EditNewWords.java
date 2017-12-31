@@ -9,7 +9,7 @@ import java.util.Locale;
 
 import com.lfq.learnfactsquick.Constants.cols.acrostics;
 import com.lfq.learnfactsquick.Constants.cols.user_review_times;
-import com.lfq.learnfactsquick.Constants.cols.user_saved_newwords;
+import com.lfq.learnfactsquick.Constants.cols.user_new_words;
 import com.lfq.learnfactsquick.Constants.tables;
 
 import android.annotation.SuppressLint;
@@ -77,7 +77,6 @@ public class EditNewWords extends Activity {
 	private static Boolean is_database_load;
 	private static Boolean is_one_table_clicked;
 	private SelectNumberListener select_number_listener;
-	private String usertable;
 	private boolean is_setting_tables;
 
 	@Override
@@ -332,7 +331,6 @@ public class EditNewWords extends Activity {
 				String[] login_spl = login_results.split("@@@");
 				if (login_spl[0].equals("true")) {
 					logged_in = true;
-					usertable = username + "_savednewwords";
 					new doLoadDatabases().execute();
 				}
 				login_status.setText(login_spl[1]);
@@ -442,19 +440,19 @@ public class EditNewWords extends Activity {
 							cv.put(review_array[i], "");
 						}
 					}
-					MainLfqActivity.getNewwordsDb().update("user_review_times",
+					MainLfqActivity.getMiscDb().update("user_review_times",
 							cv, "UserName='" + username + "'", null);
 					cv.clear();
 					// STRIP THE TRAILING ',':
 					sync_review_values = sync_review_values.substring(0,
 							sync_review_values.length() - 1);
 					sql = "UPDATE " + Helpers.db_prefix
-							+ "newwords." + tables.user_review_times + " SET "
+							+ "misc." + tables.user_review_times + " SET "
 							+ sync_review_values + " WHERE " + user_review_times.UserName + "='"
 							+ username + "'";
 					// autoSync(sql, db, action, table, name, bool is_image,
 					// byte[] image)
-					autosync_text += Synchronize.autoSync(sql, "nw_db",
+					autosync_text += Synchronize.autoSync(sql, "misc_db",
 							"update", tables.user_review_times, username, false,
 							null);
 					newword_results.setText(Html.fromHtml("<b>UPDATED "
@@ -462,7 +460,6 @@ public class EditNewWords extends Activity {
 							+ "</b>"));
 					return;
 				}// END IF check_review_times IS CHECKED
-				usertable = username + "_savednewwords";
 				int month_number = select_month_newwords
 						.getSelectedItemPosition() + 1;
 				int day_number = select_day_newwords.getSelectedItemPosition() + 1;
@@ -487,57 +484,59 @@ public class EditNewWords extends Activity {
 					number_words = Integer.parseInt(select_number_newwords
 							.getSelectedItem().toString());
 					newword_results.setText("");
-					Cursor c_edit = MainLfqActivity.getNewwordsDb().rawQuery(
-							"SELECT * FROM " + usertable + " WHERE " + user_saved_newwords.MyDate + "='"
+					Cursor c_edit = MainLfqActivity.getMiscDb().rawQuery(
+							"SELECT * FROM " + tables.user_new_words + " WHERE " + user_new_words.Username + "='" + username + "' AND " + user_new_words.Date + "='"
 									+ edidate + "'", null);
 					int ct_usr_wors = 0;
 					if (c_edit.moveToFirst()) {
 						do {
-							MainLfqActivity.getNewwordsDb().execSQL(
+							MainLfqActivity.getMiscDb().execSQL(
 									"UPDATE "
-											+ usertable
-											+ " SET " + user_saved_newwords.Word + "='"
+											+ tables.user_new_words
+											+ " SET " + user_new_words.Word + "='"
 											+ select_words.get(ct_usr_wors)
 													.getSelectedItem()
 													.toString()
-											+ "','" + user_saved_newwords.Table_name + "='"
+											+ "','" + user_new_words.Table_name + "='"
 											+ select_tables.get(ct_usr_wors)
 													.getSelectedItem()
 													.toString()
-											+ "' WHERE " + user_saved_newwords.MyDate + "='" + edidate
+											+ "' WHERE " + user_new_words.Username + "='" + username + "' AND " + user_new_words.Date + "='" + edidate
 											+ "' LIMIT 1", null);
 							results += "UPDATED "
 									+ select_words.get(ct_usr_wors)
 											.getSelectedItem().toString()
-									+ " IN " + usertable + ".";
+									+ " IN " + tables.user_new_words + ".";
 							cv.clear();
 							sql = "UPDATE "
 									+ Helpers.db_prefix
 									+ "newwords."
-									+ usertable
-									+ " SET " + user_saved_newwords.Word + "='"
+									+ tables.user_new_words
+									+ " SET " + user_new_words.Word + "='"
 									+ select_words.get(ct_usr_wors)
 											.getSelectedItem().toString()
-									+ "','" + user_saved_newwords.Table_name + "='"
+									+ "','" + user_new_words.Table_name + "='"
 									+ select_tables.get(ct_usr_wors)
 											.getSelectedItem().toString()
-									+ "' WHERE " + user_saved_newwords.MyDate + "='" + edidate
+									+ "' WHERE "+ user_new_words.Username + "='" + username + "' AND " + user_new_words.Date + "='" + edidate
 									+ "' LIMIT 1";
 							// autoSync(sql, db, action, table, name, bool
 							// is_image, byte[]
 							// image)
-							autosync_text += Synchronize.autoSync(sql, "nw_db",
-									"update", usertable, edidate, false, null);
+							autosync_text += Synchronize.autoSync(sql, "misc_db",
+									"update", tables.user_new_words, edidate, false, null);
 							ct_usr_wors++;
 						} while (c_edit.moveToNext());
 					}
 					// FOR THE WORDS NOT UPDATED UP TO THE NUMBER SPECIFIED...:
 					for (int i = ct_usr_wors; i < number_words; i++) {
 						// INSERT TO user_newwords_table:
-						MainLfqActivity.getNewwordsDb().execSQL(
+						MainLfqActivity.getMiscDb().execSQL(
 								"INSERT INTO "
-										+ usertable
-										+ " (" + user_saved_newwords.MyDate + "," + user_saved_newwords.Word + "," + user_saved_newwords.Table_name + ") VALUES('"
+										+ tables.user_new_words
+										+ " (" + user_new_words.Username + "," + user_new_words.Date + "," + user_new_words.Word + "," + user_new_words.Table_name + ") VALUES('"
+										+ username
+										+ "','" 
 										+ edidate
 										+ "','"
 										+ select_words.get(i).getSelectedItem()
@@ -548,8 +547,10 @@ public class EditNewWords extends Activity {
 										+ "')", null);
 						cv.clear();
 						sql = "INSERT INTO "
-								+ usertable
-								+ " (" + user_saved_newwords.MyDate + "," + user_saved_newwords.Word + "," + user_saved_newwords.Table_name + ") VALUES('"
+								+ tables.user_new_words
+								+ " (" + user_new_words.Username + "," + user_new_words.Date + "," + user_new_words.Word + "," + user_new_words.Table_name + ") VALUES('"
+								+ username
+								+ "','"
 								+ edidate
 								+ "','"
 								+ select_words.get(i).getSelectedItem()
@@ -560,8 +561,8 @@ public class EditNewWords extends Activity {
 						// autoSync(sql, db, action, table, name, bool is_image,
 						// byte[]
 						// image)
-						autosync_text += Synchronize.autoSync(sql, "nw_db",
-								"insert", usertable, edidate, false, null);
+						autosync_text += Synchronize.autoSync(sql, "misc_db",
+								"insert", tables.user_new_words, edidate, false, null);
 						// INSERT TO user_reviewwords_table:
 						cv.clear();
 						// autoSync(sql, db, action, table, name, bool is_image,
@@ -569,7 +570,7 @@ public class EditNewWords extends Activity {
 						// image)
 						results += "INSERTED ADDITIONAL: "
 								+ select_words.get(i).getSelectedItem()
-										.toString() + " INTO " + usertable
+										.toString() + " INTO " + tables.user_new_words
 								+ ".";
 					}
 					newword_results.setText(results + autosync_text);
@@ -578,8 +579,8 @@ public class EditNewWords extends Activity {
 					results = "";
 					number_words = Integer.parseInt(select_number_newwords
 							.getSelectedItem().toString());
-					Cursor c_ins = MainLfqActivity.getNewwordsDb().rawQuery(
-							"SELECT * FROM " + usertable + " WHERE " + user_saved_newwords.MyDate + "='"
+					Cursor c_ins = MainLfqActivity.getMiscDb().rawQuery(
+							"SELECT * FROM " + tables.user_new_words + " WHERE "+ user_new_words.Username + "='" + username + "' AND " + user_new_words.Date + "='"
 									+ edidate + "'", null);
 					if (c_ins.moveToFirst()) {
 						newword_results.setText("Date " + edidate
@@ -588,19 +589,19 @@ public class EditNewWords extends Activity {
 						int j = 0;
 						results += " INSERTED " + number_words
 								+ " CHOSEN WORDS: ";
-						sql = "INSERT INTO " + Helpers.db_prefix + "newwords."
-								+ usertable
-								+ " (" + user_saved_newwords.Table_name + "," + user_saved_newwords.Word + "," + user_saved_newwords.MyDate + ") Values";
+						sql = "INSERT INTO " + Helpers.db_prefix + "misc."
+								+ tables.user_new_words
+								+ " (" + user_new_words.Username + "," + user_new_words.Table_name + "," + user_new_words.Word + "," + user_new_words.Date + ") Values";
 						for (int i = 0; i < number_words; i++) {
-							j = i + 1;
-
+							j = i + 1;							 
 							cv.clear();
-							cv.put(user_saved_newwords.Table_name, select_tables.get(i)
+						    cv.put(user_new_words.Username, username);							 
+							cv.put(user_new_words.Table_name, select_tables.get(i)
 									.getSelectedItem().toString());
-							cv.put(user_saved_newwords.Word, select_words.get(i)
+							cv.put(user_new_words.Word, select_words.get(i)
 									.getSelectedItem().toString());
-							cv.put(user_saved_newwords.MyDate, edidate);
-							MainLfqActivity.getNewwordsDb().insert(usertable,
+							cv.put(user_new_words.Date, edidate);
+							MainLfqActivity.getMiscDb().insert(tables.user_new_words,
 									null, cv);
 
 							if (i != 0) {
@@ -630,24 +631,24 @@ public class EditNewWords extends Activity {
 							// autoSync(sql, db, action, table, name, bool
 							// is_image, byte[]
 							// image)
-						autosync_text += Synchronize.autoSync(sql, "nw_db",
-								"insert", usertable, edidate, false, null);
+						autosync_text += Synchronize.autoSync(sql, "misc_db",
+								"insert", tables.user_new_words, edidate, false, null);
 						results += ".";
 						newword_results.setText(results + autosync_text);
 					}
 					c_ins.close();
 				}
 				if (delete_newwords.isChecked()) {
-					MainLfqActivity.getNewwordsDb().execSQL(
-							"DELETE FROM " + usertable + " WHERE " + user_saved_newwords.MyDate + "='"
+					MainLfqActivity.getMiscDb().execSQL(
+							"DELETE FROM " + tables.user_new_words + " WHERE " + user_new_words.Username + "='" + username + "' AND " + user_new_words.Date + "='"
 									+ edidate + "'");
 					newword_results.setText(edidate + " DELETED FROM "
-							+ usertable + ".");
+							+ tables.user_new_words + ".");
 					cv.clear();
 					sql = "DELETE FROM " + Helpers.db_prefix + "newwords."
-							+ usertable + " WHERE " + user_saved_newwords.MyDate + "='" + edidate + "'";
-					autosync_text += Synchronize.autoSync(sql, "nw_db",
-							"delete", usertable, edidate, false, null);
+							+ tables.user_new_words + " WHERE " + user_new_words.Username + "='" + username + "' AND " + user_new_words.Date + "='" + edidate + "'";
+					autosync_text += Synchronize.autoSync(sql, "misc_db",
+							"delete", tables.user_new_words, edidate, false, null);
 					newword_results
 							.setText("DELETED NEWWORDS." + autosync_text);
 				}
@@ -902,9 +903,9 @@ public class EditNewWords extends Activity {
 							if (is_setting_tables==false){
 							String table = select_table.getSelectedItem()
 									.toString();
-							sql = "SELECT DISTINCT " + user_saved_newwords.Word + " FROM " + usertable
-									+ " WHERE " + user_saved_newwords.Table_name + "='" + table + "'";
-							c = MainLfqActivity.getNewwordsDb().rawQuery(sql, null);
+							sql = "SELECT DISTINCT " + user_new_words.Word + " FROM " + tables.user_new_words
+									+ " WHERE " + user_new_words.Username + "='" + username + "' AND " + user_new_words.Table_name + "='" + table + "'";
+							c = MainLfqActivity.getMiscDb().rawQuery(sql, null);
 							review_words.clear();
 							int ct_rev_wor = 0;
 							if (c.moveToFirst()) {
@@ -949,7 +950,7 @@ public class EditNewWords extends Activity {
                           /*
 							String table = select_table.getSelectedItem()
 									.toString();
-							c = MainLfqActivity.getNewwordsDb().rawQuery(
+							c = MainLfqActivity.getMiscDb().rawQuery(
 									"SELECT Word FROM " + user_review_table
 											+ " WHERE Table_name='" + table
 											+ "'", null);
@@ -1071,7 +1072,6 @@ public class EditNewWords extends Activity {
 				"EDIT NEWWORDS EDIT NEWWORDS", false));
 		if (Helpers.getLoginStatus() == true) {
 			username = Helpers.getUsername();
-			usertable = username + "_savednewwords";
 			password = Helpers.getPassword();
 			username_input.setText(username);
 			logged_in = true;
@@ -1115,7 +1115,7 @@ public class EditNewWords extends Activity {
 			return;
 		}
 		reviewsAdapter.clear();
-		Cursor c_reviews = MainLfqActivity.getNewwordsDb().rawQuery(
+		Cursor c_reviews = MainLfqActivity.getMiscDb().rawQuery(
 				"SELECT * FROM " + tables.user_review_times + " WHERE " + user_review_times.UserName+ "='" + username
 						+ "'", null);
 		if (c_reviews.moveToFirst()) {
@@ -1139,7 +1139,6 @@ public class EditNewWords extends Activity {
 		}
 		results = "";
 		int ct_get = 1;
-		usertable = username + "_savednewwords";
 		int month_number = select_month_newwords.getSelectedItemPosition() + 1;
 		int day_number = select_day_newwords.getSelectedItemPosition() + 1;
 		String month_display_number = String.valueOf(month_number);
@@ -1152,8 +1151,8 @@ public class EditNewWords extends Activity {
 		}
 		String edidate = select_year_newwords.getSelectedItem().toString()
 				+ "/" + month_display_number + "/" + day_display_number;
-		Cursor c_get = MainLfqActivity.getNewwordsDb().rawQuery(
-				"SELECT * FROM " + usertable + " WHERE " + user_saved_newwords.MyDate + "='" + edidate
+		Cursor c_get = MainLfqActivity.getMiscDb().rawQuery(
+				"SELECT * FROM " + tables.user_new_words + " WHERE " + user_new_words.Username + "='" + username + "' AND " + user_new_words.Date + "='" + edidate
 						+ "'", null);
 		if (c_get.moveToFirst()) {
 			do {
@@ -1161,15 +1160,15 @@ public class EditNewWords extends Activity {
 						.rawQuery(
 								"SELECT " + acrostics.Information + "," + acrostics.Acrostics + " FROM "
 										+ c_get.getString(c_get
-												.getColumnIndex(user_saved_newwords.Table_name))
+												.getColumnIndex(user_new_words.Table_name))
 										+ " WHERE Name='"
 										+ c_get.getString(c_get
-												.getColumnIndex(user_saved_newwords.Word)) + "'",
+												.getColumnIndex(user_new_words.Word)) + "'",
 								null);
 				if (c_get_acrostics.moveToFirst()) {
 					results += ct_get
 							+ ")"
-							+ c_get.getString(c_get.getColumnIndex(user_saved_newwords.Word))
+							+ c_get.getString(c_get.getColumnIndex(user_new_words.Word))
 							+ "<br />"
 							+ " INFORMATION:<br />"
 							+ c_get_acrostics.getString(c_get_acrostics
@@ -1232,9 +1231,9 @@ public class EditNewWords extends Activity {
 				list_words.add(new ArrayList<String>());
 				my_table = select_tables.get(0).getSelectedItem().toString();
 				// System.out.println("my_table=" + my_table);
-				sql = "SELECT DISTINCT " + user_saved_newwords.Word + " FROM " + usertable
-						+ " WHERE " + user_saved_newwords.Table_name + "='" + my_table + "'";
-				c = MainLfqActivity.getNewwordsDb().rawQuery(sql, null);
+				sql = "SELECT DISTINCT " + user_new_words.Word + " FROM " + tables.user_new_words
+						+ " WHERE " + user_new_words.Username + "='" + username + "' AND " + user_new_words.Table_name + "='" + my_table + "'";
+				c = MainLfqActivity.getMiscDb().rawQuery(sql, null);
 				System.out.println("user newwords sql=" + sql);
 				review_words.clear();
 				System.out.println("REVIEWED WORDS:");
@@ -1274,10 +1273,10 @@ public class EditNewWords extends Activity {
 				for (int i = 0; i < select_tables.size(); i++) {
 					list_words.add(new ArrayList<String>());
 					table = select_tables.get(i).getSelectedItem().toString();
-					sql = "SELECT DISTINCT " + user_saved_newwords.Word + " FROM " + usertable
-							+ " WHERE " + user_saved_newwords.Table_name + "='" + table + "'";
+					sql = "SELECT DISTINCT " + user_new_words.Word + " FROM " + tables.user_new_words
+							+ " WHERE " + user_new_words.Username + "='" + username + "' AND " + user_new_words.Table_name + "='" + table + "'";
 					// System.out.println("user newwords sql=" + sql);
-					c = MainLfqActivity.getNewwordsDb().rawQuery(sql, null);
+					c = MainLfqActivity.getMiscDb().rawQuery(sql, null);
 					review_words.clear();
 					int ct_rev_wor = 0;
 					if (c.moveToFirst()) {

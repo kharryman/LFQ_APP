@@ -5,8 +5,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import com.lfq.learnfactsquick.Constants.cols.acrostics;
+import com.lfq.learnfactsquick.Constants.cols.user_new_words;
 import com.lfq.learnfactsquick.Constants.cols.user_review_times;
-import com.lfq.learnfactsquick.Constants.cols.user_saved_newwords;
 import com.lfq.learnfactsquick.Constants.tables;
 
 import android.app.Activity;
@@ -42,7 +42,6 @@ public class NewWords extends Activity {
 	private TextView results;
 	private LinearLayout newwords_table;
 	private Calendar today, cal_days_before;
-	private String usertable;
 	int year, month, day;
 	int ctcells = 0, ct_days_wors = 0;
 	private String date_before, month_display_number, day_display_number, acro,
@@ -312,7 +311,6 @@ public class NewWords extends Activity {
 				}
 				review_index--;
 				newwords_table.removeAllViews();
-				usertable = username + "_savednewwords";
 				int days_before = Integer.parseInt(select_newword_days_before
 						.getSelectedItem().toString());
 
@@ -352,7 +350,6 @@ public class NewWords extends Activity {
 				}
 				newwords_table.removeAllViews();
 				review_index++;
-				usertable = username + "_savednewwords";
 				int days_before = Integer.parseInt(select_newword_days_before
 						.getSelectedItem().toString());
 
@@ -390,7 +387,6 @@ public class NewWords extends Activity {
 				do_show_newwords_backup.setVisibility(View.VISIBLE);
 				show_newwords_above_layout.setVisibility(View.GONE);
 				newwords_table.removeAllViews();
-				usertable = username + "_savednewwords";
 				int days_before = Integer.parseInt(select_newword_days_before
 						.getSelectedItem().toString());
 				setReviewTimes();
@@ -421,7 +417,7 @@ public class NewWords extends Activity {
 	}
 
 	public void setReviewTimes() {
-		c = MainLfqActivity.getNewwordsDb().rawQuery(
+		c = MainLfqActivity.getMiscDb().rawQuery(
 				"SELECT * FROM " + tables.user_review_times + " WHERE " + user_review_times.UserName+ "='" + username
 						+ "'", null);
 		review_times.clear();
@@ -472,7 +468,6 @@ public class NewWords extends Activity {
 				username_input.setText(username);
 				logged_in = true;
 				results.setText("WELCOME " + username + ".");
-				usertable = username + "_savednewwords";
 				review_index = sharedPref.getInt("REVIEW INDEX", 0);
 				setReviewTimes();
 				my_date = sharedPref.getString("MY DATE", my_date);
@@ -506,8 +501,8 @@ public class NewWords extends Activity {
 		saved_acro.clear();
 		saved_info.clear();
 
-		Cursor c_getword = MainLfqActivity.getNewwordsDb().rawQuery("SELECT * FROM " + usertable
-				+ " WHERE " + user_saved_newwords.MyDate + "='" + date_before + "'", null);
+		Cursor c_getword = MainLfqActivity.getMiscDb().rawQuery("SELECT * FROM " + tables.user_new_words
+				+ " WHERE " + user_new_words.Username + "='" + username + "' AND " + user_new_words.Date + "='" + date_before + "'", null);
 		ct_days_wors = 0;
 		TextView prompt_tv = new TextView(this_act);
 		prompt_tv.setText(Html.fromHtml("<b>" + review_times.get(review_index)
@@ -516,9 +511,9 @@ public class NewWords extends Activity {
 		newwords_table.addView(prompt_tv);
 		if (c_getword.moveToFirst()) {
 			do {
-				word = c_getword.getString(c_getword.getColumnIndex(user_saved_newwords.Word));
+				word = c_getword.getString(c_getword.getColumnIndex(user_new_words.Word));
 				table = c_getword.getString(c_getword
-						.getColumnIndex(user_saved_newwords.Table_name));
+						.getColumnIndex(user_new_words.Table_name));
 				Cursor c_getacro = MainLfqActivity.getAcrosticsDb().rawQuery(
 						"SELECT " + acrostics.Information + "," + acrostics.Acrostics + " FROM " + table
 								+ " WHERE " + acrostics.Name + "='" + word + "'", null);

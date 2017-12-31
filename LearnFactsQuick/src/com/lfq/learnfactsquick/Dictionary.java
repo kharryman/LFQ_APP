@@ -281,7 +281,7 @@ public class Dictionary extends Activity {
 			String load_text = "";
 			if (is_one_word) {
 				String[] selectionArgs = { input_and };
-				Cursor c = MainLfqActivity.getDictionaryDb()
+				Cursor c = MainLfqActivity.getMiscDb()
 						.rawQuery(
 								"SELECT " + dictionarya.Word + "," + dictionarya.PartSpeech + "," + dictionarya.Definition + " FROM " + tables.dictionarya + " WHERE " + dictionarya.Word + " LIKE ? ORDER BY " + dictionarya.Word + " LIMIT 1000",
 								selectionArgs);
@@ -344,7 +344,7 @@ public class Dictionary extends Activity {
 						+ def_expression
 						+ " ORDER BY " + dictionarya.Word + " COLLATE NOCASE LIMIT 300";
 
-				Cursor c_seadic = MainLfqActivity.getDictionaryDb().rawQuery(query, null);
+				Cursor c_seadic = MainLfqActivity.getMiscDb().rawQuery(query, null);
 
 				System.out.println(query);
 

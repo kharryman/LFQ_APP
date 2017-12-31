@@ -388,7 +388,7 @@ public class EditEvents extends Activity {
 				if (insert_event.isChecked()) {
 					values.clear();
 					values.put(events_table.Year, year);
-					values.put(events_table.MyDate, date);
+					values.put(events_table.Date, date);
 					values.put(events_table.Event, event);
 					values.put(events_table.SaveWords, major_words);
 					if (!check_shared_table.isChecked()) {
@@ -397,7 +397,7 @@ public class EditEvents extends Activity {
 					MainLfqActivity.getDatabase().insert(table, null, values);
 					if (check_shared_table.isChecked()) {
 						sql = "INSERT INTO " + lfq_table + " ("
-								+ events_table.Year + "," + events_table.MyDate
+								+ events_table.Year + "," + events_table.Date
 								+ "," + events_table.Event + ","
 								+ events_table.SaveWords + ","
 								+ events_table.Acrostics + ") VALUES('" + year
@@ -405,7 +405,7 @@ public class EditEvents extends Activity {
 								+ major_words + "','" + acrostics + "')";
 					} else {
 						sql = "INSERT INTO " + lfq_table + " ("
-								+ user_events_table.MyDate + ","
+								+ user_events_table.Date + ","
 								+ user_events_table.Event + ","
 								+ user_events_table.SaveWords + ","
 								+ user_events_table.Type + ") VALUES('" + date
@@ -426,7 +426,7 @@ public class EditEvents extends Activity {
 				if (edit_event.isChecked()) {
 					values.clear();
 					values.put(events_table.Year, year);
-					values.put(events_table.MyDate, date);
+					values.put(events_table.Date, date);
 					values.put(events_table.Event, event);
 					values.put(events_table.SaveWords, major_words);
 					values.put(events_table.Acrostics, acrostics);
@@ -439,7 +439,7 @@ public class EditEvents extends Activity {
 							"_id=?", selectionArgs);
 					if (!check_shared_table.isChecked()) {
 						sql = "UPDATE " + lfq_table + " SET "
-								+ user_events_table.MyDate + "='" + date
+								+ user_events_table.Date + "='" + date
 								+ "', " + user_events_table.Year + "', "
 								+ user_events_table.Event + "='" + event
 								+ "', " + user_events_table.SaveWords + "='"
@@ -451,7 +451,7 @@ public class EditEvents extends Activity {
 					} else {
 						sql = "UPDATE " + lfq_table + " SET "
 								+ events_table.Year + "='" + year + "', "
-								+ events_table.MyDate + "='" + date + "', "
+								+ events_table.Date + "='" + date + "', "
 								+ events_table.Event + "='" + event + "', "
 								+ events_table.SaveWords + "='" + major_words
 								+ "', " + events_table.Acrostics + "='"
@@ -466,7 +466,7 @@ public class EditEvents extends Activity {
 							false, null);
 					c = MainLfqActivity.getDatabase().rawQuery(
 							"SELECT * FROM " + table + " WHERE "
-									+ events_table.MyDate + "='" + date
+									+ events_table.Date + "='" + date
 									+ "' AND " + events_table.Year + "=? AND "
 									+ events_table.Event + "=?", selectionArgs);
 					if (!c.moveToFirst()) {
@@ -488,7 +488,7 @@ public class EditEvents extends Activity {
 					// SYNC TO LFQ:
 					autosync_text = "";
 					sql = "DELETE FROM " + lfq_table + " WHERE "
-							+ events_table.MyDate + "='" + date + "' AND "
+							+ events_table.Date + "='" + date + "' AND "
 							+ events_table.Year + "='" + year + "' AND "
 							+ events_table._id + "='" + id + "'";
 					// autoSync(sql, db, action, table, name, bool is_image,
@@ -531,7 +531,7 @@ public class EditEvents extends Activity {
 				date = month + "-" + day;
 				c = MainLfqActivity.getDatabase().rawQuery(
 						"SELECT * FROM " + table + " WHERE "
-								+ events_table.MyDate + "='" + date + "' AND "
+								+ events_table.Date + "='" + date + "' AND "
 								+ events_table.Year + "='" + year + "'", null);
 				if (c.moveToFirst()) {
 					if (c.getColumnIndex(events_table.Event) != -1) {
@@ -616,7 +616,7 @@ public class EditEvents extends Activity {
 				}
 				c = MainLfqActivity.getDatabase().rawQuery(
 						"SELECT " + events_table._id + " FROM " + table
-								+ " WHERE " + events_table.MyDate + "='" + date
+								+ " WHERE " + events_table.Date + "='" + date
 								+ "'", null);
 			}
 			total = c.getCount();
@@ -626,7 +626,7 @@ public class EditEvents extends Activity {
 			if (check_get_dates.isChecked()) {
 				c_get_last = MainLfqActivity.getDatabase().rawQuery(
 						"SELECT * FROM " + table + " WHERE "
-								+ events_table.MyDate + "='" + date + "' AND "
+								+ events_table.Date + "='" + date + "' AND "
 								+ events_table.Year + "='" + year + "' AND "
 								+ events_table._id + "<'" + id + "' ORDER BY "
 								+ events_table._id + " DESC LIMIT 1", null);
@@ -636,7 +636,7 @@ public class EditEvents extends Activity {
 						c_get_last.close();
 						c_get_last = MainLfqActivity.getDatabase().rawQuery(
 								"SELECT * FROM " + table + " WHERE "
-										+ events_table.MyDate + "='" + date
+										+ events_table.Date + "='" + date
 										+ "' AND " + events_table.Year
 										+ " LIKE '% BC' AND "
 										+ events_table.Year + ">'" + year
@@ -648,7 +648,7 @@ public class EditEvents extends Activity {
 						c_get_last.close();
 						c_get_last = MainLfqActivity.getDatabase().rawQuery(
 								"SELECT * FROM " + table + " WHERE "
-										+ events_table.MyDate + "='" + date
+										+ events_table.Date + "='" + date
 										+ "' AND " + events_table.Year
 										+ " NOT LIKE '% BC' AND "
 										+ events_table.Year + "<'" + year
@@ -664,7 +664,7 @@ public class EditEvents extends Activity {
 									.rawQuery(
 											"SELECT * FROM " + table
 													+ " WHERE "
-													+ events_table.MyDate
+													+ events_table.Date
 													+ "='" + date + "' AND "
 													+ events_table.Year
 													+ " LIKE '% BC' ORDER BY "
@@ -686,7 +686,7 @@ public class EditEvents extends Activity {
 			if (check_get_years.isChecked()) {
 				c_get_last = MainLfqActivity.getDatabase().rawQuery(
 						"SELECT * FROM " + table + " WHERE "
-								+ events_table.MyDate + "='" + date + "' AND "
+								+ events_table.Date + "='" + date + "' AND "
 								+ events_table.Year + "='" + year + "' AND "
 								+ events_table._id + "<'" + id + "' ORDER BY "
 								+ events_table._id + " DESC LIMIT 1", null);
@@ -695,10 +695,10 @@ public class EditEvents extends Activity {
 					c_get_last.close();
 					c_get_last = MainLfqActivity.getDatabase().rawQuery(
 							"SELECT * FROM " + table + " WHERE "
-									+ events_table.MyDate + "<'" + date
+									+ events_table.Date + "<'" + date
 									+ "' AND " + events_table.Year + "='"
 									+ year + "' ORDER BY "
-									+ events_table.MyDate + " DESC,"
+									+ events_table.Date + " DESC,"
 									+ events_table._id + " DESC LIMIT 1", null);
 				}
 			}
@@ -718,10 +718,10 @@ public class EditEvents extends Activity {
 						.getColumnIndex(events_table._id));
 				if (check_get_years.isChecked()) {
 					String date_split[] = c_get_last.getString(
-							c_get_last.getColumnIndex(events_table.MyDate))
+							c_get_last.getColumnIndex(events_table.Date))
 							.split("-");
 					date = c_get_last.getString(c_get_last
-							.getColumnIndex(events_table.MyDate));
+							.getColumnIndex(events_table.Date));
 					month_index = Integer.parseInt(date_split[0]) - 1;
 					day_index = Integer.parseInt(date_split[1]) - 1;
 				}
@@ -800,7 +800,7 @@ public class EditEvents extends Activity {
 				}
 				c = MainLfqActivity.getDatabase().rawQuery(
 						"SELECT " + events_table._id + " FROM " + table
-								+ " WHERE " + events_table.MyDate + "='" + date
+								+ " WHERE " + events_table.Date + "='" + date
 								+ "'", null);
 			}
 			total = c.getCount();
@@ -811,7 +811,7 @@ public class EditEvents extends Activity {
 			if (check_get_dates.isChecked()) {
 				c_get_next = MainLfqActivity.getDatabase().rawQuery(
 						"SELECT * FROM " + table + " WHERE "
-								+ events_table.MyDate + "='" + date + "' AND "
+								+ events_table.Date + "='" + date + "' AND "
 								+ events_table.Year + "='" + year + "' AND "
 								+ events_table._id + ">'" + id + "' LIMIT 1",
 						null);
@@ -821,7 +821,7 @@ public class EditEvents extends Activity {
 						c_get_next.close();
 						c_get_next = MainLfqActivity.getDatabase().rawQuery(
 								"SELECT * FROM " + table + " WHERE "
-										+ events_table.MyDate + "='" + date
+										+ events_table.Date + "='" + date
 										+ "' AND " + events_table.Year
 										+ " LIKE '% BC' AND "
 										+ events_table.Year + "<'" + year
@@ -837,7 +837,7 @@ public class EditEvents extends Activity {
 											"SELECT * FROM "
 													+ table
 													+ " WHERE "
-													+ events_table.MyDate
+													+ events_table.Date
 													+ "='"
 													+ date
 													+ "' AND "
@@ -851,7 +851,7 @@ public class EditEvents extends Activity {
 						c_get_next.close();
 						c_get_next = MainLfqActivity.getDatabase().rawQuery(
 								"SELECT * FROM " + table + " WHERE "
-										+ events_table.MyDate + "='" + date
+										+ events_table.Date + "='" + date
 										+ "' AND " + events_table.Year
 										+ " NOT LIKE '% BC' AND "
 										+ events_table.Year + ">'" + year
@@ -869,7 +869,7 @@ public class EditEvents extends Activity {
 			if (check_get_years.isChecked()) {
 				c_get_next = MainLfqActivity.getDatabase().rawQuery(
 						"SELECT * FROM " + table + " WHERE "
-								+ events_table.MyDate + "='" + date + "' AND "
+								+ events_table.Date + "='" + date + "' AND "
 								+ events_table.Year + "='" + year + "' AND "
 								+ events_table._id + ">'" + id + "' LIMIT 1",
 						null);
@@ -877,20 +877,20 @@ public class EditEvents extends Activity {
 					c_get_next.close();
 					c_get_next = MainLfqActivity.getDatabase().rawQuery(
 							"SELECT * FROM " + table + " WHERE "
-									+ events_table.MyDate + ">'" + date
+									+ events_table.Date + ">'" + date
 									+ "' AND " + events_table.Year + "='"
 									+ year + "' ORDER BY "
-									+ events_table.MyDate + ","
+									+ events_table.Date + ","
 									+ events_table._id + " LIMIT 1", null);
 				}
 			}
 			if (c_get_next.moveToFirst() && number < total) {
 				if (check_get_years.isChecked()) {
 					String date_split[] = c_get_next.getString(
-							c_get_next.getColumnIndex(events_table.MyDate))
+							c_get_next.getColumnIndex(events_table.Date))
 							.split("-");
 					date = c_get_next.getString(c_get_next
-							.getColumnIndex(events_table.MyDate));
+							.getColumnIndex(events_table.Date));
 					month_index = Integer.parseInt(date_split[0]) - 1;
 					day_index = Integer.parseInt(date_split[1]) - 1;
 				}
@@ -1037,7 +1037,7 @@ public class EditEvents extends Activity {
 		@Override
 		protected void onPostExecute(String file_url) {
 			c = MainLfqActivity.getDatabase().rawQuery(
-					"SELECT " + events_table.MyDate + " FROM " + table
+					"SELECT " + events_table.Date + " FROM " + table
 							+ " WHERE " + events_table.Year + "='"
 							+ yearsAdapter.getItem(0) + "'", null);
 			if (c.moveToFirst()) {
@@ -1094,21 +1094,21 @@ public class EditEvents extends Activity {
 		// GET TOTAL COUNT:
 		c = MainLfqActivity.getDatabase().rawQuery(
 				"SELECT " + events_table._id + " FROM " + table + " WHERE "
-						+ events_table.MyDate + "='" + date + "'", null);
+						+ events_table.Date + "='" + date + "'", null);
 		ct_tot = c.getCount();
 		System.out.println("ct tot=" + ct_tot);
 		c.close();
 		// ---------------
 		System.out.println("table=" + table + ", date=" + date);
 		Cursor c_first = MainLfqActivity.getDatabase().rawQuery(
-				"SELECT * FROM " + table + " WHERE " + events_table.MyDate
+				"SELECT * FROM " + table + " WHERE " + events_table.Date
 						+ "='" + date + "' AND " + events_table.Year
 						+ " LIKE '% BC' ORDER BY " + events_table.Year
 						+ " DESC," + events_table._id + " ASC LIMIT 1", null);
 		count = 0;
 		if (c_first.getCount() == 0) {
 			c_first = MainLfqActivity.getDatabase().rawQuery(
-					"SELECT * FROM " + table + " WHERE " + events_table.MyDate
+					"SELECT * FROM " + table + " WHERE " + events_table.Date
 							+ "='" + date + "' AND " + events_table.Year
 							+ " NOT LIKE '% BC' ORDER BY " + events_table.Year
 							+ "," + events_table._id + " LIMIT 1", null);
@@ -1126,7 +1126,7 @@ public class EditEvents extends Activity {
 				+ year);
 		c = MainLfqActivity.getDatabase().rawQuery(
 				"SELECT DISTINCT " + events_table.Year + " FROM " + table
-						+ " WHERE " + events_table.MyDate + "='" + date
+						+ " WHERE " + events_table.Date + "='" + date
 						+ "' AND " + events_table.Year
 						+ " LIKE '% BC' ORDER BY " + events_table.Year
 						+ " DESC", null);
@@ -1138,7 +1138,7 @@ public class EditEvents extends Activity {
 		c.close();
 		c = MainLfqActivity.getDatabase().rawQuery(
 				"SELECT DISTINCT " + events_table.Year + " FROM " + table
-						+ " WHERE " + events_table.MyDate + "='" + date
+						+ " WHERE " + events_table.Date + "='" + date
 						+ "' AND + " + events_table.Year
 						+ " NOT LIKE '% BC' ORDER BY " + events_table.Year
 						+ " ASC", null);
@@ -1250,34 +1250,34 @@ public class EditEvents extends Activity {
 			}
 			if (check_get_dates.isChecked()) {
 				c = MainLfqActivity.getDatabase().rawQuery(
-						"SELECT " + events_table.MyDate + " FROM " + table
-								+ " WHERE " + events_table.MyDate + "='" + date
+						"SELECT " + events_table.Date + " FROM " + table
+								+ " WHERE " + events_table.Date + "='" + date
 								+ "'", null);
 				total = c.getCount();
 				c.close();
 				if (year.contains("BC")) {
 					c = MainLfqActivity.getDatabase().rawQuery(
-							"SELECT " + events_table.MyDate + " FROM " + table
+							"SELECT " + events_table.Date + " FROM " + table
 									+ " WHERE " + events_table.Year + ">='"
 									+ year + "' AND " + events_table.Year
-									+ " LIKE '% BC' AND " + events_table.MyDate
+									+ " LIKE '% BC' AND " + events_table.Date
 									+ "='" + date + "'", null);
 					number = c.getCount();
 					c.close();
 				} else {
 					c = MainLfqActivity.getDatabase().rawQuery(
-							"SELECT " + events_table.MyDate + " FROM " + table
+							"SELECT " + events_table.Date + " FROM " + table
 									+ " WHERE " + events_table.Year
-									+ " LIKE '% BC' AND " + events_table.MyDate
+									+ " LIKE '% BC' AND " + events_table.Date
 									+ "='" + date + "'", null);
 					number = c.getCount();
 					c.close();
 					c = MainLfqActivity.getDatabase().rawQuery(
-							"SELECT " + events_table.MyDate + " FROM " + table
+							"SELECT " + events_table.Date + " FROM " + table
 									+ " WHERE " + events_table.Year + "<='"
 									+ year + "' AND " + events_table.Year
 									+ " NOT LIKE '% BC' AND "
-									+ events_table.MyDate + "='" + date + "'",
+									+ events_table.Date + "='" + date + "'",
 							null);
 					number += c.getCount();
 					c.close();
@@ -1287,7 +1287,7 @@ public class EditEvents extends Activity {
 			}
 			if (check_get_years.isChecked()) {
 				c = MainLfqActivity.getDatabase().rawQuery(
-						"SELECT " + events_table.MyDate + " FROM " + table
+						"SELECT " + events_table.Date + " FROM " + table
 								+ " WHERE " + events_table.Year + "='" + year
 								+ "'", null);
 				total = c.getCount();

@@ -234,7 +234,7 @@ public class Numbers extends Activity {
 				}
 				numbers_above_layout.setVisibility(View.GONE);
 				backup.setVisibility(View.VISIBLE);
-				c_get = MainLfqActivity.getNumbersDb().rawQuery("SELECT * FROM " + table
+				c_get = MainLfqActivity.getMiscDb().rawQuery("SELECT * FROM " + table
 						+ " ORDER BY " + global_number_table.Type, null);
 				if (c_get.moveToFirst()) {
 					numbers_table.removeAllViews();

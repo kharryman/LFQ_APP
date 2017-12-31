@@ -351,7 +351,7 @@ public class EditUsers extends Activity implements multispinnerListener {
 					results.setText(Html
 							.fromHtml("<b>MUST ENTER A USERNAME.</b>"));
 				}
-				c = MainLfqActivity.getUsersDb().rawQuery(
+				c = MainLfqActivity.getMiscDb().rawQuery(
 						"SELECT * FROM `userdata` WHERE UserName='" + username
 								+ "'", null);
 				if (c.moveToFirst()) {
@@ -378,7 +378,7 @@ public class EditUsers extends Activity implements multispinnerListener {
 							.fromHtml("<b>MUST ENTER SECURITY ANSWER.</b>"));
 					return;
 				}
-				c = MainLfqActivity.getUsersDb().rawQuery(
+				c = MainLfqActivity.getMiscDb().rawQuery(
 						"SELECT * FROM `userdata` WHERE UserName='" + username
 								+ "'", null);
 				if (c.moveToFirst()) {
@@ -439,7 +439,7 @@ public class EditUsers extends Activity implements multispinnerListener {
 				cv.put("Password", password);
 				cv.put("SecurityQuestion", question);
 				cv.put("SecurityAnswer", answer);
-				int number_changed = MainLfqActivity.getUsersDb().update("userdata", cv,
+				int number_changed = MainLfqActivity.getMiscDb().update("userdata", cv,
 						"UserName=?", new String[] { username });
 				if (number_changed > 0) {
 					text_result = username + " PASSWORD UPDATED.";
@@ -501,7 +501,7 @@ public class EditUsers extends Activity implements multispinnerListener {
 				cv.put("Password", password);
 				cv.put("SecurityQuestion", question);
 				cv.put("SecurityAnswer", answer);
-				MainLfqActivity.getUsersDb().insert("userdata", null, cv);
+				MainLfqActivity.getMiscDb().insert("userdata", null, cv);
 				cv.clear();
 				cv.put("UserName", username);
 				cv.put("Time1", 0);
@@ -514,14 +514,14 @@ public class EditUsers extends Activity implements multispinnerListener {
 				cv.put("Time8", "");
 				cv.put("Time9", "");
 				cv.put("Time10", "");
-				MainLfqActivity.getNewwordsDb().insert("user_review_times", null, cv);
-				MainLfqActivity.getNewwordsDb().execSQL("CREATE TABLE IF NOT EXISTS `"
+				MainLfqActivity.getMiscDb().insert("user_review_times", null, cv);
+				MainLfqActivity.getMiscDb().execSQL("CREATE TABLE IF NOT EXISTS `"
 						+ user_reviewedwords_table
 						+ "` (`_id` integer PRIMARY KEY AUTOINCREMENT,`Table_name` tinytext,`Word` tinytext);");
-				MainLfqActivity.getNewwordsDb().execSQL("CREATE TABLE IF NOT EXISTS `"
+				MainLfqActivity.getMiscDb().execSQL("CREATE TABLE IF NOT EXISTS `"
 						+ user_newwords_table
 						+ "` (`_id` integer PRIMARY KEY AUTOINCREMENT,`Table_name` tinytext,`Date` tinytext, `Word` tinytext, `Anagram`, `Completed_Acrostic_Words` text, `Completed_Anagram_Acrostic_Words` text);");
-				MainLfqActivity.getNumbersDb().execSQL("CREATE TABLE IF NOT EXISTS `"
+				MainLfqActivity.getMiscDb().execSQL("CREATE TABLE IF NOT EXISTS `"
 						+ username
 						+ "_numbertable"
 						+ "` (`_id` integer PRIMARY KEY AUTOINCREMENT NOT NULL, `Number` tinytext, `NumInf` text, `NumWors` text, `Type` tinytext)");
@@ -644,15 +644,15 @@ public class EditUsers extends Activity implements multispinnerListener {
 						results.setText(result_text);
 						return;
 					}
-					MainLfqActivity.getUsersDb().execSQL("DELETE FROM `userdata` WHERE UserName='"
+					MainLfqActivity.getMiscDb().execSQL("DELETE FROM `userdata` WHERE UserName='"
 							+ username + "';");
-					MainLfqActivity.getUsersDb().execSQL("DROP TABLE IF EXISTS `"
+					MainLfqActivity.getMiscDb().execSQL("DROP TABLE IF EXISTS `"
 							+ user_reviewedwords_table + "`;");
-					MainLfqActivity.getUsersDb().execSQL("DROP TABLE IF EXISTS `"
+					MainLfqActivity.getMiscDb().execSQL("DROP TABLE IF EXISTS `"
 							+ user_newwords_table + "`;");
-					MainLfqActivity.getUsersDb().execSQL("DROP TABLE IF EXISTS `" + username
+					MainLfqActivity.getMiscDb().execSQL("DROP TABLE IF EXISTS `" + username
 							+ "_historical`;");
-					MainLfqActivity.getUsersDb().execSQL("DROP TABLE IF EXISTS `" + username
+					MainLfqActivity.getMiscDb().execSQL("DROP TABLE IF EXISTS `" + username
 							+ "_personal`;");
 					user_logout.performClick();
 				}
@@ -666,7 +666,7 @@ public class EditUsers extends Activity implements multispinnerListener {
 					}
 					change_password_results.setText("");
 					change_password_layout.setVisibility(View.VISIBLE);
-					c = MainLfqActivity.getUsersDb().rawQuery(
+					c = MainLfqActivity.getMiscDb().rawQuery(
 							"SELECT * FROM `userdata` WHERE UserName='"
 									+ username + "'", null);
 					if (c.moveToFirst()) {
@@ -708,7 +708,7 @@ public class EditUsers extends Activity implements multispinnerListener {
 							}
 
 						}
-						MainLfqActivity.getNewwordsDb().execSQL("DELETE FROM `"
+						MainLfqActivity.getMiscDb().execSQL("DELETE FROM `"
 								+ user_reviewedwords_table
 								+ "` WHERE Table_name IN ("
 								+ joinListQuoted(list, ",") + ");");
@@ -741,7 +741,7 @@ public class EditUsers extends Activity implements multispinnerListener {
 							}
 
 						}
-						MainLfqActivity.getNewwordsDb().execSQL("DELETE FROM `"
+						MainLfqActivity.getMiscDb().execSQL("DELETE FROM `"
 								+ user_reviewedwords_table
 								+ "` WHERE Word IN ("
 								+ joinListQuoted(list, ",") + ");");
@@ -802,7 +802,7 @@ public class EditUsers extends Activity implements multispinnerListener {
 									null);
 							if (c.moveToFirst()) {
 								do {
-									c2 = MainLfqActivity.getNewwordsDb().rawQuery("SELECT Word FROM "
+									c2 = MainLfqActivity.getMiscDb().rawQuery("SELECT Word FROM "
 											+ user_reviewedwords_table
 											+ " WHERE Word='"
 											+ list.get(i)
@@ -814,7 +814,7 @@ public class EditUsers extends Activity implements multispinnerListener {
 										cv.clear();
 										cv.put("Word", c.getString(0));
 										cv.put("Table_name", list.get(i));
-										MainLfqActivity.getNewwordsDb().insert(user_reviewedwords_table,
+										MainLfqActivity.getMiscDb().insert(user_reviewedwords_table,
 												null, cv);
 										sql = "INSERT INTO `" + Helpers.db_prefix + "newwords`.`"
 												+ user_reviewedwords_table
@@ -851,7 +851,7 @@ public class EditUsers extends Activity implements multispinnerListener {
 
 						}
 						for (int i = 0; i < list.size(); i++) {
-							c = MainLfqActivity.getNewwordsDb().rawQuery(
+							c = MainLfqActivity.getMiscDb().rawQuery(
 									"SELECT Word FROM "
 											+ user_reviewedwords_table
 											+ " WHERE Word='"
@@ -865,7 +865,7 @@ public class EditUsers extends Activity implements multispinnerListener {
 								cv.put("Word", list.get(i));
 								cv.put("Table_name", select_add_reviewed_tables
 										.getSelectedItem().toString());
-								MainLfqActivity.getNewwordsDb().insert(user_reviewedwords_table, null, cv);
+								MainLfqActivity.getMiscDb().insert(user_reviewedwords_table, null, cv);
 								sql = "INSERT INTO " + Helpers.db_prefix + "newwords."
 										+ user_reviewedwords_table
 										+ "(Word,Table_name) VALUES('"
@@ -1097,7 +1097,7 @@ public class EditUsers extends Activity implements multispinnerListener {
 	}
 
 	public void setDeleteTables() {
-		c = MainLfqActivity.getNewwordsDb().rawQuery("SELECT DISTINCT Table_name FROM "
+		c = MainLfqActivity.getMiscDb().rawQuery("SELECT DISTINCT Table_name FROM "
 				+ user_reviewedwords_table + " ORDER BY Table_name", null);
 		deleteTablesAdapter.clear();
 		delete_tables_list.clear();
@@ -1134,7 +1134,7 @@ public class EditUsers extends Activity implements multispinnerListener {
 				} while (c.moveToNext());
 			}
 			c.close();
-			c = MainLfqActivity.getNewwordsDb().rawQuery("SELECT Word FROM " + user_reviewedwords_table
+			c = MainLfqActivity.getMiscDb().rawQuery("SELECT Word FROM " + user_reviewedwords_table
 					+ " WHERE Table_name='" + this_table + "'", null);
 			if (c.moveToFirst()) {
 				do {
@@ -1165,7 +1165,7 @@ public class EditUsers extends Activity implements multispinnerListener {
 
 	public void setDeleteWords(String this_table) {
 		if (deleteTablesAdapter.getCount() > 0) {
-			c = MainLfqActivity.getNewwordsDb().rawQuery("SELECT Word FROM " + user_reviewedwords_table
+			c = MainLfqActivity.getMiscDb().rawQuery("SELECT Word FROM " + user_reviewedwords_table
 					+ " WHERE Table_name='" + this_table + "'", null);
 			delete_words_list.clear();
 			if (c.moveToFirst()) {

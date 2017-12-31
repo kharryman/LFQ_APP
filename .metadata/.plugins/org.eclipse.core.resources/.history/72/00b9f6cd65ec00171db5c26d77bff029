@@ -1,0 +1,9 @@
+package com.lfq.learnfactsquick;
+
+import android.content.Context;
+
+public class DatabaseNewwords {
+	private static final String DATABASE_NAME = "lfq_newwords.db";
+	private static final int DATABASE_VERSION = 1;	
+	Context myContext;
+}

@@ -32,18 +32,9 @@ public class MainLfqActivity extends Activity {
 	Button major_system, celebrity_numbers, anagram_generator,
 			mnemonic_generator, dictionary;
 	Button help_menu;
-	private DatabaseSynchronize ds;
 	private DatabaseAcrostics dacr;
-	private DatabaseAlphabet dalp;
-	private DatabaseDictionary dd;
-	private DatabaseEvents de;
 	private DatabaseMisc dmis;
-	private DatabaseMnemonics dmne;
-	private DatabaseNewwords dnew;
-	private DatabaseNumbers dnum;
-	private DatabaseUsers du;
-	private static SQLiteDatabase sync_db, acr_db, alp_db, dictionary_db,
-			events_db, misc_db, mne_db, newwords_db, numbers_db, users_db;
+	private static SQLiteDatabase acr_db, misc_db;
 
 	private MenuItem go_back_item, menu_item_autosync_on,
 			menu_item_autosync_off;
@@ -447,10 +438,8 @@ public class MainLfqActivity extends Activity {
 			dialog.setMessage(text);
 			is_database_load = true;
 			publishProgress("Loading synchronize database...");
-			ds = DatabaseSynchronize.getInstance(this_act);
-			sync_db = ds.getWritableDatabase();
 			publishProgress("LOADED.");
-			Cursor c_sync = sync_db
+			/*Cursor c_sync = misc_db
 					.rawQuery("SELECT _id FROM sync_table", null);
 			Boolean is_do_to = (c_sync.getCount() > 0);
 			is_do_from = false;
@@ -474,6 +463,7 @@ public class MainLfqActivity extends Activity {
 			   setFromDialog("db");
 			}
 			c_sync.close();
+			*/
 			dialog.show();
 		}
 
@@ -486,44 +476,10 @@ public class MainLfqActivity extends Activity {
 			acr_db = dacr.getWritableDatabase();
 			publishProgress("LOADED.<br />");
 
-			publishProgress("Loading alphabet database...");
-			dalp = DatabaseAlphabet.getInstance(this_act, this);
-			alp_db = dalp.getWritableDatabase();
-			publishProgress("LOADED.<br />");
-
-			publishProgress("Loading dictionary database...");
-			dd = DatabaseDictionary.getInstance(this_act, this);
-			dictionary_db = dd.getWritableDatabase();
-			publishProgress("LOADED.<br />");
-
-			publishProgress("Loading events database...");
-			de = DatabaseEvents.getInstance(this_act, this);
-			events_db = de.getWritableDatabase();
-			publishProgress("LOADED.<br />");
-
 			publishProgress("Loading miscellaneous database...");
 			dmis = DatabaseMisc.getInstance(this_act, this);
 			misc_db = dmis.getWritableDatabase();
 			publishProgress("LOADED.<br />");
-
-			publishProgress("Loading mnemonics database...");
-			dmne = DatabaseMnemonics.getInstance(this_act, this);
-			mne_db = dmne.getWritableDatabase();
-			publishProgress("LOADED.<br />");
-
-			publishProgress("Loading newwords database...");
-			dnew = DatabaseNewwords.getInstance(this_act, this);
-			newwords_db = dnew.getWritableDatabase();
-			publishProgress("LOADED.<br />");
-
-			publishProgress("Loading numbers database...");
-			dnum = DatabaseNumbers.getInstance(this_act, this);
-			numbers_db = dnum.getWritableDatabase();
-			publishProgress("LOADED.<br />");
-
-			publishProgress("Loading users database...");
-			du = DatabaseUsers.getInstance(this_act, this);
-			users_db = du.getWritableDatabase();
 
 			publishProgress("DATABASES ALL LOADED.");
 			is_database_load = false;
@@ -546,6 +502,7 @@ public class MainLfqActivity extends Activity {
 			if (is_update == false) {
 				dialog.dismiss();
 			}
+			new doSyncTo().execute();
 		}
 
 	}
@@ -566,14 +523,15 @@ public class MainLfqActivity extends Activity {
 			dialog = new AlertDialog.Builder(this_act).create();
 			dialog.setTitle("Synchronizing to LFQ.com. Please wait...");
 			dialog.setMessage("");
-			is_do_from = (Synchronize.getFromCount(false, "db") > 0);
-			setFromDialog("to");
+			//is_do_from = (Synchronize.getFromCount(false, "db") > 0);
+			//setFromDialog("to");
 			dialog.show();
 		}
 
 		@Override
 		protected String doInBackground(String... params) {
-			Synchronize.doSyncTo(this);
+			//Synchronize.doSyncTo(this);
+			Synchronize.updateAcrostics(this);
 			return null;
 		}
 
@@ -732,44 +690,14 @@ public class MainLfqActivity extends Activity {
 	// events_db, misc_db, mne_db, newwords_db, numbers_db, users_db;
 	public static void closeDatabases() {
 		acr_db.close();
-		alp_db.close();
-		dictionary_db.close();
-		events_db.close();
-		misc_db.close();
-		mne_db.close();
-		newwords_db.close();
-		numbers_db.close();
-		users_db.close();
-		sync_db.close();
-	}
+		misc_db.close();	}
 
 	public static SQLiteDatabase getDatabase() {
 		if (set_database.equals("acr_db")) {
 			return acr_db;
 		}
-		if (set_database.equals("alp_db")) {
-			return alp_db;
-		}
-		if (set_database.equals("dictionary_db")) {
-			return dictionary_db;
-		}
-		if (set_database.equals("events_db")) {
-			return events_db;
-		}
 		if (set_database.equals("misc_db")) {
 			return misc_db;
-		}
-		if (set_database.equals("mne_db")) {
-			return mne_db;
-		}
-		if (set_database.equals("nw_db")) {
-			return newwords_db;
-		}
-		if (set_database.equals("num_db")) {
-			return numbers_db;
-		}
-		if (set_database.equals("users_db")) {
-			return users_db;
 		}
 		return null;
 	}
@@ -782,39 +710,7 @@ public class MainLfqActivity extends Activity {
 		return acr_db;
 	}
 
-	public static SQLiteDatabase getAlphabetDb() {
-		return alp_db;
-	}
-
-	public static SQLiteDatabase getDictionaryDb() {
-		return dictionary_db;
-	}
-
-	public static SQLiteDatabase getEventsDb() {
-		return events_db;
-	}
-
 	public static SQLiteDatabase getMiscDb() {
 		return misc_db;
-	}
-
-	public static SQLiteDatabase getMneDb() {
-		return mne_db;
-	}
-
-	public static SQLiteDatabase getNewwordsDb() {
-		return newwords_db;
-	}
-
-	public static SQLiteDatabase getNumbersDb() {
-		return numbers_db;
-	}
-
-	public static SQLiteDatabase getSyncDb() {
-		return sync_db;
-	}
-
-	public static SQLiteDatabase getUsersDb() {
-		return users_db;
 	}
 }

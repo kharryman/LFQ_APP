@@ -240,7 +240,7 @@ public class MajorSystemGenerator extends Activity {
 			if (check_use_major_letters.isChecked() == false) {// OPTION: uses
 																// only numbers
 				text += input.toString() + "<br /><br />";
-				Cursor c1 = MainLfqActivity.getDictionaryDb().rawQuery(
+				Cursor c1 = MainLfqActivity.getMiscDb().rawQuery(
 						"SELECT * FROM " + tables.dictionarya + " WHERE " + dictionarya.Number + " LIKE '" + input
 								+ "%'", null);
 				String[] worspl;
@@ -315,7 +315,7 @@ public class MajorSystemGenerator extends Activity {
 				// FOR NUMBERS TO WORDS:
 				for (int bkct = 0; bkct < ltct; bkct++) {
 					begworstr = beglets.substring(bkct, bkct + 1);
-					Cursor c_num_wors = MainLfqActivity.getDictionaryDb().rawQuery(
+					Cursor c_num_wors = MainLfqActivity.getMiscDb().rawQuery(
 							"SELECT * FROM " + tables.dictionarya + " WHERE " + dictionarya.Word + " LIKE '"
 									+ begworstr + "%' AND " + dictionarya.Number + " LIKE '"
 									+ endnums + "%'", null);
@@ -361,7 +361,7 @@ public class MajorSystemGenerator extends Activity {
 						seawornumltct = 1;
 					}
 					String[] selectionArgs = { begworstr + "%" };
-					Cursor c_let_maj = MainLfqActivity.getDictionaryDb().rawQuery(
+					Cursor c_let_maj = MainLfqActivity.getMiscDb().rawQuery(
 							"SELECT * FROM " + tables.dictionarya + " WHERE " + dictionarya.Word + " LIKE ?",
 							selectionArgs);
 					if (c_let_maj.moveToFirst()) {

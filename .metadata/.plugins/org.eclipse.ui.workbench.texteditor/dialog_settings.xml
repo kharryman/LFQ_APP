@@ -1,38 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.GotoLineAction$GotoLineDialog_dialogBounds">
+		<item value="569" key="DIALOG_X_ORIGIN"/>
+		<item value="313" key="DIALOG_Y_ORIGIN"/>
+	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="MainLfqActivity" key="selection"/>
+		<item value="loadTablesAdapter" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="MainLfqActivity"/>
-			<item value="table"/>
-			<item value="lfq_table"/>
-			<item value="dictionary"/>
-			<item value="results"/>
-			<item value="startInsert"/>
-			<item value="doInsert"/>
-			<item value="private List&lt;String&gt; mnespl, wordspl, infospl;"/>
+			<item value="loadTablesAdapter"/>
+			<item value="tablesAdapter"/>
+			<item value="tables"/>
+			<item value="doSyncTo"/>
+			<item value="MyDate"/>
+			<item value="getAlphabetDb"/>
+			<item value="getNewwordsDb"/>
+			<item value="getNumbersDb"/>
 		</list>
 		<list key="replacehistory">
-			<item value="MyDate"/>
+			<item value="Date"/>
+			<item value="getMiscDb"/>
+			<item value="s"/>
 			<item value=""/>
+			<item value="user_new_words"/>
+			<item value="MyDate"/>
 			<item value="after"/>
 			<item value="&quot; + Helpers.db_prefix + &quot;"/>
-			<item value="Helpers.db"/>
-			<item value="set_database"/>
-			<item value="MainLfqActivity.getDatabase()"/>
-			<item value="MainLfqActivity.getAcrosticsDb()"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item value="273" key="DIALOG_WIDTH"/>
-		<item value="1|微软雅黑|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|微软雅黑" key="DIALOG_FONT_NAME"/>
-		<item value="398" key="DIALOG_HEIGHT"/>
-		<item value="125" key="DIALOG_Y_ORIGIN"/>
-		<item value="991" key="DIALOG_X_ORIGIN"/>
+		<item value="257" key="DIALOG_WIDTH"/>
+		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
+		<item value="381" key="DIALOG_HEIGHT"/>
+		<item value="345" key="DIALOG_Y_ORIGIN"/>
+		<item value="1081" key="DIALOG_X_ORIGIN"/>
 	</section>
 </section>

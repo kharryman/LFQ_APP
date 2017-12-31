@@ -1037,19 +1037,19 @@ public class EditAcrostics extends Activity {
 			opt = "get_last";
 		}
 		if (opt.equals("none")) {
-			c = MainLfqActivity.getDictionaryDb()
+			c = MainLfqActivity.getMiscDb()
 					.rawQuery(
 							"SELECT * FROM " + tables.dictionarya + " WHERE " + dictionarya.Word + "='" + name
 									+ "'", null);
 		}
 		if (opt.equals("get_next")) {
-			c = MainLfqActivity.getDictionaryDb().rawQuery(
+			c = MainLfqActivity.getMiscDb().rawQuery(
 					"SELECT * FROM " + tables.dictionarya + " WHERE LOWER(" + dictionarya.Word + ")>'"
 							+ name.toLowerCase(Locale.US)
 							+ "' ORDER BY LOWER(" + dictionarya.Word + ") LIMIT 1", null);
 		}
 		if (opt.equals("get_last")) {
-			c = MainLfqActivity.getDictionaryDb().rawQuery(
+			c = MainLfqActivity.getMiscDb().rawQuery(
 					"SELECT * FROM " + tables.dictionarya + " WHERE LOWER( " + dictionarya.Word + ")<'"
 							+ name.toLowerCase(Locale.US)
 							+ "' ORDER BY LOWER(" + dictionarya.Word + ") DESC LIMIT 1", null);
@@ -1515,7 +1515,7 @@ public class EditAcrostics extends Activity {
 			String[] selectionArgs = { name + "%" };
 			if (check_use_dictionary.isChecked()) {
 				c2 = MainLfqActivity
-						.getDictionaryDb()
+						.getMiscDb()
 						.rawQuery(
 								"SELECT DISTINCT " + dictionarya.Word + " FROM " + tables.dictionarya + " WHERE " + dictionarya.Word + " LIKE ? ORDER BY " + dictionarya.Word + " COLLATE NOCASE",
 								selectionArgs);

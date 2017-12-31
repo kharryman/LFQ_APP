@@ -429,18 +429,21 @@ public class EditMnemonics extends Activity {
 		check_new_mnemonic_table.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				results.setText("");
 				setTableVisibility();
 			}
 		});
 		check_new_mnemonic_title.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				results.setText("");
 				setTitleVisibility();
 			}
 		});
 		check_update_mnemonics.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				results.setText("");
 				setVisibilities();
 				getEntry();
 			}
@@ -448,6 +451,7 @@ public class EditMnemonics extends Activity {
 		check_insert_mnemonics.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				results.setText("");
 				setVisibilities();
 				startInsert();
 			}
@@ -455,6 +459,7 @@ public class EditMnemonics extends Activity {
 		check_delete_mnemonics.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				results.setText("");
 				setVisibilities();
 			}
 		});
@@ -462,6 +467,7 @@ public class EditMnemonics extends Activity {
 				.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View arg0) {
+						results.setText("");
 						setVisibilities();
 					}
 				});
@@ -552,6 +558,7 @@ public class EditMnemonics extends Activity {
 		do_edit_mnemonic_table.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				results.setText("");
 				if (check_delete_mnemonics.isChecked()) {
 					deleteMnemonic();
 				} else if (check_insert_mnemonics.isChecked()) {
@@ -621,7 +628,7 @@ public class EditMnemonics extends Activity {
 
 	public void getTables() {
 		Log.i(TAG, "getTables called.");
-		Cursor c_mne_tabs = MainLfqActivity.getMneDb().rawQuery(
+		Cursor c_mne_tabs = MainLfqActivity.getMiscDb().rawQuery(
 				"SELECT DISTINCT " + mnemonics.Category + " FROM "
 						+ tables.mnemonics + " ORDER BY " + mnemonics.Category,
 				null);
@@ -830,7 +837,7 @@ public class EditMnemonics extends Activity {
 		Log.i(TAG, "getTitles called.");
 		status = "get titles";
 		cat_sel = select_mnemonic_table.getSelectedItem().toString();
-		Cursor c_get = MainLfqActivity.getMneDb().rawQuery(
+		Cursor c_get = MainLfqActivity.getMiscDb().rawQuery(
 				"SELECT * FROM " + tables.mnemonics + " WHERE "
 						+ mnemonics.Category + "='" + cat_sel + "' GROUP BY "
 						+ mnemonics.Entry_Number + " ORDER BY "
@@ -863,7 +870,7 @@ public class EditMnemonics extends Activity {
 				.getSelectedItemPosition());
 		status = "begin update";
 		cat_sel = select_mnemonic_table.getSelectedItem().toString();
-		Cursor c_get1 = MainLfqActivity.getMneDb().rawQuery(
+		Cursor c_get1 = MainLfqActivity.getMiscDb().rawQuery(
 				"SELECT * FROM " + tables.mnemonics + " WHERE "
 						+ mnemonics.Category + "='" + cat_sel + "' AND "
 						+ mnemonics.Entry_Number + "='" + sav_ent_num + "'",
@@ -942,7 +949,7 @@ public class EditMnemonics extends Activity {
 		cat_sel = select_mnemonic_table.getSelectedItem().toString();
 		sav_ent_num = titles_entry_numbers.get(select_mnemonic_title
 				.getSelectedItemPosition());
-		MainLfqActivity.getMneDb().delete(tables.mnemonics,
+		MainLfqActivity.getMiscDb().delete(tables.mnemonics,
 				mnemonics.Category + "=? AND " + mnemonics.Entry_Number + "=?",
 				new String[] { cat_sel, String.valueOf(sav_ent_num) });
 		results.setText("DELETED from " + cat_sel + ".");
@@ -986,7 +993,7 @@ public class EditMnemonics extends Activity {
 			cat_sel = select_mnemonic_table.getSelectedItem().toString();
 		}
 		// GET MAX Entry_Number, THEN INCREMENT:
-		Cursor c_max = MainLfqActivity.getMneDb().rawQuery(
+		Cursor c_max = MainLfqActivity.getMiscDb().rawQuery(
 				"SELECT MAX(" + mnemonics.Entry_Number + ") AS MAX_NUM FROM "
 						+ tables.mnemonics + " WHERE " + mnemonics.Category
 						+ "=?", new String[] { cat_sel });
@@ -1016,7 +1023,7 @@ public class EditMnemonics extends Activity {
 			cv.put(mnemonics.Entry_Mnemonic, ent_mne);
 			cv.put(mnemonics.Entry_Info, ent_info);
 			cv.put(mnemonics.Entry_Index, j);
-			num_app_ins = MainLfqActivity.getMneDb().insert(tables.mnemonics,
+			num_app_ins = MainLfqActivity.getMiscDb().insert(tables.mnemonics,
 					null, cv);
 			if (num_app_ins == 0) {
 				Log.e(TAG, "INSERT MNEMONIC ERROR");
@@ -1048,7 +1055,7 @@ public class EditMnemonics extends Activity {
 		add_remove_layout.setVisibility(View.GONE);
 		cat_sel = select_mnemonic_table.getSelectedItem().toString();
 		long num_app_del = 0;
-		num_app_del = MainLfqActivity.getMneDb().delete(tables.mnemonics,
+		num_app_del = MainLfqActivity.getMiscDb().delete(tables.mnemonics,
 				mnemonics.Category + "=?", new String[] { cat_sel });
 		if (num_app_del == 0) {
 			Log.e(TAG, "ERROR DELETE MNEMNONIC TABLE!");
@@ -1083,7 +1090,7 @@ public class EditMnemonics extends Activity {
 		} else {
 			title = select_mnemonic_title.getSelectedItem().toString();
 		}
-		Cursor c_get1 = MainLfqActivity.getMneDb().rawQuery(
+		Cursor c_get1 = MainLfqActivity.getMiscDb().rawQuery(
 				"SELECT * FROM " + tables.mnemonics + " WHERE "
 						+ mnemonics.Category + "='" + old_cat_sel + "' AND "
 						+ mnemonics.Entry_Number + "='" + sav_ent_num + "'",
@@ -1112,7 +1119,7 @@ public class EditMnemonics extends Activity {
 				cv.put(mnemonics.Entry, ent);
 				cv.put(mnemonics.Entry_Mnemonic, ent_mne);
 				cv.put(mnemonics.Entry_Info, ent_info);
-				num_app_upds = MainLfqActivity.getMneDb().update(
+				num_app_upds = MainLfqActivity.getMiscDb().update(
 						tables.mnemonics,
 						cv,
 						mnemonics.Category + "=? AND " + mnemonics.Entry_Number

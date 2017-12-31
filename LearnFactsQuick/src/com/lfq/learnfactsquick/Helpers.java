@@ -37,7 +37,7 @@ public class Helpers {
 			logged_in = false;
 			return results;
 		}
-		c = MainLfqActivity.getUsersDb().rawQuery(
+		c = MainLfqActivity.getMiscDb().rawQuery(
 				"SELECT * FROM `userdata` WHERE UserName='" + username
 						+ "' AND Password='" + password + "' LIMIT 1", null);
 		if (c.moveToFirst()) {

@@ -24,7 +24,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.lfq.learnfactsquick.Constants.cols.acrostics;
 import com.lfq.learnfactsquick.Constants.cols.sync_table;
+import com.lfq.learnfactsquick.Constants.cols.user_new_words;
 import com.lfq.learnfactsquick.Constants.tables;
 
 import android.annotation.SuppressLint;
@@ -32,6 +34,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
@@ -62,16 +65,125 @@ public class Synchronize {
 	private static JSONObject json;
 	private static TelephonyManager telephonyManager = (TelephonyManager) LfqApp
 			.getInstance().getSystemService(Context.TELEPHONY_SERVICE);
-	//private static String device_id = "";
+	// private static String device_id = "";
 	private static String results = "";
 
 	public Synchronize(Context context) {
 	}
 
+	public static void updateAcrostics(
+			com.lfq.learnfactsquick.MainLfqActivity.doSyncTo loader) {
+        /*
+		if (!isConnected()) {
+			loader.doProgress("NOT CONNECTED." + c.getCount()
+					+ " UPDATES NOT SYNCED.");
+			return;
+		}
+		c = MainLfqActivity.getAcrosticsDb().rawQuery(
+				" SELECT name FROM sqlite_master "
+						+ " WHERE type='table' ORDER BY name", null);
+		List<String> acrtabs = new ArrayList<String>();
+		if (c.moveToFirst()) {
+			do {
+				if (!c.getString(0).equals("android_metadata")
+						&& !c.getString(0).equals("sqlite_sequence"))
+					acrtabs.add(c.getString(0));
+			} while (c.moveToNext());
+		}
+		c.close();
+		int count_to = 0;
+		String sql_upd = "";
+		params.clear();
+		for (int i = 0; i < acrtabs.size(); i++) {
+			c = MainLfqActivity.getAcrosticsDb().rawQuery(
+					"SELECT " + acrostics.Name + "," + acrostics.Acrostics
+							+ " FROM " + acrtabs.get(i) + " WHERE "
+							+ acrostics.Acrostics + "<>''", null);
+			if (c.moveToFirst()) {
+				do {
+					sql_upd = "UPDATE "
+							+ acrtabs.get(i)
+							+ " SET "
+							+ acrostics.Acrostics
+							+ "='"
+							+ c.getString(c.getColumnIndex(acrostics.Acrostics))
+							+ "' WHERE " + acrostics.Name + "='"
+							+ c.getString(c.getColumnIndex(acrostics.Name))
+							+ "'";
+
+					//System.out.println("SQL=" + sql_upd);
+					params.add(new BasicNameValuePair(sync_table.SQL + count_to, sql_upd));
+					count_to++;
+				} while (c.moveToNext());
+				c.close();				
+			}
+		}
+		System.out.println("# acrostics =" + count_to);
+		params.add(new BasicNameValuePair("COUNT_SQL", String
+				.valueOf(count_to)));
+		url = "http://www.learnfactsquick.com/lfq_app_php/udpate_app_acr.php";
+		json = makeHttpRequest(url, "POST", params);
+		if (json == null) {
+			loader.doProgress("SERVER NOT RESPONDING.");
+		}
+		System.out.println(json.toString());
+		System.out.println("count_to=" + count_to);
+		try {
+			System.out.println("RESPONSE COUNT_SQL="
+					+ json.getString("COUNT_SQL"));
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
+		
+
+	}
+
+	public static void doInsertNW(
+			com.lfq.learnfactsquick.MainLfqActivity.doSyncTo loader) {
+		/*
+		 * if (!isConnected()) { loader.doProgress("NOT CONNECTED." +
+		 * c.getCount() + " UPDATES NOT SYNCED."); return; } DatabaseNewwords dn
+		 * = new DatabaseNewwords(LfqApp.getInstance()); SQLiteDatabase nw_db =
+		 * dn.getWritableDatabase(); c =
+		 * nw_db.rawQuery("SELECT * FROM harryman75_savednewwords", null); int
+		 * ct_sql = c.getCount(); System.out.println("# harryman75 newwords=" +
+		 * ct_sql); String sql_ins = ""; int count_to = 0; params.clear();
+		 * String cols[] = c.getColumnNames(); for (int i=0;i<cols.length;i++){
+		 * System.out.println("cols["+i+"]=" + cols[i]); }
+		 * 
+		 * if (c.moveToFirst()){ do { sql_ins =
+		 * "INSERT INTO user_new_words (Username, Table_name, Date, Word) VALUES('harryman75','"
+		 * + c.getString(c.getColumnIndex("Table_name")) + "','" +
+		 * c.getString(c.getColumnIndex("MyDate")) + "','" +
+		 * c.getString(c.getColumnIndex("Word")) + "')";
+		 * 
+		 * //System.out.println("SQL=" + sql_ins); params.add(new
+		 * BasicNameValuePair(sync_table.SQL + count_to, sql_ins)); count_to++;
+		 * } while (c.moveToNext()); c.close();
+		 * 
+		 * params.add(new BasicNameValuePair("COUNT_SQL",
+		 * String.valueOf(ct_sql))); url =
+		 * "http://www.learnfactsquick.com/lfq_app_php/insert_app_nw.php"; json
+		 * = makeHttpRequest(url, "POST", params); if (json == null) {
+		 * loader.doProgress("SERVER NOT RESPONDING."); }
+		 * System.out.println(json.toString()); System.out.println("count_to=" +
+		 * count_to); try { System.out.println("RESPONSE COUNT_SQL=" +
+		 * json.getString("COUNT_SQL")); } catch (JSONException e) { // TODO
+		 * Auto-generated catch block e.printStackTrace(); }
+		 * 
+		 * //for (int i = 0; i < count_to; i++) { // int j = i + 1; // try { //
+		 * loader.doProgress(j + ")" + json.getString("to_results" + i)); // }
+		 * catch (JSONException e) { // e.printStackTrace(); // } //} }
+		 */
+
+	}
 
 	public static void doSyncTo(
-			com.lfq.learnfactsquick.MainLfqActivity.doSyncTo loader) {		
-		c = MainLfqActivity.getSyncDb().rawQuery("SELECT * FROM " + tables.sync_table, null);
+			com.lfq.learnfactsquick.MainLfqActivity.doSyncTo loader) {
+		c = MainLfqActivity.getMiscDb().rawQuery(
+				"SELECT * FROM " + tables.sync_table, null);
 		if (!isConnected()) {
 			loader.doProgress("NOT CONNECTED." + c.getCount()
 					+ " UPDATES NOT SYNCED.");
@@ -80,40 +192,56 @@ public class Synchronize {
 		text = "";
 		autosync_result = "";
 		// PASS SYNC TO QUERIES:
+		System.out.println(c.getCount() + " Sync Table SQLS");
 		try {
 			int count_to = 0;
 			params.clear();
 			if (c.moveToFirst()) {
 				do {
-					params.add(new BasicNameValuePair(sync_table.SQL + count_to, c
-							.getString(c.getColumnIndex(sync_table.SQL))));
+					System.out.println("SQL="
+							+ c.getString(c.getColumnIndex(sync_table.SQL)));
+
+					params.add(new BasicNameValuePair(
+							sync_table.SQL + count_to, c.getString(c
+									.getColumnIndex(sync_table.SQL))));
 					params.add(new BasicNameValuePair("ID" + count_to, c
 							.getString(c.getColumnIndex("_id"))));
-					params.add(new BasicNameValuePair(sync_table.DB + count_to, c
-							.getString(c.getColumnIndex(sync_table.DB))));
-					params.add(new BasicNameValuePair(sync_table.Username + count_to, c
-							.getString(c.getColumnIndex(sync_table.Username))));
-					params.add(new BasicNameValuePair(sync_table.Password + count_to, c
-							.getString(c.getColumnIndex(sync_table.Password))));
-					params.add(new BasicNameValuePair(sync_table.Is_Image + count_to, c
-							.getString(c.getColumnIndex(sync_table.Is_Image))));
+					params.add(new BasicNameValuePair(sync_table.DB + count_to,
+							c.getString(c.getColumnIndex(sync_table.DB))));
+					params.add(new BasicNameValuePair(sync_table.Username
+							+ count_to, c.getString(c
+							.getColumnIndex(sync_table.Username))));
+					params.add(new BasicNameValuePair(sync_table.Password
+							+ count_to, c.getString(c
+							.getColumnIndex(sync_table.Password))));
+					params.add(new BasicNameValuePair(sync_table.Is_Image
+							+ count_to, c.getString(c
+							.getColumnIndex(sync_table.Is_Image))));
 					if (c.getString(c.getColumnIndex(sync_table.Is_Image)) != null) {
-						if (c.getString(c.getColumnIndex(sync_table.Is_Image)).equals(
-								"yes")) {
-							params.add(new BasicNameValuePair(sync_table.Image + count_to, Base64
-									.encodeToString(c.getBlob(c
-											.getColumnIndex(sync_table.Image)), 0)));
+						if (c.getString(c.getColumnIndex(sync_table.Is_Image))
+								.equals("yes")) {
+							params.add(new BasicNameValuePair(sync_table.Image
+									+ count_to, Base64.encodeToString(
+									c.getBlob(c
+											.getColumnIndex(sync_table.Image)),
+									0)));
 						}
 					}
-					params.add(new BasicNameValuePair(sync_table.Table_name + count_to,
-							c.getString(c.getColumnIndex(sync_table.Table_name))));
-					params.add(new BasicNameValuePair(sync_table.Name + count_to, c
-							.getString(c.getColumnIndex(sync_table.Name))));
-					//params.add(new BasicNameValuePair("Device_Id" + count_to, c.getString(c.getColumnIndex("Device_Id"))));
+					params.add(new BasicNameValuePair(sync_table.Table_name
+							+ count_to, c.getString(c
+							.getColumnIndex(sync_table.Table_name))));
+					params.add(new BasicNameValuePair(sync_table.Name
+							+ count_to, c.getString(c
+							.getColumnIndex(sync_table.Name))));
+					// params.add(new BasicNameValuePair("Device_Id" + count_to,
+					// c.getString(c.getColumnIndex("Device_Id"))));
 					// sql,user,password,is_image,image,table,name,device_id
-					String image_string="";
-					if (c.getString(c.getColumnIndex(sync_table.Is_Image)).equals("yes")){
-						image_string = Base64.encodeToString(c.getBlob(c.getColumnIndex(sync_table.Image)),0);
+					String image_string = "";
+					if (c.getString(c.getColumnIndex(sync_table.Is_Image))
+							.equals("yes")) {
+						image_string = Base64.encodeToString(
+								c.getBlob(c.getColumnIndex(sync_table.Image)),
+								0);
 					}
 					to_list.add(new String[] {
 							c.getString(c.getColumnIndex(sync_table.SQL)),
@@ -123,16 +251,18 @@ public class Synchronize {
 							image_string,
 							c.getString(c.getColumnIndex(sync_table.Table_name)),
 							c.getString(c.getColumnIndex(sync_table.Name)),
-							//c.getString(c.getColumnIndex("Device_Id"))
-							});
+					// c.getString(c.getColumnIndex("Device_Id"))
+					});
 					count_to++;
+
 				} while (c.moveToNext());
 			}
 			c.close();
+
 			params.add(new BasicNameValuePair("Count_To_Queries", String
 					.valueOf(count_to)));
-			//device_id = telephonyManager.getDeviceId();
-			//params.add(new BasicNameValuePair("Device_Id", device_id));
+			// device_id = telephonyManager.getDeviceId();
+			// params.add(new BasicNameValuePair("Device_Id", device_id));
 			url = "http://www.learnfactsquick.com/lfq_app_php/synchronize_to.php";
 			json = makeHttpRequest(url, "POST", params);
 			if (json == null) {
@@ -147,11 +277,10 @@ public class Synchronize {
 			for (int i = 0; i < count_to; i++) {
 				int j = i + 1;
 				loader.doProgress(j + ")" + json.getString("to_results" + i)
-						+ ":" + to_list.get(i)[0]);				
-			    MainLfqActivity.getSyncDb().delete(tables.sync_table, null, null);
-				
+						+ ":" + to_list.get(i)[0]);
 			}
-			//loader.doProgress(json.getString("DEBUG"));
+			MainLfqActivity.getMiscDb().delete(tables.sync_table, null, null);
+			// loader.doProgress(json.getString("DEBUG"));
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -165,10 +294,10 @@ public class Synchronize {
 		// DO FROM LFQ QUERIES:
 		int count_from;
 		results = "";
-		try {			
-			//device_id = telephonyManager.getDeviceId();
+		try {
+			// device_id = telephonyManager.getDeviceId();
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			//params.add(new BasicNameValuePair("Device_Id", device_id));
+			// params.add(new BasicNameValuePair("Device_Id", device_id));
 			url = "http://www.learnfactsquick.com/lfq_app_php/synchronize_from.php";
 			json = makeHttpRequest(url, "POST", params);
 			if (json == null) {
@@ -176,21 +305,22 @@ public class Synchronize {
 			}
 			count_from = json.getInt("count_from");
 			results = "";
-			loader.doProgress(count_from+" QUERIES.");
-			c = null;			
-			//System.out.println(json.toString());
+			loader.doProgress(count_from + " QUERIES.");
+			c = null;
+			// System.out.println(json.toString());
 			String db, id, is_image, imageString, query, table, name, action, user;
-			// sync_db, acr_db, alp_db, dictionary_db, events_db, misc_db, mne_db, nw_db, num_db, users_db;
-			Boolean is_acr=false, is_dic=false, is_events=false, is_misc=false, is_mne=false, is_nw=false, is_num=false, is_users=false;
+			// sync_db, acr_db, alp_db, dictionary_db, events_db, misc_db,
+			// mne_db, nw_db, num_db, users_db;
+			Boolean is_acr = false, is_dic = false, is_events = false, is_misc = false, is_mne = false, is_nw = false, is_num = false, is_users = false;
 			Boolean done = false;
 			for (int i = 0; i < count_from; i++) {
-				done =false;
-				db = json.getString(sync_table.DB + i);				
+				done = false;
+				db = json.getString(sync_table.DB + i);
 				MainLfqActivity.setDatabase(db);
 				id = json.getString("ID" + i);
 				is_image = json.getString(sync_table.Is_Image + i);
 				imageString = json.getString(sync_table.Image + i);
-				query = json.getString(sync_table.SQL + i);				
+				query = json.getString(sync_table.SQL + i);
 				table = json.getString("Table" + i);
 				name = json.getString(sync_table.Name + i);
 				action = json.getString(sync_table.Action + i);
@@ -202,7 +332,7 @@ public class Synchronize {
 					}
 				}
 				lfq_conflicts.add(new String[] { db, id, query, is_image,
-						imageString, table, name, action, user });				
+						imageString, table, name, action, user });
 				if (is_image.equals("false")) {// NOT IMAGE:
 					try {
 						MainLfqActivity.getDatabase().execSQL(query);
@@ -219,65 +349,68 @@ public class Synchronize {
 					cv.clear();
 					cv.put(sync_table.Image, imageInByte);
 					cv.put("Has_Image", "yes");
-					MainLfqActivity.getDatabase().update(table, cv, sync_table.Name + "=?", new String[] { name });
+					MainLfqActivity.getDatabase().update(table, cv,
+							sync_table.Name + "=?", new String[] { name });
 					results = "Updated " + table + ", " + name + ". ";
 					done = true;
 				}
-				if (done==true){
-					if (db.equals("acr_db") && is_acr==false){
+				if (done == true) {
+					if (db.equals("acr_db") && is_acr == false) {
 						setDatabaseDate("DATE_ACR_SYNCED");
-						is_acr=true;
+						is_acr = true;
 					}
-					if (db.equals("dictionary_db") && is_dic==false){
+					if (db.equals("dictionary_db") && is_dic == false) {
 						setDatabaseDate("DATE_DIC_SYNCED");
-						is_dic=true;
+						is_dic = true;
 					}
-					if (db.equals("events_db") && is_events==false){
+					if (db.equals("events_db") && is_events == false) {
 						setDatabaseDate("DATE_EVT_SYNCED");
-						is_events=true;
+						is_events = true;
 					}
-					if (db.equals("misc_db") && is_misc==false){
+					if (db.equals("misc_db") && is_misc == false) {
 						setDatabaseDate("DATE_MSC_SYNCED");
-						is_misc=true;
+						is_misc = true;
 					}
-					if (db.equals("mne_db") && is_mne==false){
+					if (db.equals("mne_db") && is_mne == false) {
 						setDatabaseDate("DATE_MNE_SYNCED");
-						is_mne=true;
+						is_mne = true;
 					}
-					if (db.equals("nw_db") && is_nw==false){
+					if (db.equals("nw_db") && is_nw == false) {
 						setDatabaseDate("DATE_NWS_SYNCED");
-						is_nw=true;
+						is_nw = true;
 					}
-					if (db.equals("num_db") && is_num==false){
+					if (db.equals("num_db") && is_num == false) {
 						setDatabaseDate("DATE_NUM_SYNCED");
-						is_num=true;
+						is_num = true;
 					}
-					if (db.equals("users_db") && is_users==false){
+					if (db.equals("users_db") && is_users == false) {
 						setDatabaseDate("DATE_USR_SYNCED");
-						is_users=true;
+						is_users = true;
 					}
 				}
-				//System.out.println(results);
+				// System.out.println(results);
 				loader.doProgress(results);
 			}// END FOR LOOP
-				// RESET DATABASES SYNCED DATES:			
+				// RESET DATABASES SYNCED DATES:
 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
 
-		public static int getFromCount(Boolean is_report, String which_loader) {
-		int ret = 0;		
+	public static int getFromCount(Boolean is_report, String which_loader) {
+		int ret = 0;
 		if (!isConnected()) {
-			if (is_report) {				
-				if (which_loader=="db"){					
-					MainLfqActivity.getDoLoadDatabases().doProgress("NOT CONNECTED." + c.getCount()
-							+ " UPDATES NOT SYNCED.");
+			if (is_report) {
+				if (which_loader == "db") {
+					MainLfqActivity.getDoLoadDatabases().doProgress(
+							"NOT CONNECTED." + c.getCount()
+									+ " UPDATES NOT SYNCED.");
 				}
-				if (which_loader=="to"){
-					MainLfqActivity.getDoSyncTo().doProgress("NOT CONNECTED." + c.getCount()
-							+ " UPDATES NOT SYNCED.");
+				if (which_loader == "to") {
+					MainLfqActivity.getDoSyncTo().doProgress(
+							"NOT CONNECTED." + c.getCount()
+									+ " UPDATES NOT SYNCED.");
 				}
 			}
 			return ret;
@@ -287,37 +420,41 @@ public class Synchronize {
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			TelephonyManager telephonyManager = (TelephonyManager) LfqApp
 					.getInstance().getSystemService(Context.TELEPHONY_SERVICE);
-			//device_id = telephonyManager.getDeviceId();
-			//params.add(new BasicNameValuePair("Device_Id", device_id));
+			// device_id = telephonyManager.getDeviceId();
+			// params.add(new BasicNameValuePair("Device_Id", device_id));
 			url = "http://www.learnfactsquick.com/lfq_app_php/get_sync_from_count.php";
 			JSONObject json_from_count = makeHttpRequest(url, "POST", params);
 			if (is_report) {
 				if (json_from_count == null) {
-					if (which_loader=="sync_db"){
-						MainLfqActivity.getDoLoadDatabases().doProgress("SERVER NOT RESPONDING.");
+					if (which_loader == "sync_db") {
+						MainLfqActivity.getDoLoadDatabases().doProgress(
+								"SERVER NOT RESPONDING.");
 					}
-					if (which_loader=="sync_to"){
-						MainLfqActivity.getDoSyncTo().doProgress("SERVER NOT RESPONDING.");
+					if (which_loader == "sync_to") {
+						MainLfqActivity.getDoSyncTo().doProgress(
+								"SERVER NOT RESPONDING.");
 					}
-					
+
 				}
 			}
-			if (json_from_count != null){
-			   ret = json_from_count.getInt("COUNT");
+			if (json_from_count != null) {
+				ret = json_from_count.getInt("COUNT");
 			}
-			//loader.doProgress(json_from_count.getString("DEBUG"));
+			// loader.doProgress(json_from_count.getString("DEBUG"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 			if (is_report) {
-				if (which_loader=="sync_db"){
-					MainLfqActivity.getDoLoadDatabases().doProgress("...FAILED CONNECTION.");
+				if (which_loader == "sync_db") {
+					MainLfqActivity.getDoLoadDatabases().doProgress(
+							"...FAILED CONNECTION.");
 				}
-				if (which_loader=="sync_to"){
-					MainLfqActivity.getDoSyncTo().doProgress("...FAILED CONNECTION.");
+				if (which_loader == "sync_to") {
+					MainLfqActivity.getDoSyncTo().doProgress(
+							"...FAILED CONNECTION.");
 				}
-				
+
 			}
-		}		
+		}
 		return ret;
 	}
 
@@ -345,12 +482,12 @@ public class Synchronize {
 		autosync_result = "";
 		TelephonyManager telephonyManager = (TelephonyManager) LfqApp
 				.getInstance().getSystemService(Context.TELEPHONY_SERVICE);
-		//device_id = telephonyManager.getDeviceId();
+		// device_id = telephonyManager.getDeviceId();
 		SharedPreferences sharedPref = LfqApp.getInstance()
 				.getSharedPreferences(
 						LfqApp.getInstance().getString(
 								R.string.preference_file_key),
-						Context.MODE_PRIVATE);		
+						Context.MODE_PRIVATE);
 		String is_image_str = "no";
 		username = "";
 		if (Helpers.getLoginStatus() == true) {
@@ -361,7 +498,10 @@ public class Synchronize {
 		} else {
 			is_image_str = "no";
 		}
-		MainLfqActivity.getSyncDb().delete(tables.sync_table, sync_table.Action + "=? AND " + sync_table.Table_name + "=? AND " + sync_table.Name + "=?",
+		MainLfqActivity.getMiscDb().delete(
+				tables.sync_table,
+				sync_table.Action + "=? AND " + sync_table.Table_name
+						+ "=? AND " + sync_table.Name + "=?",
 				new String[] { action, table, name });
 		if (sharedPref.getBoolean("AUTO SYNC", false) == false
 				|| !isConnected()) {
@@ -372,48 +512,49 @@ public class Synchronize {
 			cv.put(sync_table.Username, username);
 			cv.put(sync_table.Table_name, table);
 			cv.put(sync_table.Name, name);
-			//cv.put("Device_Id", device_id);
+			// cv.put("Device_Id", device_id);
 			cv.put(sync_table.Is_Image, is_image_str);
 			cv.put(sync_table.Image, image);
 			// sync_db, acr_db, alp_db, dictionary_db, events_db, misc_db,
 			// mne_db, newwords_db, numbers_db, users_db
 			System.out.println("INSERTING TO SYNC DB");
-			MainLfqActivity.getSyncDb().insert(tables.sync_table, null, cv);
+			MainLfqActivity.getMiscDb().insert(tables.sync_table, null, cv);
 			return "UPDATED SYNC TABLE.";
 		}
 		try {
 			// FIRST CHECK FOR CONFLICTS:
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-//			params.add(new BasicNameValuePair("DB", db));
-//			params.add(new BasicNameValuePair("Action", action));
-//			params.add(new BasicNameValuePair("Table", table));
-//			params.add(new BasicNameValuePair("Name", name));
-//			params.add(new BasicNameValuePair("Device_Id", device_id));
-//			url = "http://www.learnfactsquick.com/lfq_app_php/synchronize_check_conflict.php";
-//			json = makeHttpRequest(url, "POST", params);
-//			if (json.getBoolean("IS_CONFLICT")) {
-//				cv.put("SQL", sql);
-//				cv.put("DB", db);
-//				cv.put("Username", username);
-//				cv.put("Table_name", table);
-//				cv.put("Name", name);
-//				cv.put("Device_Id", device_id);
-//				MainLfqActivity.getSyncDb().insert("sync_table", null, cv);
-//				return "HAS CONFLICT, WILL RESOLVE AT NEXT APP RUN";
-//			}
-			// -------------------------------            
+			// params.add(new BasicNameValuePair("DB", db));
+			// params.add(new BasicNameValuePair("Action", action));
+			// params.add(new BasicNameValuePair("Table", table));
+			// params.add(new BasicNameValuePair("Name", name));
+			// params.add(new BasicNameValuePair("Device_Id", device_id));
+			// url =
+			// "http://www.learnfactsquick.com/lfq_app_php/synchronize_check_conflict.php";
+			// json = makeHttpRequest(url, "POST", params);
+			// if (json.getBoolean("IS_CONFLICT")) {
+			// cv.put("SQL", sql);
+			// cv.put("DB", db);
+			// cv.put("Username", username);
+			// cv.put("Table_name", table);
+			// cv.put("Name", name);
+			// cv.put("Device_Id", device_id);
+			// MainLfqActivity.getSyncDb().insert("sync_table", null, cv);
+			// return "HAS CONFLICT, WILL RESOLVE AT NEXT APP RUN";
+			// }
+			// -------------------------------
 			params.clear();
-			System.out.println("sql="+sql);
+			System.out.println("sql=" + sql);
 			params.add(new BasicNameValuePair(sync_table.SQL, sql));
-			params.add(new BasicNameValuePair("User", username));			
-			//params.add(new BasicNameValuePair("Device_Id", device_id));
+			params.add(new BasicNameValuePair("User", username));
+			// params.add(new BasicNameValuePair("Device_Id", device_id));
 			params.add(new BasicNameValuePair(sync_table.Is_Image, is_image_str));
 			if (is_image == true) {
 				params.add(new BasicNameValuePair("table", table));
 				params.add(new BasicNameValuePair(sync_table.DB, db));
 				params.add(new BasicNameValuePair("name", name));
 				params.add(new BasicNameValuePair("image", Base64
-						.encodeToString(image, 0)));				
+						.encodeToString(image, 0)));
 			}
 			url = "http://www.learnfactsquick.com/lfq_app_php/synchronize_from_app_auto.php";
 			json = makeHttpRequest(url, "POST", params);
@@ -511,8 +652,8 @@ public class Synchronize {
 		List<NameValuePair> args = new ArrayList<NameValuePair>();
 		TelephonyManager telephonyManager = (TelephonyManager) LfqApp
 				.getInstance().getSystemService(Context.TELEPHONY_SERVICE);
-		//device_id = telephonyManager.getDeviceId();
-		//args.add(new BasicNameValuePair("device_id", device_id));
+		// device_id = telephonyManager.getDeviceId();
+		// args.add(new BasicNameValuePair("device_id", device_id));
 		args.add(new BasicNameValuePair("date_database_synced",
 				date_database_synced));// EG: DATE_ACR_SYNCHED
 		String ret = "";
@@ -596,7 +737,8 @@ public class Synchronize {
 			int count_queries = json.getInt("Count");
 			upd_results.set(3, count_queries);
 			for (int i = 0; i < count_queries; i++) {
-				MainLfqActivity.getUsersDb().execSQL(json.getString("Query" + i));
+				MainLfqActivity.getMiscDb()
+						.execSQL(json.getString("Query" + i));
 			}
 
 		} catch (JSONException e) {

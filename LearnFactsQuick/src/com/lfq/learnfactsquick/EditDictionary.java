@@ -267,7 +267,7 @@ public class EditDictionary extends Activity {
 					dataAdapter.clear();
 					return;
 				} else {
-					c = MainLfqActivity.getDictionaryDb().rawQuery(
+					c = MainLfqActivity.getMiscDb().rawQuery(
 							"SELECT * FROM " + tables.dictionarya + " WHERE "
 									+ dictionarya.Word + " LIKE ?",
 							new String[] { selwor + "%" });
@@ -310,10 +310,10 @@ public class EditDictionary extends Activity {
 					values.put(dictionarya.Definition, definition);
 					int number = getNumber(selwor);
 					values.put(dictionarya.Number, number);
-					MainLfqActivity.getDictionaryDb().delete(
+					MainLfqActivity.getMiscDb().delete(
 							tables.dictionarya, dictionarya.Word + "=?",
 							new String[] { selwor });
-					MainLfqActivity.getDictionaryDb().insert(
+					MainLfqActivity.getMiscDb().insert(
 							tables.dictionarya, null, values);
 					sql = "DELETE FROM " + Helpers.db_prefix + "dictionary."
 							+ tables.dictionarya + " WHERE " + dictionarya.Word
@@ -344,7 +344,7 @@ public class EditDictionary extends Activity {
 					values.put(dictionarya.Definition, definition);
 					int number = getNumber(selwor);
 					values.put(dictionarya.Number, number);
-					MainLfqActivity.getDictionaryDb().update(
+					MainLfqActivity.getMiscDb().update(
 							tables.dictionarya, values,
 							dictionarya.Word + "=?", new String[] { selwor });
 					sql = "UPDATE " + Helpers.db_prefix + "dictionary."
@@ -356,7 +356,7 @@ public class EditDictionary extends Activity {
 							+ "='" + selwor + "'";
 					autosync_text = Synchronize.autoSync(sql, "dictionary_db",
 							"update", tables.dictionarya, selwor, false, null);
-					c = MainLfqActivity.getDictionaryDb().rawQuery(
+					c = MainLfqActivity.getMiscDb().rawQuery(
 							"SELECT " + dictionarya.PartSpeech + ","
 									+ dictionarya.Definition + " FROM "
 									+ tables.dictionarya + " WHERE "
@@ -380,7 +380,7 @@ public class EditDictionary extends Activity {
 					c.close();
 				}
 				if (delete_definition.isChecked()) {
-					MainLfqActivity.getDictionaryDb().delete(
+					MainLfqActivity.getMiscDb().delete(
 							tables.dictionarya, dictionarya.Word + "=?",
 							new String[] { selwor });
 					sql = "DELETE FROM " + Helpers.db_prefix + "dictionary."
@@ -496,11 +496,11 @@ public class EditDictionary extends Activity {
 
 	public void doGet(String myword) {
 		selwor = myword;
-		c = MainLfqActivity.getDictionaryDb().rawQuery(
+		c = MainLfqActivity.getMiscDb().rawQuery(
 				"SELECT " + dictionarya.Definition + " FROM "
 						+ tables.dictionarya + " WHERE " + dictionarya.Word
 						+ "=?", new String[] { selwor });
-		c2 = MainLfqActivity.getDictionaryDb().rawQuery(
+		c2 = MainLfqActivity.getMiscDb().rawQuery(
 				"SELECT " + dictionarya.PartSpeech + " FROM "
 						+ tables.dictionarya + " WHERE " + dictionarya.Word
 						+ "=?", new String[] { selwor });

@@ -298,7 +298,7 @@ public class AnagramGenerator extends Activity {
 			}
 			words_list.clear();
 			defs_list.clear();
-			Cursor c_sel = MainLfqActivity.getDictionaryDb().rawQuery(
+			Cursor c_sel = MainLfqActivity.getMiscDb().rawQuery(
 					"SELECT " + dictionarya.Word + "," + dictionarya.Definition + " FROM " + tables.dictionarya + " WHERE " + dictionarya.Word + " NOT LIKE '%[.,;-_]%'"
 							+ sql_search + " ORDER BY Word", null);
 			if (c_sel.moveToFirst()) {

@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="com.lfq.learnfactsquick.EditMnemonics"/>
-<fullyQualifiedTypeName name="android.util.SparseIntArray"/>
-<fullyQualifiedTypeName name="java.util.Locale"/>
-<fullyQualifiedTypeName name="com.lfq.learnfactsquick.EditNewWords"/>
-<fullyQualifiedTypeName name="com.lfq.learnfactsquick.EditNumbers"/>
-<fullyQualifiedTypeName name="com.lfq.learnfactsquick.Numbers"/>
-<fullyQualifiedTypeName name="com.lfq.learnfactsquick.Synchronize"/>
 <fullyQualifiedTypeName name="android.database.CursorWindow"/>
 <fullyQualifiedTypeName name="android.database.sqlite.SQLiteDatabase.CursorFactory"/>
 <fullyQualifiedTypeName name="android.view.View.OnAttachStateChangeListener"/>
@@ -52,12 +45,19 @@
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.user_saved_newwords"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols"/>
-<fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.acrostics"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.sync_table"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.events_table"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.user_events_table"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.global_number_table"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.user_numbers_table"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.dictionarya"/>
+<fullyQualifiedTypeName name="android.widget.LinearLayout"/>
+<fullyQualifiedTypeName name="android.widget.Spinner"/>
+<fullyQualifiedTypeName name="com.lfq.learnfactsquick.R.id"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.tables"/>
+<fullyQualifiedTypeName name="android.database.sqlite.SQLiteDatabase"/>
+<fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.user_new_words"/>
+<fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.acrostics"/>
+<fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.alphabet"/>
+<fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.alphabet_tables"/>
 </qualifiedTypeNameHistroy>

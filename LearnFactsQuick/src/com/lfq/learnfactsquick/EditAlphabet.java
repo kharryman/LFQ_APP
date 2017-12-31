@@ -2,6 +2,8 @@ package com.lfq.learnfactsquick;
 
 import java.util.ArrayList;
 
+import com.lfq.learnfactsquick.Constants.cols.alphabet;
+import com.lfq.learnfactsquick.Constants.cols.alphabet_tables;
 import com.lfq.learnfactsquick.Constants.tables;
 
 import android.annotation.SuppressLint;
@@ -55,7 +57,7 @@ public class EditAlphabet extends Activity {
 	SharedPreferences.Editor editor;
 	private MenuItem menu_item_autosync_on, menu_item_autosync_off;
 	private String autosync_text;
-	//private int id;
+	// private int id;
 
 	private static Boolean is_database_load;
 
@@ -68,7 +70,7 @@ public class EditAlphabet extends Activity {
 				getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 		editor = sharedPref.edit();
 		values = new ContentValues();
-		//id = 0;
+		// id = 0;
 		sql = "";
 		sql1 = "";
 		sql2 = "";
@@ -416,7 +418,7 @@ public class EditAlphabet extends Activity {
 	}
 
 	public void loadSelectAdjectives() {
-		Cursor cursor = MainLfqActivity.getAlphabetDb().rawQuery(
+		Cursor cursor = MainLfqActivity.getMiscDb().rawQuery(
 				" SELECT name FROM sqlite_master "
 						+ " WHERE type='table' ORDER BY name", null);
 		dataAdapter.clear();
@@ -430,16 +432,18 @@ public class EditAlphabet extends Activity {
 		} else {
 			results.setText("nothing found");
 		}
-		cursor = MainLfqActivity.getMiscDb().query(tables.alphabettables, null,
-				null, null, null, null, null);
-		String categories[] = cursor.getColumnNames();
+		cursor = MainLfqActivity.getMiscDb().rawQuery(
+				"SELECT DISTINCT " + alphabet_tables.Category + " FROM "
+						+ tables.alphabet_tables + " ORDER BY "
+						+ alphabet_tables.Category, null);
 		categoriesAdapter.clear();
-		for (String str : categories) {
-			if (!str.equals("_id")) {
-				categoriesAdapter.add(str);
-			}
+		if (cursor.moveToFirst()) {
+			do {
+				categoriesAdapter.add(c.getString(c
+						.getColumnIndex(alphabet_tables.Category)));
+			} while (cursor.moveToNext());
+			cursor.close();
 		}
-		cursor.close();
 		select_category.setAdapter(categoriesAdapter);
 		getTables(select_category.getSelectedItem().toString());
 	}
@@ -451,7 +455,7 @@ public class EditAlphabet extends Activity {
 			index = 0;
 		}
 		show_number_insertions.setText("");
-		c = MainLfqActivity.getAlphabetDb().rawQuery(
+		c = MainLfqActivity.getMiscDb().rawQuery(
 				"SELECT " + letter + " FROM " + adjective + " WHERE " + letter
 						+ "<>''", null);
 		if (c.moveToFirst()) {
@@ -504,7 +508,7 @@ public class EditAlphabet extends Activity {
 	public void showComplete() {
 		String alp_complete_text = "";
 		for (int i = 0; i < 26; i++) {
-			c2 = MainLfqActivity.getAlphabetDb().rawQuery(
+			c2 = MainLfqActivity.getMiscDb().rawQuery(
 					"SELECT " + alp.charAt(i) + " FROM " + adjective
 							+ " WHERE " + alp.charAt(i) + "<>''", null);
 			if (c2.getCount() == 0) {
@@ -522,76 +526,50 @@ public class EditAlphabet extends Activity {
 	}
 
 	public void deleteTable(String table_name, String category) {
-		MainLfqActivity.getAlphabetDb().execSQL(
+		MainLfqActivity.getMiscDb().execSQL(
 				"DROP TABLE IF EXISTS '" + table_name + "'");
 		values.clear();
 		values.put(category, "");
-		if (MainLfqActivity.getMiscDb().update(tables.alphabettables, values,
-				category+"=?", new String[] {table_name}) != 0) {
+		if (MainLfqActivity.getMiscDb().delete(tables.alphabet_tables,
+				category + "=?", new String[] { table_name }) != 0) {
 			text = "DELETED TABLE " + table_name + ". ";
 		} else {
 			text = "TABLE " + table_name + " DOESN'T EXIST. ";
 		}
-		sql = "UPDATE " + Helpers.db_prefix + "dictionary.alphabettables SET " + category
-				+ "='' WHERE " + category + "='" + table_name + "'";
-		sql2 = "DROP TABLE IF EXISTS " + Helpers.db_prefix + "alphabetlists." + table_name;
+		sql = "UPDATE " + Helpers.db_prefix + "dictionary.alphabettables SET "
+				+ category + "='' WHERE " + category + "='" + table_name + "'";
+		sql2 = "DROP TABLE IF EXISTS " + Helpers.db_prefix + "alphabetlists."
+				+ table_name;
 		autosync_text = "";
 		// autoSync(sql, db, action, table, name, bool is_image, byte[] image)
-		autosync_text += Synchronize.autoSync(sql, "misc_db", "update alphabettables delete",
-				table_name, "", false, null);
+		autosync_text += Synchronize.autoSync(sql, "misc_db",
+				"update alphabettables delete", table_name, "", false, null);
 		autosync_text += "<br />"
-				+ Synchronize.autoSync(sql2, "alp_db", "drop table", table_name,
-						"", false, null);
+				+ Synchronize.autoSync(sql2, "alp_db", "drop table",
+						table_name, "", false, null);
 		results.setText(Html.fromHtml(text + "<br />" + autosync_text));
 		loadSelectAdjectives();
 	}
 
 	public void insertTable(String table_name, String category) {
 		values.clear();
-		values.put(category, table_name);
-		c = MainLfqActivity.getMiscDb().rawQuery(
-				"SELECT " + category + " FROM " + tables.alphabettables + " WHERE " + category
-						+ "=''", null);
-		if (c.getCount() == 0) {
-			text = "INSERTED NEW TABLE " + table_name + ". ";
-			MainLfqActivity.getMiscDb().insert(tables.alphabettables, null, values);
-			sql = "INSERT INTO " + Helpers.db_prefix + "dictionary." + tables.alphabettables + "(" + category
-					+ ") VALUES('" + table_name + "')";
-		} else {// CASE MUST UPDATE...
-			MainLfqActivity.getMiscDb().execSQL(
-					"UPDATE " + tables.alphabettables + " SET " + category + "='' WHERE "
-							+ category + "='" + table_name + "'");
-			MainLfqActivity.getMiscDb().update(tables.alphabettables, values, category+"=?", new String[]{""});				
-			
-			text = "UPDATED NEW TABLE " + table_name + ". ";
-			sql = "UPDATE " + Helpers.db_prefix + "dictionary." + tables.alphabettables + " SET " + category
-					+ "='' WHERE " + category + "='" + table_name + "'";
-			sql1 = "UPDATE " + Helpers.db_prefix + "dictionary." + tables.alphabettables + " SET " + category
-					+ "='" + table_name + "' WHERE " + category + "='' LIMIT 1";
-			System.out.println("category=" + category);
+		values.put(alphabet_tables.Category, category);
+		values.put(alphabet_tables.Table_name, table_name);
+		long sql_ins = MainLfqActivity.getMiscDb().insert(
+				tables.alphabet_tables, null, values);
+		sql = "INSERT INTO " + Helpers.db_prefix + "misc."
+				+ tables.alphabet_tables + "(" + alphabet_tables.Category + ","
+				+ alphabet_tables.Table_name + ") VALUES ('" + category + "','"
+				+ table_name + "')";
+		if (sql_ins > 0) {
+			text = "INSERTED NEW TABLE " + table_name + " INTO " + category
+					+ ". ";
 		}
-		c.close();
-		MainLfqActivity
-				.getAlphabetDb()
-				.execSQL(
-						"CREATE TABLE IF NOT EXISTS `"
-								+ table_name
-								+ "` (`_id` integer PRIMARY KEY AUTOINCREMENT,`A` text NOT NULL,`B` text NOT NULL,`C` text NOT NULL,`D` text NOT NULL,`E` text NOT NULL,`F` text NOT NULL,`G` text NOT NULL,`H` text NOT NULL,`I` text NOT NULL,`J` text NOT NULL,`K` text NOT NULL,`L` text NOT NULL,`M` text NOT NULL,`N` text NOT NULL,`O` text NOT NULL,`P` text NOT NULL,`Q` text NOT NULL,`R` text NOT NULL,`S` text NOT NULL,`T` text NOT NULL,`U` text NOT NULL,`V` text NOT NULL,`W` text NOT NULL,`X` text NOT NULL,`Y` text NOT NULL,`Z` text NOT NULL)");
 		// SYNC TO LFQ:
 		autosync_text = "";
-		sql2 = "CREATE TABLE IF NOT EXISTS " + Helpers.db_prefix + tables.alphabetlists + "."
-				+ table_name
-				+ " (`ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,`A` text NOT NULL,`B` text NOT NULL,`C` text NOT NULL,`D` text NOT NULL,`E` text NOT NULL,`F` text NOT NULL,`G` text NOT NULL,`H` text NOT NULL,`I` text NOT NULL,`J` text NOT NULL,`K` text NOT NULL,`L` text NOT NULL,`M` text NOT NULL,`N` text NOT NULL,`O` text NOT NULL,`P` text NOT NULL,`Q` text NOT NULL,`R` text NOT NULL,`S` text NOT NULL,`T` text NOT NULL,`U` text NOT NULL,`V` text NOT NULL,`W` text NOT NULL,`X` text NOT NULL,`Y` text NOT NULL,`Z` text NOT NULL)";
 		// autoSync(sql, db, action, table, name, bool is_image, byte[] image)
 		autosync_text += "<br />"
-				+ Synchronize.autoSync(sql, "misc_db", "remove_alphabettables",
-						category, table_name, false, null);
-		autosync_text += "<br />"
-				+ Synchronize.autoSync(sql1, "misc_db",
-						"update_alphabettables", category, table_name, false,
-						null);
-		autosync_text += "<br />"
-				+ Synchronize.autoSync(sql2, "alp_db", "create_table",
+				+ Synchronize.autoSync(sql, "misc_db", "insert_table",
 						table_name, "", false, null);
 
 		results.setText(Html.fromHtml(text + autosync_text));
@@ -602,17 +580,17 @@ public class EditAlphabet extends Activity {
 	public void editAlphabet(String adjective, String letter, String alpent) {
 		int id = index + 1;
 		String[] selectionArgs = { Integer.toString(id) };
-		MainLfqActivity.getAlphabetDb().execSQL(
-				"UPDATE " + adjective + " SET " + letter + "='" + alpent
-						+ "' WHERE _id=" + id);
-		sql = "UPDATE " + Helpers.db_prefix + tables.alphabetlists + "." + adjective + " SET " + letter
-				+ "='" + alpent + "' WHERE ID=" + id;
+		MainLfqActivity.getMiscDb().execSQL(
+				"UPDATE " + tables.alphabet + " SET " + alphabet.Entry + "='"
+						+ alpent + "' WHERE _id=" + id);
+		sql = "UPDATE " + Helpers.db_prefix + "misc." + tables.alphabet
+				+ " SET " + alphabet.Entry + "='" + alpent + "' WHERE ID=" + id;
 		// autoSync(sql, db, action, table, name, bool is_image, byte[] image)
-		autosync_text = Synchronize.autoSync(sql, "alp_db", "update", adjective
-				+ "-" + letter, String.valueOf(id), false, null);
-		c = MainLfqActivity.getAlphabetDb().rawQuery(
-				"SELECT " + letter + " FROM " + adjective + " WHERE _id=?",
-				selectionArgs);
+		autosync_text = Synchronize.autoSync(sql, "misc_db", "update",
+				adjective + "-" + letter, String.valueOf(id), false, null);
+		c = MainLfqActivity.getMiscDb().rawQuery(
+				"SELECT " + alphabet.Entry + " FROM " + tables.alphabet
+						+ " WHERE _id=?", selectionArgs);
 		if (!c.moveToFirst()) {
 			results.setText("RESULTS: doesn't exist." + autosync_text);
 		} else {
@@ -623,9 +601,10 @@ public class EditAlphabet extends Activity {
 	}
 
 	public void insertAlphabet(String adjective, String letter, String alpent) {
-		c = MainLfqActivity.getAlphabetDb().rawQuery(
-				"SELECT " + letter + " FROM " + adjective + " WHERE " + letter
-						+ "='" + alpent + "'", null);
+		c = MainLfqActivity.getMiscDb().rawQuery(
+				"SELECT " + alphabet.Entry + " FROM " + tables.alphabet
+						+ " WHERE " + alphabet.Entry + "='" + alpent + "'",
+				null);
 		if (c.moveToFirst()) {
 			if (c.getString(0).equals(alpent)) {
 				results.setText("ENTRY ALREADY EXISTS. NOT UPDATED.");
@@ -633,37 +612,24 @@ public class EditAlphabet extends Activity {
 			}
 		}
 		c.close();
-		c = MainLfqActivity.getAlphabetDb().rawQuery(
-				"SELECT _id FROM " + adjective + " WHERE " + letter
-						+ "='' LIMIT 1", null);
-		if (c.moveToFirst()) {// CASE UPDATE:
-			values.clear();
-			values.put(letter, alpent);
-			MainLfqActivity.getAlphabetDb().update(adjective, values, "_id=?",
-					new String[] { String.valueOf(c.getInt(0)) });
-			sql = "UPDATE " + Helpers.db_prefix + tables.alphabetlists + "." + adjective + " SET "
-					+ letter + "='" + alpent + "' WHERE ID=" + c.getInt(0);
-			// autoSync(sql, db, action, table, name, bool is_image, byte[]
-			// image)
-			autosync_text = Synchronize.autoSync(sql, "alp_db", "update",
-					adjective + "-" + letter, String.valueOf(c.getInt(0)),
-					false, null);
-		} else {// CASE MUST INSERT:
-			MainLfqActivity.getAlphabetDb().execSQL(
-					"INSERT INTO " + adjective + " ('" + letter + "') VALUES('"
-							+ alpent + "')");
-			sql = "INSERT INTO " + Helpers.db_prefix + tables.alphabetlists + "." + adjective + " ('"
-					+ letter + "') VALUES('" + alpent + "')";
-			// autoSync(sql, db, action, table, name, bool is_image, byte[]
-			// image)
-			autosync_text += Synchronize.autoSync(sql, "alp_db", "insert",
-					adjective + "-" + letter, alpent, false, null);
-		}
-		c.close();
+		values.clear();
+		values.put(alphabet.Table_name, adjective);
+		values.put(alphabet.Entry, alpent);
+		values.put(alphabet.Letter, letter);
+		MainLfqActivity.getMiscDb().insert(tables.alphabet, null, values);
+		sql = "INSERT INTO " + Helpers.db_prefix + "misc." + tables.alphabet
+				+ " ('" + alphabet.Table_name + "','" + alphabet.Letter + ","
+				+ alphabet.Entry + "') VALUES('" + adjective + "','" + letter
+				+ "','" + alpent + "')";
+		// autoSync(sql, db, action, table, name, bool is_image, byte[]
+		// image)
+		autosync_text += Synchronize.autoSync(sql, "misc_db", "insert",
+				adjective + "-" + letter, alpent, false, null);
 
-		c = MainLfqActivity.getAlphabetDb().query(adjective,
-				new String[] { letter }, letter + "=?",
-				new String[] { alpent }, null, null, null);
+		c = MainLfqActivity.getMiscDb().rawQuery(
+				"SELECT " + alphabet.Entry + " FROM " + tables.alphabet
+						+ " WHERE " + alphabet.Entry + "='" + alpent + "'",
+				null);
 		if (c.moveToFirst()) {
 			results.setText("RESULTS: inserted into adjective's, " + adjective
 					+ ", letter, " + letter + ". entry:" + c.getString(0) + "."
@@ -676,35 +642,34 @@ public class EditAlphabet extends Activity {
 	}
 
 	public void deleteAlphabet(String adjective, String letter, String alpent) {
-//		Cursor c_get_empty = MainLfqActivity.getAlphabetDb().rawQuery(
-//				"SELECT _id FROM " + adjective + " WHERE " + letter
-//						+ "='' ORDER BY _id LIMIT 1", null);
-//		if (c_get_empty.moveToFirst()) {
-//			id = c_get_empty.getInt(0);
-//		}
-		//c_get_empty.close();
-		MainLfqActivity.getAlphabetDb().execSQL(
-				"UPDATE " + adjective + " SET " + letter + "='' WHERE "
-						+ letter + "='" + alpent + "'");
-		sql = "UPDATE " + Helpers.db_prefix + tables.alphabetlists + "." + adjective + " SET " + letter
-				+ "='' WHERE " + letter + "='" + alpent + "'";
+		// Cursor c_get_empty = MainLfqActivity.getMiscDb().rawQuery(
+		// "SELECT _id FROM " + adjective + " WHERE " + letter
+		// + "='' ORDER BY _id LIMIT 1", null);
+		// if (c_get_empty.moveToFirst()) {
+		// id = c_get_empty.getInt(0);
+		// }
+		// c_get_empty.close();
+		MainLfqActivity.getMiscDb().delete(tables.alphabet,
+				alphabet.Entry + "=?", new String[] { alpent });
+		sql = "DELETE FROM " + Helpers.db_prefix + "misc." + tables.alphabet
+				+ " WHERE " + alphabet.Entry + "='" + alpent + "'";
 		// autoSync(sql, db, action, table, name, bool is_image, byte[] image)
-		autosync_text = Synchronize.autoSync(sql, "alp_db", "delete", adjective
-				+ "-" + letter, alpent, false, null);
+		autosync_text = Synchronize.autoSync(sql, "misc_db", "delete",
+				adjective + "-" + letter, alpent, false, null);
 		results.setText("RESULTS: Deleted from : " + adjective
 				+ " where letter is " + letter + autosync_text);
 	}
 
 	public void getTables(String category) {
 		c = MainLfqActivity.getMiscDb().rawQuery(
-				"SELECT DISTINCT " + category
-						+ " FROM " + tables.alphabettables + " ORDER BY " + category, null);
+				"SELECT DISTINCT " + alphabet.Table_name + " FROM "
+						+ tables.alphabet_tables + " WHERE "
+						+ alphabet_tables.Category + "='" + category
+						+ "' ORDER BY " + alphabet.Table_name, null);
 		tablesAdapter.clear();
 		if (c.moveToFirst()) {
 			do {
-				if (!c.getString(0).equals("")) {
-					tablesAdapter.add(c.getString(0));
-				}
+				tablesAdapter.add(c.getString(0));
 			} while (c.moveToNext());
 		}
 	}

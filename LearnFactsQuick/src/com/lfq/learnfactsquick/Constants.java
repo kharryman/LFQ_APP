@@ -2,21 +2,41 @@ package com.lfq.learnfactsquick;
 
 public class Constants {
 	static public class tables{
-		//static public String acrostic_files = "acrostic_files";
-		//static public String alphabettables = "alphabettables";
-		static public String dictionarya = "dictionarya";
 		static public String acrostics = "acrostics";
-		static public String mnemonics = "mnemonics";
+		static public String alphabet = "alphabet";
+		static public String alphabet_tables = "alphabet_tables";
+		static public String dictionarya = "dictionarya";
 		static public String events_table = "events_table";
 		static public String global_number_table = "global_number_table";
-		static public String user_review_times = "user_review_times";
-		static public String alphabettables = "alphabettables";
-		static public String alphabetlists = "alphabetlists";
+		static public String mnemonics = "mnemonics";
 		static public String user_events_table = "user_events_table";
+		static public String user_new_words = "user_new_words";
 		static public String user_numbers_table = "user_numbers_table";
-		static public String sync_table = "sync_table";		
+		static public String user_review_times = "user_review_times";
+		static public String sync_table = "sync_table";
 	}
 	static public class cols{
+		static public class acrostics{
+			static public String _id = "_id";
+			static public String Name = "Name";
+			static public String Information = "Information";
+			static public String Acrostics = "Acrostics";
+			static public String Mnemonics = "Mnemonics";
+			static public String Peglist = "Peglist";
+			static public String Image = "Image";
+			static public String Has_Image = "Has_Image";
+		}		
+		static public class alphabet{
+			static public String _id = "_id";
+			static public String Entry = "Entry";
+			static public String Letter = "Letter";
+			static public String Table_name = "Table_name";
+		}
+		static public class alphabet_tables{
+			static public String _id = "_id";
+			static public String Category = "Category";
+			static public String Table_name = "Table_name";
+		}
 		static public class dictionarya{
 			static public String _id = "_id";
 			static public String Word = "Word";
@@ -24,6 +44,22 @@ public class Constants {
 			static public String Definition = "Definition";
 			static public String Number = "Number";			
 		}
+		static public class events_table{
+			static public String _id = "_id";
+			static public String Year = "Year";			
+			static public String Date = "Date";
+			static public String Event = "Event";
+			static public String Acrostics = "Acrostics";
+			static public String SaveWords = "SaveWords";
+			static public String Type = "Type";
+		}		
+		static public class global_number_table{
+			static public String _id = "_id";
+			static public String Number = "Number";
+			static public String NumInf = "NumInf";
+			static public String NumWors = "NumWors";
+			static public String Type = "Type";
+		}		
 		static public class mnemonics{
 			static public String _id = "_id";
 			static public String  Category = "Category";
@@ -35,14 +71,23 @@ public class Constants {
 			static public String  Mnemonic_Type = "Mnemonic_Type";
 			static public String  Title = "Title";
 			static public String  Is_Linebreak = "Is_Linebreak";
-		}		
-		static public class global_number_table{
-			static public String _id = "_id";
-			static public String Number = "Number";
-			static public String NumInf = "NumInf";
-			static public String NumWors = "NumWors";
+		}
+		static public class user_events_table{
+			static public String _id = "_id"; 
+			static public String Year = "Year";
+			static public String Date = "Date";			
+			static public String Event = "Event";
+			static public String Acrostics = "Acrostics";
+			static public String SaveWords = "SaveWords";
 			static public String Type = "Type";
 		}
+		static public class user_new_words{
+			static public String _id = "_id";
+			static public String Username = "Username";
+			static public String Table_name = "Table_name";
+			static public String Date = "Date";
+			static public String Word = "Word";
+		}		
 		static public class user_numbers_table{
 			static public String _id = "_id";
 			static public String Number = "Number";
@@ -64,45 +109,6 @@ public class Constants {
 			static public String Time9 = "Time9";
 			static public String Time10 = "Time10";
 		}
-		static public class acrostics{
-			static public String _id = "_id";
-			static public String Name = "Name";
-			static public String Information = "Information";
-			static public String Acrostics = "Acrostics";
-			static public String Mnemonics = "Mnemonics";
-			static public String Peglist = "Peglist";
-			static public String Image = "Image";
-			static public String Has_Image = "Has_Image";
-		}
-		static public class alphabetlists{
-			static public String _id = "_id";
-			static public String A = "A";
-			static public String B = "B";
-			static public String C = "C";
-			static public String D = "D";
-			static public String E = "E";
-			static public String F = "F";
-			static public String G = "G";
-			static public String H = "H";
-			static public String I = "I";
-			static public String J = "J";
-			static public String K = "K";
-			static public String L = "L";
-			static public String M = "M";
-			static public String N = "N";
-			static public String O = "O";
-			static public String P = "P";
-			static public String Q = "Q";
-			static public String R = "R";
-			static public String S = "S";
-			static public String T = "T";
-			static public String U = "U";
-			static public String V = "V";
-			static public String W = "W";
-			static public String X = "X";
-			static public String Y = "Y";
-			static public String Z = "Z";
-		}
 		static public class sync_table{		
 			static public String _id = "_id";
 			static public String id = "id";
@@ -116,30 +122,6 @@ public class Constants {
 			static public String Image = "Image";
 			static public String Table_name = "Table_name";
 			static public String Name = "Name";
-		}
-		static public class events_table{
-			static public String _id = "_id";
-			static public String Year = "Year";			
-			static public String MyDate = "MyDate";
-			static public String Event = "Event";
-			static public String Acrostics = "Acrostics";
-			static public String SaveWords = "SaveWords";
-			static public String Type = "Type";
-		}
-		static public class user_events_table{
-			static public String _id = "_id"; 
-			static public String Year = "Year";
-			static public String MyDate = "MyDate";			
-			static public String Event = "Event";
-			static public String Acrostics = "Acrostics";
-			static public String SaveWords = "SaveWords";
-			static public String Type = "Type";
-		}
-		static public class user_saved_newwords{
-			static public String _id = "_id";
-			static public String Table_name = "Table_name";
-			static public String MyDate = "MyDate";
-			static public String Word = "Word";
 		}
 	}	
 }

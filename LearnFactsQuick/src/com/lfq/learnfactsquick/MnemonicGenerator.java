@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import com.lfq.learnfactsquick.Constants.cols.alphabet_tables;
 import com.lfq.learnfactsquick.Constants.cols.dictionarya;
 import com.lfq.learnfactsquick.Constants.tables;
 
@@ -793,8 +794,14 @@ public class MnemonicGenerator extends Activity {
 	public void initializeSpinners() {
 		themesAdapter.clear();
 		adjsAdapter.clear();
-		c = MainLfqActivity.getMiscDb().query(tables.alphabettables, null, null, null, null, null, null);
-		String[] catNames = c.getColumnNames();
+		c = MainLfqActivity.getMiscDb().rawQuery("SELECT DISTINCT " + alphabet_tables.Category + " FROM " + tables.alphabet_tables + " ORDER BY " + alphabet_tables.Category, null);
+		String[] catNames = new String[c.getCount()];
+		int ct_cats=0;
+		if (c.moveToFirst()){
+			do{
+				catNames[ct_cats++]= c.getString(c.getColumnIndex(alphabet_tables.Category)); 
+			}while(c.moveToNext());
+		}
 		List<String> adj_types = new ArrayList<String>();
 		adj_types.addAll(Arrays.asList(new String[] { "Opposites", "Shapes",
 				"Times" }));
@@ -811,7 +818,7 @@ public class MnemonicGenerator extends Activity {
 			}
 		}
 		c.close();
-		Cursor c_alp_tabs = MainLfqActivity.getAlphabetDb().rawQuery(" SELECT name FROM sqlite_master "
+		Cursor c_alp_tabs = MainLfqActivity.getMiscDb().rawQuery(" SELECT name FROM sqlite_master "
 				+ " WHERE type='table' ORDER BY name", null);
 		List<String> tabs = new ArrayList<String>();
 		if (c_alp_tabs.moveToFirst()) {
@@ -829,7 +836,7 @@ public class MnemonicGenerator extends Activity {
 					tab = c.getString(0);
 					if (tabs.contains(tab)) {
 
-						c2 = MainLfqActivity.getAlphabetDb().query(tab, null, null, null, null, null,
+						c2 = MainLfqActivity.getMiscDb().query(tab, null, null, null, null, null,
 								null, "1");
 						text = "true";
 						if (c2.moveToFirst()) {
@@ -862,7 +869,7 @@ public class MnemonicGenerator extends Activity {
 				do {
 					tab = c.getString(0);
 					if (tabs.contains(tab)) {
-						c2 = MainLfqActivity.getAlphabetDb().query(tab, null, null, null, null, null,
+						c2 = MainLfqActivity.getMiscDb().query(tab, null, null, null, null, null,
 								null, "1");
 						text = "true";
 						if (c2.moveToFirst()) {
@@ -1107,7 +1114,7 @@ public class MnemonicGenerator extends Activity {
 					parspe = parspelist[l];
 					String[] inputsplspl = Helpers.explode(inputspl[l]);
 					if (!parspe.equals("spc")) {
-						c = MainLfqActivity.getAlphabetDb().rawQuery("SELECT " + inputsplspl[0]
+						c = MainLfqActivity.getMiscDb().rawQuery("SELECT " + inputsplspl[0]
 								+ " FROM " + parspe, null);
 						if (c.moveToFirst())
 							if (c.getString(0).equals("")) {
@@ -1294,7 +1301,7 @@ public class MnemonicGenerator extends Activity {
 						if (!parspe.equals("spc")) {
 							String fousth = "no";
 							if (inputspl[j].length() > 2) {
-								c = MainLfqActivity.getAlphabetDb().rawQuery("SELECT " + inputsplspl[0]
+								c = MainLfqActivity.getMiscDb().rawQuery("SELECT " + inputsplspl[0]
 										+ " FROM " + parspe + " WHERE "
 										+ inputsplspl[0] + " LIKE '"
 										+ inputspl[j].substring(0, 3)
@@ -1396,7 +1403,7 @@ public class MnemonicGenerator extends Activity {
 
 							if (fousth.equals("no")) {
 								if (inputspl[j].length() > 1) {
-									c = MainLfqActivity.getAlphabetDb().rawQuery("SELECT "
+									c = MainLfqActivity.getMiscDb().rawQuery("SELECT "
 											+ inputsplspl[0] + " FROM "
 											+ parspe + " WHERE "
 											+ inputsplspl[0] + " LIKE '"
@@ -1437,7 +1444,7 @@ public class MnemonicGenerator extends Activity {
 								}// END IF inputspl[j].length()>1
 							}
 							if (fousth.equals("no")) {
-								c = MainLfqActivity.getAlphabetDb()
+								c = MainLfqActivity.getMiscDb()
 										.rawQuery("SELECT " + inputsplspl[0]
 												+ " FROM " + parspe
 												+ " LIMIT 20", null);
@@ -1631,7 +1638,7 @@ public class MnemonicGenerator extends Activity {
 						if (parspe.equals("verb") || parspe.equals("adv.")
 								|| parspe.equals("noun")
 								|| parspe.equals("adj.")) {
-							c = MainLfqActivity.getDictionaryDb().rawQuery(
+							c = MainLfqActivity.getMiscDb().rawQuery(
 									"SELECT * FROM " + tables.dictionarya + " WHERE " + dictionarya.Word + " LIKE '"
 											+ inputspl[i].substring(0, 3)
 											+ "%' AND " + dictionarya.PartSpeech + "='" + parspe
@@ -1640,7 +1647,7 @@ public class MnemonicGenerator extends Activity {
 						if (!parspe.equals("verb") && !parspe.equals("adv.")
 								&& !parspe.equals("noun")
 								&& !parspe.equals("adj.")) {
-							c = MainLfqActivity.getAlphabetDb().rawQuery(
+							c = MainLfqActivity.getMiscDb().rawQuery(
 									"SELECT " + inputsplspl[0] + " FROM "
 											+ parspe + " WHERE "
 											+ inputsplspl[0] + " LIKE '"
@@ -1771,7 +1778,7 @@ public class MnemonicGenerator extends Activity {
 							if (parspe.equals("verb") || parspe.equals("adv.")
 									|| parspe.equals("noun")
 									|| parspe.equals("adj.")) {
-								c = MainLfqActivity.getDictionaryDb().rawQuery(
+								c = MainLfqActivity.getMiscDb().rawQuery(
 										"SELECT * FROM dictionarya WHERE Word LIKE '"
 												+ inputspl[i].substring(0, 2)
 												+ "%' AND PartSpeech='"
@@ -1783,7 +1790,7 @@ public class MnemonicGenerator extends Activity {
 									&& !parspe.equals("adv.")
 									&& !parspe.equals("noun")
 									&& !parspe.equals("adj.")) {
-								c = MainLfqActivity.getAlphabetDb().rawQuery("SELECT " + inputsplspl[0]
+								c = MainLfqActivity.getMiscDb().rawQuery("SELECT " + inputsplspl[0]
 										+ " FROM " + parspe + " WHERE "
 										+ inputsplspl[0] + " LIKE '"
 										+ inputspl[i].substring(0, 2) + "%'",
@@ -1857,7 +1864,7 @@ public class MnemonicGenerator extends Activity {
 							if (parspe.equals("verb") || parspe.equals("adv.")
 									|| parspe.equals("noun")
 									|| parspe.equals("adj.")) {
-								c = MainLfqActivity.getDictionaryDb().rawQuery(
+								c = MainLfqActivity.getMiscDb().rawQuery(
 										"SELECT * FROM " + tables.dictionarya + " WHERE " + dictionarya.Word + " LIKE '"
 												+ inputsplspl[0]
 												+ "%' AND " + dictionarya.PartSpeech + "='"
@@ -1869,7 +1876,7 @@ public class MnemonicGenerator extends Activity {
 									&& !parspe.equals("adv.")
 									&& !parspe.equals("noun")
 									&& !parspe.equals("adj.")) {
-								c = MainLfqActivity.getAlphabetDb().rawQuery("SELECT " + inputsplspl[0]
+								c = MainLfqActivity.getMiscDb().rawQuery("SELECT " + inputsplspl[0]
 										+ " FROM " + parspe, null);
 							}
 							if (c.moveToFirst()) {

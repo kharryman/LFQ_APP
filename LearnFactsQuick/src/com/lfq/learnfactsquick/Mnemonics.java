@@ -186,7 +186,7 @@ public class Mnemonics extends Activity {
 		protected String doInBackground(String... params) {
 
 			Cursor c_mne_cats = MainLfqActivity
-					.getMneDb()
+					.getMiscDb()
 					.rawQuery(
 							"SELECT DISTINCT " + mnemonics.Category + " FROM " + tables.mnemonics + " ORDER BY " + mnemonics.Category,
 							null);
@@ -211,7 +211,7 @@ public class Mnemonics extends Activity {
 					cat = c_mne_cats.getString(c_mne_cats
 							.getColumnIndex("Category"));
 					Cursor c_mne = MainLfqActivity
-							.getMneDb()
+							.getMiscDb()
 							.rawQuery(
 									"SELECT * FROM " + tables.mnemonics + " WHERE " + mnemonics.Category + "='"
 											+ cat
@@ -247,7 +247,7 @@ public class Mnemonics extends Activity {
 							mnestr = "";
 							infostr = "";
 							Cursor c_ent = MainLfqActivity
-									.getMneDb()
+									.getMiscDb()
 									.rawQuery(
 											"SELECT * FROM " + tables.mnemonics + " WHERE " + mnemonics.Category + "='"
 													+ cat

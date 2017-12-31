@@ -1281,33 +1281,9 @@ public class OldSynchronize extends Activity {
 
 		@Override
 		protected String doInBackground(String... params) {
-			text += "<br />Loading synchronize database...";
-			publishProgress(text);
-			sync_db = MainLfqActivity.getSyncDb();
-			text += "LOADED.<br />";
-			publishProgress(text);
-
 			text += "Loading acrostics database...";
 			publishProgress(text);
 			acr_db = MainLfqActivity.getAcrosticsDb();
-			text += "LOADED.<br />";
-			publishProgress(text);
-
-			text += "Loading alphabet database...";
-			publishProgress(text);
-			alp_db = MainLfqActivity.getAlphabetDb();
-			text += "LOADED.<br />";
-			publishProgress(text);
-
-			text += "Loading dictionary database...";
-			publishProgress(text);
-			dictionary_db = MainLfqActivity.getDictionaryDb();
-			text += "LOADED.<br />";
-			publishProgress(text);
-
-			text += "Loading events database...";
-			publishProgress(text);
-			events_db = MainLfqActivity.getEventsDb();
 			text += "LOADED.<br />";
 			publishProgress(text);
 
@@ -1317,30 +1293,6 @@ public class OldSynchronize extends Activity {
 			text += "LOADED.<br />";
 			publishProgress(text);
 
-			text += "Loading mnemonics database...";
-			publishProgress(text);
-			mne_db = MainLfqActivity.getMneDb();
-			text += "LOADED.<br />";
-			publishProgress(text);
-
-			text += "Loading newwords database...";
-			publishProgress(text);
-			newwords_db = MainLfqActivity.getNewwordsDb();
-			text += "LOADED.<br />";
-			publishProgress(text);
-
-			text += "Loading numbers database...";
-			publishProgress(text);
-			numbers_db = MainLfqActivity.getNumbersDb();
-			text += "LOADED.<br />";
-			publishProgress(text);
-
-			text += "Loading users database...";
-			publishProgress(text);
-			users_db = MainLfqActivity.getUsersDb();
-			text += "LOADED.<br />";
-			publishProgress(text);
-			is_database_load = false;
 			return null;
 		}
 

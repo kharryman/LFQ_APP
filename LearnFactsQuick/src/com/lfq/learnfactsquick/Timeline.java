@@ -469,7 +469,7 @@ public class Timeline extends Activity {
 								tv.setTextSize(15);
 								tv.setText(Html.fromHtml("<b>DATE:"
 										+ c.getString(c
-												.getColumnIndex(events_table.MyDate))
+												.getColumnIndex(events_table.Date))
 										+ "<br/>EVENT:<br/>"
 										+ c.getString(c
 												.getColumnIndex(events_table.Event))
@@ -493,7 +493,7 @@ public class Timeline extends Activity {
 								tv.setTextSize(15);
 								tv.setText(Html.fromHtml("<b>DATE:"
 										+ c.getString(c
-												.getColumnIndex(events_table.MyDate))
+												.getColumnIndex(events_table.Date))
 										+ "<br/>EVENT:<br/>"
 										+ c.getString(c
 												.getColumnIndex(events_table.Event))
@@ -525,7 +525,7 @@ public class Timeline extends Activity {
 						|| which_events.equals("user_historical")) {
 					c_get_last = MainLfqActivity.getDatabase().rawQuery(
 							"SELECT * FROM " + table + " WHERE "
-									+ user_events_table.MyDate + "='" + date
+									+ user_events_table.Date + "='" + date
 									+ "' AND " + user_events_table.Year + "='"
 									+ year + "' AND " + user_events_table.Type
 									+ "='" + type_clause + "' AND "
@@ -536,12 +536,12 @@ public class Timeline extends Activity {
 						c_get_last.close();
 						c_get_last = MainLfqActivity.getDatabase().rawQuery(
 								"SELECT * FROM " + table + " WHERE "
-										+ user_events_table.MyDate + "<'"
+										+ user_events_table.Date + "<'"
 										+ date + "' AND "
 										+ user_events_table.Year + "='" + year
 										+ "' AND " + user_events_table.Type
 										+ "='" + type_clause + "' ORDER BY "
-										+ user_events_table.MyDate + " DESC,"
+										+ user_events_table.Date + " DESC,"
 										+ user_events_table._id
 										+ " DESC LIMIT 1", null);
 						if (c_get_last.getCount() == 0) {
@@ -627,7 +627,7 @@ public class Timeline extends Activity {
 					}
 					c_get_last = MainLfqActivity.getDatabase().rawQuery(
 							"SELECT * FROM " + table + " WHERE "
-									+ events_table.MyDate + "='" + date
+									+ events_table.Date + "='" + date
 									+ "' AND " + events_table.Year + "='"
 									+ year + "' AND " + events_table._id + "<'"
 									+ id + "' ORDER BY " + events_table._id
@@ -640,7 +640,7 @@ public class Timeline extends Activity {
 								.rawQuery(
 										"SELECT * FROM "
 												+ table
-												+ " WHERE " + events_table.MyDate + "<'"
+												+ " WHERE " + events_table.Date + "<'"
 												+ date
 												+ "' AND " + events_table.Year + "='"
 												+ year
@@ -1022,7 +1022,7 @@ public class Timeline extends Activity {
 					values.put(global_number_table.NumWors, edit_save_words);
 					values.put(global_number_table.Type, "HISTORICAL NUMBERS");
 					if (check_save_timeline_global.isChecked()) {
-						MainLfqActivity.getNumbersDb().insert(
+						MainLfqActivity.getMiscDb().insert(
 								tables.global_number_table, null, values);
 						save_results += " INSERTED INTO GLOBAL NUMBER TABLE.";
 						// SYNCHRONIZE NUMBER GLOBAL TABLE
@@ -1043,7 +1043,7 @@ public class Timeline extends Activity {
 					}
 					if (check_save_timeline_personal.isChecked()) {
 						String numbers_table = username + "_numbertable";
-						MainLfqActivity.getNumbersDb().insert(numbers_table,
+						MainLfqActivity.getMiscDb().insert(numbers_table,
 								null, values);
 						save_results += " INSERTED INTO " + username
 								+ "'S HISTORICAL TABLE.";
@@ -1417,7 +1417,7 @@ public class Timeline extends Activity {
 
 	public boolean addRadioGroup(RadioGroup rg, String prompt,
 			String find_word, int limit) {
-		Cursor myc = MainLfqActivity.getDictionaryDb()
+		Cursor myc = MainLfqActivity.getMiscDb()
 				.rawQuery(
 						"SELECT * FROM " + tables.dictionarya + " WHERE "
 								+ dictionarya.Number + " LIKE '" + find_word
@@ -1609,15 +1609,15 @@ public class Timeline extends Activity {
 		protected String doInBackground(String... params) {
 			ct_tot = 0;
 			ct_all = 0;
-			c_totals = MainLfqActivity.getEventsDb().rawQuery(
+			c_totals = MainLfqActivity.getMiscDb().rawQuery(
 					"SELECT _id FROM " + tables.events_table, null);
 			ct_all = c_totals.getCount();
 			c_totals.close();
 			for (int i = 0; i < months.size(); i++) {
 				for (int j = 0; j < days.size(); j++) {
-					c_totals = MainLfqActivity.getEventsDb().rawQuery(
+					c_totals = MainLfqActivity.getMiscDb().rawQuery(
 							"SELECT _id FROM " + tables.events_table
-									+ " WHERE " + events_table.MyDate + "='"
+									+ " WHERE " + events_table.Date + "='"
 									+ months.get(i) + "-" + days.get(j)
 									+ "' AND " + events_table.SaveWords
 									+ "<>''", null);
