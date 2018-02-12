@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import com.lfq.learnfactsquick.Constants.cols.alphabet;
 import com.lfq.learnfactsquick.Constants.cols.alphabet_tables;
 import com.lfq.learnfactsquick.Constants.cols.dictionarya;
 import com.lfq.learnfactsquick.Constants.tables;
@@ -17,6 +18,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,7 +41,7 @@ public class MnemonicGenerator extends Activity {
 	private EditText mne_input;
 	private CheckBox check_mne_gen_table;
 	private Button do_mne_gen, backup;
-	
+
 	private String input, theme, adj_type, tab;
 	private List<List<String[]>> comarr;
 	private int num_com;
@@ -794,13 +796,18 @@ public class MnemonicGenerator extends Activity {
 	public void initializeSpinners() {
 		themesAdapter.clear();
 		adjsAdapter.clear();
-		c = MainLfqActivity.getMiscDb().rawQuery("SELECT DISTINCT " + alphabet_tables.Category + " FROM " + tables.alphabet_tables + " ORDER BY " + alphabet_tables.Category, null);
+		c = MainLfqActivity.getMiscDb().rawQuery(
+				"SELECT DISTINCT " + alphabet_tables.Category + " FROM "
+						+ tables.alphabet_tables + " ORDER BY "
+						+ alphabet_tables.Category, null);
+		System.out.println("# Categories=" + c.getCount());
 		String[] catNames = new String[c.getCount()];
-		int ct_cats=0;
-		if (c.moveToFirst()){
-			do{
-				catNames[ct_cats++]= c.getString(c.getColumnIndex(alphabet_tables.Category)); 
-			}while(c.moveToNext());
+		int ct_cats = 0;
+		if (c.moveToFirst()) {
+			do {
+				catNames[ct_cats++] = c.getString(c
+						.getColumnIndex(alphabet_tables.Category));
+			} while (c.moveToNext());
 		}
 		List<String> adj_types = new ArrayList<String>();
 		adj_types.addAll(Arrays.asList(new String[] { "Opposites", "Shapes",
@@ -818,8 +825,11 @@ public class MnemonicGenerator extends Activity {
 			}
 		}
 		c.close();
-		Cursor c_alp_tabs = MainLfqActivity.getMiscDb().rawQuery(" SELECT name FROM sqlite_master "
-				+ " WHERE type='table' ORDER BY name", null);
+		// GET AND ADD ALL ALPHABET TABLES:----------------------------
+		Cursor c_alp_tabs = MainLfqActivity.getMiscDb().rawQuery(
+				" SELECT " + alphabet_tables.Table_name + " FROM  "
+						+ tables.alphabet_tables + " ORDER BY "
+						+ alphabet_tables.Table_name, null);
 		List<String> tabs = new ArrayList<String>();
 		if (c_alp_tabs.moveToFirst()) {
 			do {
@@ -828,68 +838,37 @@ public class MnemonicGenerator extends Activity {
 			} while (c_alp_tabs.moveToNext());
 		}
 		c_alp_tabs.close();
+		// -------------------------------------------------------------------
+		// String tabs_str = TextUtils.join("','", tabs.subList(0,
+		// tabs.size()));
+		// System.out.println("tabs_str =" + tabs_str);
 		for (int i = 0; i < theme_types.size(); i++) {
-			c = MainLfqActivity.getMiscDb().rawQuery("SELECT " + theme_types.get(i)
-					+ " FROM " + tables.alphabettables, null);
+			c = MainLfqActivity.getMiscDb().rawQuery(
+					"SELECT " + alphabet_tables.Table_name + " FROM "
+							+ tables.alphabet_tables + " WHERE "
+							+ alphabet_tables.Category + "='"
+							+ theme_types.get(i) + "' AND "
+							+ alphabet_tables.Is_Complete + "='1' ORDER BY "
+							+ alphabet_tables.Table_name, null);
 			if (c.moveToFirst()) {
 				do {
-					tab = c.getString(0);
-					if (tabs.contains(tab)) {
-
-						c2 = MainLfqActivity.getMiscDb().query(tab, null, null, null, null, null,
-								null, "1");
-						text = "true";
-						if (c2.moveToFirst()) {
-							for (int j = 0; j < 26; j++) {
-								if (c2.getString(c2.getColumnIndex(alp[j])) == null) {
-									text = "false";
-
-								} else {
-									if (c2.getString(c2.getColumnIndex(alp[j]))
-											.equals("")) {
-										text = "false";
-									}
-								}
-							}
-							if (text.equals("true")) {
-								themesAdapter.add(tab);
-							}
-						}
-						c2.close();
-					}
-
+					themesAdapter.add(c.getString(0));
 				} while (c.moveToNext());
 			}
 			c.close();
 		}
+
 		for (int i = 0; i < adj_types.size(); i++) {
-			c = MainLfqActivity.getMiscDb().rawQuery("SELECT " + adj_types.get(i)
-					+ " FROM " + tables.alphabettables, null);
+			c = MainLfqActivity.getMiscDb().rawQuery(
+					"SELECT " + alphabet_tables.Table_name + " FROM "
+							+ tables.alphabet_tables + " WHERE "
+							+ alphabet_tables.Category + "='"
+							+ adj_types.get(i) + "' AND "
+							+ alphabet_tables.Is_Complete + "='1' ORDER BY "
+							+ alphabet_tables.Table_name, null);
 			if (c.moveToFirst()) {
 				do {
-					tab = c.getString(0);
-					if (tabs.contains(tab)) {
-						c2 = MainLfqActivity.getMiscDb().query(tab, null, null, null, null, null,
-								null, "1");
-						text = "true";
-						if (c2.moveToFirst()) {
-							for (int j = 0; j < 26; j++) {
-								if (c2.getString(c2.getColumnIndex(alp[j])) == null) {
-									text = "false";
-
-								} else {
-									if (c2.getString(c2.getColumnIndex(alp[j]))
-											.equals("")) {
-										text = "false";
-									}
-								}
-							}
-							if (text.equals("true")) {
-								adjsAdapter.add(tab);
-							}
-						}
-						c2.close();
-					}
+					adjsAdapter.add(c.getString(0));
 				} while (c.moveToNext());
 			}
 			c.close();
@@ -1114,8 +1093,9 @@ public class MnemonicGenerator extends Activity {
 					parspe = parspelist[l];
 					String[] inputsplspl = Helpers.explode(inputspl[l]);
 					if (!parspe.equals("spc")) {
-						c = MainLfqActivity.getMiscDb().rawQuery("SELECT " + inputsplspl[0]
-								+ " FROM " + parspe, null);
+						c = MainLfqActivity.getMiscDb().rawQuery(
+								"SELECT " + inputsplspl[0] + " FROM " + parspe,
+								null);
 						if (c.moveToFirst())
 							if (c.getString(0).equals("")) {
 								able = "no";
@@ -1301,11 +1281,12 @@ public class MnemonicGenerator extends Activity {
 						if (!parspe.equals("spc")) {
 							String fousth = "no";
 							if (inputspl[j].length() > 2) {
-								c = MainLfqActivity.getMiscDb().rawQuery("SELECT " + inputsplspl[0]
-										+ " FROM " + parspe + " WHERE "
-										+ inputsplspl[0] + " LIKE '"
-										+ inputspl[j].substring(0, 3)
-										+ "%' LIMIT 20", null);
+								c = MainLfqActivity.getMiscDb().rawQuery(
+										"SELECT " + inputsplspl[0] + " FROM "
+												+ parspe + " WHERE "
+												+ inputsplspl[0] + " LIKE '"
+												+ inputspl[j].substring(0, 3)
+												+ "%' LIMIT 20", null);
 								if (c.moveToFirst()) {
 									do {
 										selwor = c.getString(0);
@@ -1403,12 +1384,17 @@ public class MnemonicGenerator extends Activity {
 
 							if (fousth.equals("no")) {
 								if (inputspl[j].length() > 1) {
-									c = MainLfqActivity.getMiscDb().rawQuery("SELECT "
-											+ inputsplspl[0] + " FROM "
-											+ parspe + " WHERE "
-											+ inputsplspl[0] + " LIKE '"
-											+ inputspl[j].substring(0, 2)
-											+ "%' LIMIT 20", null);
+									c = MainLfqActivity.getMiscDb().rawQuery(
+											"SELECT "
+													+ inputsplspl[0]
+													+ " FROM "
+													+ parspe
+													+ " WHERE "
+													+ inputsplspl[0]
+													+ " LIKE '"
+													+ inputspl[j].substring(0,
+															2) + "%' LIMIT 20",
+											null);
 									if (c.moveToFirst()) {
 										do {
 											selwor = c.getString(0);
@@ -1444,10 +1430,9 @@ public class MnemonicGenerator extends Activity {
 								}// END IF inputspl[j].length()>1
 							}
 							if (fousth.equals("no")) {
-								c = MainLfqActivity.getMiscDb()
-										.rawQuery("SELECT " + inputsplspl[0]
-												+ " FROM " + parspe
-												+ " LIMIT 20", null);
+								c = MainLfqActivity.getMiscDb().rawQuery(
+										"SELECT " + inputsplspl[0] + " FROM "
+												+ parspe + " LIMIT 20", null);
 								if (c.moveToFirst()) {
 									do {
 										if (c.getString(0) == null) {
@@ -1639,18 +1624,26 @@ public class MnemonicGenerator extends Activity {
 								|| parspe.equals("noun")
 								|| parspe.equals("adj.")) {
 							c = MainLfqActivity.getMiscDb().rawQuery(
-									"SELECT * FROM " + tables.dictionarya + " WHERE " + dictionarya.Word + " LIKE '"
+									"SELECT * FROM " + tables.dictionarya
+											+ " WHERE " + dictionarya.Word
+											+ " LIKE '"
 											+ inputspl[i].substring(0, 3)
-											+ "%' AND " + dictionarya.PartSpeech + "='" + parspe
+											+ "%' AND "
+											+ dictionarya.PartSpeech + "='"
+											+ parspe
 											+ "' ORDER BY Word LIMIT 20", null);
 						}
 						if (!parspe.equals("verb") && !parspe.equals("adv.")
 								&& !parspe.equals("noun")
 								&& !parspe.equals("adj.")) {
 							c = MainLfqActivity.getMiscDb().rawQuery(
-									"SELECT " + inputsplspl[0] + " FROM "
-											+ parspe + " WHERE "
-											+ inputsplspl[0] + " LIKE '"
+									"SELECT " + alphabet.Entry + " FROM "
+											+ tables.alphabet + " WHERE "
+											+ alphabet.Table_name + "='"
+											+ parspe + "' AND "
+											+ alphabet.Letter + "='"
+											+ inputsplspl[0] + "' AND "
+											+ alphabet.Entry + " LIKE '"
 											+ inputspl[i].substring(0, 3)
 											+ "%'", null);
 						}
@@ -1790,11 +1783,12 @@ public class MnemonicGenerator extends Activity {
 									&& !parspe.equals("adv.")
 									&& !parspe.equals("noun")
 									&& !parspe.equals("adj.")) {
-								c = MainLfqActivity.getMiscDb().rawQuery("SELECT " + inputsplspl[0]
-										+ " FROM " + parspe + " WHERE "
-										+ inputsplspl[0] + " LIKE '"
-										+ inputspl[i].substring(0, 2) + "%'",
-										null);
+								c = MainLfqActivity.getMiscDb().rawQuery(
+										"SELECT " + alphabet.Entry + " FROM " + tables.alphabet
+												+ " WHERE " + alphabet.Table_name + "='" + parspe + "' AND " + alphabet.Letter + "='" + inputsplspl[0]
+												+ "' AND " + alphabet.Entry + " LIKE '"
+												+ inputspl[i].substring(0, 2)
+												+ "%'", null);
 							}
 							if (c.moveToFirst()) {
 								do {
@@ -1865,9 +1859,11 @@ public class MnemonicGenerator extends Activity {
 									|| parspe.equals("noun")
 									|| parspe.equals("adj.")) {
 								c = MainLfqActivity.getMiscDb().rawQuery(
-										"SELECT * FROM " + tables.dictionarya + " WHERE " + dictionarya.Word + " LIKE '"
-												+ inputsplspl[0]
-												+ "%' AND " + dictionarya.PartSpeech + "='"
+										"SELECT * FROM " + tables.dictionarya
+												+ " WHERE " + dictionarya.Word
+												+ " LIKE '" + inputsplspl[0]
+												+ "%' AND "
+												+ dictionarya.PartSpeech + "='"
 												+ parspe
 												+ "' ORDER BY Word LIMIT 20",
 										null);
@@ -1876,8 +1872,9 @@ public class MnemonicGenerator extends Activity {
 									&& !parspe.equals("adv.")
 									&& !parspe.equals("noun")
 									&& !parspe.equals("adj.")) {
-								c = MainLfqActivity.getMiscDb().rawQuery("SELECT " + inputsplspl[0]
-										+ " FROM " + parspe, null);
+								c = MainLfqActivity.getMiscDb().rawQuery(
+										"SELECT " + alphabet.Entry + " FROM " + tables.alphabet + " WHERE " + alphabet.Table_name + "='"
+												+ parspe + "' AND " + alphabet.Letter + "='" + inputsplspl[0] + "'", null);
 							}
 							if (c.moveToFirst()) {
 								do {
@@ -1918,8 +1915,9 @@ public class MnemonicGenerator extends Activity {
 											|| parspe.equals("noun")
 											|| parspe.equals("adj.")) {
 										text += " - " + parspe + " ";
-										text += c.getString(c
-												.getColumnIndex(dictionarya.Definition));
+										text += c
+												.getString(c
+														.getColumnIndex(dictionarya.Definition));
 									}
 									if (!parspe.equals("verb")
 											&& !parspe.equals("adv.")

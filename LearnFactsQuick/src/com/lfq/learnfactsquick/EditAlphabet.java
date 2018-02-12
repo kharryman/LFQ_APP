@@ -419,15 +419,11 @@ public class EditAlphabet extends Activity {
 
 	public void loadSelectAdjectives() {
 		Cursor cursor = MainLfqActivity.getMiscDb().rawQuery(
-				" SELECT name FROM sqlite_master "
-						+ " WHERE type='table' ORDER BY name", null);
+				" SELECT " + alphabet_tables.Table_name + " FROM " + tables.alphabet_tables + " ORDER BY " + alphabet_tables.Table_name, null);
 		dataAdapter.clear();
 		if (cursor.moveToFirst()) {
 			do {
-				if (!cursor.getString(0).equals("android_metadata")
-						&& !cursor.getString(0).equals("sqlite_sequence")) {
-					dataAdapter.add(cursor.getString(0));
-				}
+   			   dataAdapter.add(cursor.getString(0));				
 			} while (cursor.moveToNext());
 		} else {
 			results.setText("nothing found");
@@ -437,9 +433,10 @@ public class EditAlphabet extends Activity {
 						+ tables.alphabet_tables + " ORDER BY "
 						+ alphabet_tables.Category, null);
 		categoriesAdapter.clear();
+		System.out.println("# Categories=" + cursor.getCount());
 		if (cursor.moveToFirst()) {
 			do {
-				categoriesAdapter.add(c.getString(c
+				categoriesAdapter.add(cursor.getString(cursor
 						.getColumnIndex(alphabet_tables.Category)));
 			} while (cursor.moveToNext());
 			cursor.close();
@@ -456,8 +453,8 @@ public class EditAlphabet extends Activity {
 		}
 		show_number_insertions.setText("");
 		c = MainLfqActivity.getMiscDb().rawQuery(
-				"SELECT " + letter + " FROM " + adjective + " WHERE " + letter
-						+ "<>''", null);
+				"SELECT Entry FROM " + tables.alphabet + " WHERE " + alphabet.Table_name + "='" + adjective + "' AND " + alphabet.Letter + "='" + letter
+						+ "' ORDER BY " + alphabet_tables._id, null);
 		if (c.moveToFirst()) {
 			while (c.moveToNext()) {
 				if (c.getString(0).equals("")) {
@@ -509,8 +506,7 @@ public class EditAlphabet extends Activity {
 		String alp_complete_text = "";
 		for (int i = 0; i < 26; i++) {
 			c2 = MainLfqActivity.getMiscDb().rawQuery(
-					"SELECT " + alp.charAt(i) + " FROM " + adjective
-							+ " WHERE " + alp.charAt(i) + "<>''", null);
+					"SELECT " + alphabet.Entry + " FROM " + tables.alphabet + " WHERE " + alphabet.Table_name + "='" + adjective + "' AND " + alphabet.Letter + "='" + alp.charAt(i) + "'", null);
 			if (c2.getCount() == 0) {
 				alp_complete_text += alp.charAt(i);
 			}

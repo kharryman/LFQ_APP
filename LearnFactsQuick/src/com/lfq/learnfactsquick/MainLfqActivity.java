@@ -1,5 +1,9 @@
 package com.lfq.learnfactsquick;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -67,8 +71,27 @@ public class MainLfqActivity extends Activity {
 		setContentView(R.layout.activity_main_lfq);
 		setViews();
 		setListeners();
-		dialog = new AlertDialog.Builder(this_act).create();
-		new doLoadDatabases().execute();
+		if (sharedPref.getBoolean("IS_DATABASES_CREATED", false) == true) {
+			dacr = new DatabaseAcrostics(this_act);
+			acr_db = dacr.getWritableDatabase();
+			dmis = new DatabaseMisc(this_act);
+			misc_db = dmis.getWritableDatabase();
+			is_database_load = false;
+			Cursor c_sync = misc_db
+					.rawQuery("SELECT _id FROM sync_table", null);
+			Boolean is_do_to = (c_sync.getCount() > 0);
+			c_sync.close();
+			if (is_do_to) {
+				new doSyncTo().execute();
+			} else {
+				is_do_from = (Synchronize.getFromCount(false, "db") > 0);
+				if (is_do_from) {
+					new doSyncFrom().execute();
+				}
+			}
+		} else {
+			new doLoadDatabases().execute();
+		}
 	}
 
 	@SuppressLint("NewApi")
@@ -180,13 +203,10 @@ public class MainLfqActivity extends Activity {
 			}
 		});
 		/*
-		edit_users.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				Intent intent = new Intent(this_act, EditUsers.class);
-				this_act.startActivity(intent);
-			}
-		});
-		*/
+		 * edit_users.setOnClickListener(new OnClickListener() { public void
+		 * onClick(View v) { Intent intent = new Intent(this_act,
+		 * EditUsers.class); this_act.startActivity(intent); } });
+		 */
 
 		show_tables.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
@@ -433,43 +453,16 @@ public class MainLfqActivity extends Activity {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			do_load_db = this;
+			dialog = new AlertDialog.Builder(this_act).create();
 			text = "Loading databases. Please wait...";
 			dialog.setTitle("Loading databases. Please wait...");
 			dialog.setMessage(text);
 			is_database_load = true;
-			publishProgress("Loading synchronize database...");
-			publishProgress("LOADED.");
-			/*Cursor c_sync = misc_db
-					.rawQuery("SELECT _id FROM sync_table", null);
-			Boolean is_do_to = (c_sync.getCount() > 0);
-			is_do_from = false;
-			if (is_do_to) {
-				dialog.setButton(DialogInterface.BUTTON_POSITIVE,
-						"NEXT(SYNC TO UPDATES)",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int which) {
-								dialog.dismiss();
-								new doSyncTo().execute();
-							}
-						});
-				is_update = true;
-			}
-			else{
-			   is_do_from = (Synchronize.getFromCount(false, "db") > 0);
-			   if (is_do_from){
-			      is_update = true;
-			   }
-			   setFromDialog("db");
-			}
-			c_sync.close();
-			*/
 			dialog.show();
 		}
 
 		@Override
 		protected String doInBackground(String... params) {
-			
 
 			publishProgress("Loading acrostics database...");
 			dacr = DatabaseAcrostics.getInstance(this_act, this);
@@ -482,8 +475,10 @@ public class MainLfqActivity extends Activity {
 			publishProgress("LOADED.<br />");
 
 			publishProgress("DATABASES ALL LOADED.");
+			editor.putBoolean("IS_DATABASES_CREATED", true).commit();
+
 			is_database_load = false;
-			
+
 			return null;
 		}
 
@@ -499,39 +494,35 @@ public class MainLfqActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String file_url) {
-			if (is_update == false) {
-				dialog.dismiss();
-			}
-			new doSyncTo().execute();
+			dialog.dismiss();
 		}
 
 	}
-	
-	static public doSyncTo getDoSyncTo(){
+
+	static public doSyncTo getDoSyncTo() {
 		return do_sync_to;
 	}
-	static public doLoadDatabases getDoLoadDatabases(){
+
+	static public doLoadDatabases getDoLoadDatabases() {
 		return do_load_db;
 	}
 
 	public class doSyncTo extends AsyncTask<String, String, String> {
 		@Override
-		protected void onPreExecute() {			
+		protected void onPreExecute() {
 			super.onPreExecute();
 			do_sync_to = this;
 			text = "";
 			dialog = new AlertDialog.Builder(this_act).create();
 			dialog.setTitle("Synchronizing to LFQ.com. Please wait...");
 			dialog.setMessage("");
-			//is_do_from = (Synchronize.getFromCount(false, "db") > 0);
-			//setFromDialog("to");
 			dialog.show();
 		}
 
 		@Override
 		protected String doInBackground(String... params) {
-			//Synchronize.doSyncTo(this);
-			Synchronize.updateAcrostics(this);
+			Synchronize.doSyncTo(this);
+			// Synchronize.updateAcrostics(this);
 			return null;
 		}
 
@@ -547,6 +538,11 @@ public class MainLfqActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String file_url) {
+			dialog.dismiss();
+			is_do_from = (Synchronize.getFromCount(false, "db") > 0);
+			if (is_do_from) {
+				new doSyncFrom().execute();
+			}
 		}
 
 	}
@@ -669,28 +665,12 @@ public class MainLfqActivity extends Activity {
 
 	}
 
-	public void setFromDialog(String myClass) {		
-		String button_message = "DONE(NO SYNC FROM UPDATES OR CONFLICTS)";
-		if (is_do_from) {
-			button_message = "NEXT(SYNC FROM UPDATES)";
-		}
-		final String the_class = myClass;
-		dialog.setButton(DialogInterface.BUTTON_POSITIVE, button_message,
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-						if (Synchronize.getFromCount(true, the_class) > 0) {
-							new doSyncFrom().execute();
-						}
-					}
-				});
-	}
-
 	// private static SQLiteDatabase sync_db, acr_db, alp_db, dictionary_db,
 	// events_db, misc_db, mne_db, newwords_db, numbers_db, users_db;
 	public static void closeDatabases() {
 		acr_db.close();
-		misc_db.close();	}
+		misc_db.close();
+	}
 
 	public static SQLiteDatabase getDatabase() {
 		if (set_database.equals("acr_db")) {

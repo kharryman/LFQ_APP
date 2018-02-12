@@ -1,6 +1,8 @@
 package com.lfq.learnfactsquick;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -9,12 +11,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class DatabaseMisc extends SQLiteOpenHelper {	
+public class DatabaseMisc extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "lfq_misc.db";
-	private static final int DATABASE_VERSION = 1;	
+	private static final int DATABASE_VERSION = 1;
 	Context myContext;
 	private String url;
 	private com.lfq.learnfactsquick.MainLfqActivity.doLoadDatabases loader_main;
@@ -30,8 +33,9 @@ public class DatabaseMisc extends SQLiteOpenHelper {
 	};
 
 	private activity act;
-	
+
 	private static DatabaseMisc sInstance;
+
 	public static synchronized DatabaseMisc getInstance(Context context,
 			com.lfq.learnfactsquick.MainLfqActivity.doLoadDatabases myLoader) {
 		if (sInstance == null) {
@@ -40,6 +44,7 @@ public class DatabaseMisc extends SQLiteOpenHelper {
 		}
 		return sInstance;
 	}
+
 	public static synchronized DatabaseMisc getInstance(Context context,
 			com.lfq.learnfactsquick.AnagramGenerator.doLoadDatabases myLoader) {
 		if (sInstance == null) {
@@ -48,6 +53,7 @@ public class DatabaseMisc extends SQLiteOpenHelper {
 		}
 		return sInstance;
 	}
+
 	public static synchronized DatabaseMisc getInstance(Context context,
 			com.lfq.learnfactsquick.EditAcrostics.doLoadDatabases myLoader) {
 		if (sInstance == null) {
@@ -56,6 +62,7 @@ public class DatabaseMisc extends SQLiteOpenHelper {
 		}
 		return sInstance;
 	}
+
 	public static synchronized DatabaseMisc getInstance(Context context,
 			com.lfq.learnfactsquick.EditAlphabet.doLoadDatabases myLoader) {
 		if (sInstance == null) {
@@ -64,6 +71,7 @@ public class DatabaseMisc extends SQLiteOpenHelper {
 		}
 		return sInstance;
 	}
+
 	public static synchronized DatabaseMisc getInstance(Context context,
 			com.lfq.learnfactsquick.MnemonicGenerator.doLoadDatabases myLoader) {
 		if (sInstance == null) {
@@ -72,6 +80,7 @@ public class DatabaseMisc extends SQLiteOpenHelper {
 		}
 		return sInstance;
 	}
+
 	public static synchronized DatabaseMisc getInstance(Context context,
 			com.lfq.learnfactsquick.ShowAcrosticsTables.doLoadDatabases myLoader) {
 		if (sInstance == null) {
@@ -80,6 +89,7 @@ public class DatabaseMisc extends SQLiteOpenHelper {
 		}
 		return sInstance;
 	}
+
 	public static synchronized DatabaseMisc getInstance(Context context,
 			com.lfq.learnfactsquick.OldSynchronize.doLoadDatabases myLoader) {
 		if (sInstance == null) {
@@ -88,19 +98,26 @@ public class DatabaseMisc extends SQLiteOpenHelper {
 		}
 		return sInstance;
 	}
+	
+	public DatabaseMisc(Context context) {
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		myContext = context;
+		act = activity.MAIN;
+	}	
 
 	public DatabaseMisc(Context context,
 			com.lfq.learnfactsquick.MainLfqActivity.doLoadDatabases myLoader) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		loader_main = myLoader;
-		myContext = context;		
+		myContext = context;
 		act = activity.MAIN;
 	}
+
 	public DatabaseMisc(Context context,
 			com.lfq.learnfactsquick.AnagramGenerator.doLoadDatabases myLoader) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		loader_anagram = myLoader;
-		myContext = context;		
+		myContext = context;
 		act = activity.ANAGRAM;
 	}
 
@@ -108,7 +125,7 @@ public class DatabaseMisc extends SQLiteOpenHelper {
 			com.lfq.learnfactsquick.EditAcrostics.doLoadDatabases myLoader) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		loader_acrostics = myLoader;
-		myContext = context;		
+		myContext = context;
 		act = activity.EDIT_ACROSTICS;
 	}
 
@@ -116,7 +133,7 @@ public class DatabaseMisc extends SQLiteOpenHelper {
 			com.lfq.learnfactsquick.EditAlphabet.doLoadDatabases myLoader) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		loader_alphabet = myLoader;
-		myContext = context;		
+		myContext = context;
 		act = activity.EDIT_ALPHABET;
 	}
 
@@ -124,7 +141,7 @@ public class DatabaseMisc extends SQLiteOpenHelper {
 			com.lfq.learnfactsquick.MnemonicGenerator.doLoadDatabases myLoader) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		loader_mne_generator = myLoader;
-		myContext = context;		
+		myContext = context;
 		act = activity.MNE_GENERATOR;
 	}
 
@@ -132,7 +149,7 @@ public class DatabaseMisc extends SQLiteOpenHelper {
 			com.lfq.learnfactsquick.ShowAcrosticsTables.doLoadDatabases myLoader) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		loader_show_acrostics = myLoader;
-		myContext = context;		
+		myContext = context;
 		act = activity.SHOW_ACROSTICS;
 	}
 
@@ -140,7 +157,7 @@ public class DatabaseMisc extends SQLiteOpenHelper {
 			com.lfq.learnfactsquick.OldSynchronize.doLoadDatabases myLoader) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		loader_sync = myLoader;
-		myContext = context;		
+		myContext = context;
 		act = activity.SYNC;
 	}
 
@@ -221,7 +238,13 @@ public class DatabaseMisc extends SQLiteOpenHelper {
 		} while (is_continue);
 		ct_tables++;
 		text = "ALL COMPLETE!!!    LOADED " + ct_tables + " TABLES!";
-		text += OldSynchronize.setDatabaseDate("DATE_MSC_SYNCED");
+		// text += OldSynchronize.setDatabaseDate("DATE_MSC_SYNCED");
+		String timeStamp = new SimpleDateFormat("yyyy/MM/DD HH:mm:ss")
+				.format(Calendar.getInstance().getTime());
+		SharedPreferences sharedPref = myContext.getSharedPreferences(
+				myContext.getString(R.string.preference_file_key),
+				Context.MODE_PRIVATE);
+		sharedPref.edit().putString("TIME_SYNCED_FROM", timeStamp).commit();
 		switch (act) {
 		case ANAGRAM:
 			loader_anagram.doProgress(text);

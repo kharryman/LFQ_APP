@@ -35,7 +35,7 @@ Then press ENTER"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="12dp" >
         </EditText>
-
+         
         <CheckBox
             android:id="@+id/check_mne_gen_table"
             android:layout_width="wrap_content"
@@ -43,10 +43,12 @@ Then press ENTER"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/mne_gen_input"
             android:text="Create A Table To Choose Words From?"
+            android:visibility="gone"
+            android:checked="true"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="12dp" >
         </CheckBox>
-
+        
         <Button
             android:id="@+id/do_mne_gen"
             android:layout_width="wrap_content"

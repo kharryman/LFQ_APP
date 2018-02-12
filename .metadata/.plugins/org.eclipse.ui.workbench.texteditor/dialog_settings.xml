@@ -6,37 +6,37 @@
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="loadTablesAdapter" key="selection"/>
-		<item value="false" key="casesensitive"/>
+		<item value="edit_save_words" key="selection"/>
+		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="loadTablesAdapter"/>
-			<item value="tablesAdapter"/>
-			<item value="tables"/>
-			<item value="doSyncTo"/>
-			<item value="MyDate"/>
-			<item value="getAlphabetDb"/>
-			<item value="getNewwordsDb"/>
-			<item value="getNumbersDb"/>
+			<item value="edit_save_words"/>
+			<item value="edit_save_words&#x09;&#x09;&#x09;&#x09;&#x09;edit_save_words"/>
+			<item value="user_numbers"/>
+			<item value="global_number"/>
+			<item value="global_numbers_table"/>
+			<item value="global_numbers"/>
+			<item value="edit_saved_words"/>
+			<item value="getMajorWords"/>
 		</list>
 		<list key="replacehistory">
-			<item value="Date"/>
+			<item value="c"/>
+			<item value="user_events"/>
 			<item value="getMiscDb"/>
+			<item value="Date"/>
 			<item value="s"/>
 			<item value=""/>
 			<item value="user_new_words"/>
 			<item value="MyDate"/>
-			<item value="after"/>
-			<item value="&quot; + Helpers.db_prefix + &quot;"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="257" key="DIALOG_WIDTH"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 		<item value="381" key="DIALOG_HEIGHT"/>
-		<item value="345" key="DIALOG_Y_ORIGIN"/>
-		<item value="1081" key="DIALOG_X_ORIGIN"/>
+		<item value="140" key="DIALOG_Y_ORIGIN"/>
+		<item value="1119" key="DIALOG_X_ORIGIN"/>
 	</section>
 </section>

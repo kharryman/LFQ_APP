@@ -2,10 +2,10 @@ package com.lfq.learnfactsquick;
 
 import java.util.ArrayList;
 
+import com.lfq.learnfactsquick.Constants.cols.user_events;
 import com.lfq.learnfactsquick.Constants.tables;
 import com.lfq.learnfactsquick.Constants.cols.events_table;
 import com.lfq.learnfactsquick.Constants.cols.global_number_table;
-import com.lfq.learnfactsquick.Constants.cols.user_events_table;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -40,8 +40,6 @@ public class EditEvents extends Activity {
 	private Spinner select_month, select_day, select_year;
 	private TextView results, event_results;
 	private static EditText event_text;
-	private EditText major_words_text;
-	private EditText acrostics_text;
 	private EditText input_year;
 	private RadioGroup user_type_radios;
 	private CheckBox check_shared_table, check_input_bc;
@@ -51,7 +49,7 @@ public class EditEvents extends Activity {
 	private Button get, edit, left, right, latest;
 
 	private Cursor c = null, c_get_last = null, c_get_next = null;;
-	private String event, major_words, acrostics;
+	private String event;
 	private ArrayAdapter<String> yearsAdapter;
 	private List<String> months_complete;
 	private String day, month, date, year;
@@ -234,8 +232,6 @@ public class EditEvents extends Activity {
 
 		// EDITTEXTS:
 		event_text = (EditText) findViewById(R.id.edit_event_input);
-		major_words_text = (EditText) findViewById(R.id.edit_event_major_words_input);
-		acrostics_text = (EditText) findViewById(R.id.edit_event_acrostics_input);
 		input_year = (EditText) findViewById(R.id.edit_event_input_year);
 		input_year.setVisibility(View.GONE);
 
@@ -372,8 +368,6 @@ public class EditEvents extends Activity {
 					year += " BC";
 				}
 				event = event_text.getText().toString();
-				major_words = major_words_text.getText().toString();
-				acrostics = acrostics_text.getText().toString();
 				month_number = select_month.getSelectedItemPosition() + 1;
 				day_number = select_day.getSelectedItemPosition() + 1;
 				month = String.valueOf(month_number);
@@ -390,7 +384,6 @@ public class EditEvents extends Activity {
 					values.put(events_table.Year, year);
 					values.put(events_table.Date, date);
 					values.put(events_table.Event, event);
-					values.put(events_table.SaveWords, major_words);
 					if (!check_shared_table.isChecked()) {
 						values.put(global_number_table.Type, type);
 					}
@@ -398,19 +391,14 @@ public class EditEvents extends Activity {
 					if (check_shared_table.isChecked()) {
 						sql = "INSERT INTO " + lfq_table + " ("
 								+ events_table.Year + "," + events_table.Date
-								+ "," + events_table.Event + ","
-								+ events_table.SaveWords + ","
-								+ events_table.Acrostics + ") VALUES('" + year
-								+ "','" + date + "','" + event + "','"
-								+ major_words + "','" + acrostics + "')";
+								+ "," + events_table.Event + "," + ") VALUES('"
+								+ year + "','" + date + "','" + event + "')";
 					} else {
 						sql = "INSERT INTO " + lfq_table + " ("
-								+ user_events_table.Date + ","
-								+ user_events_table.Event + ","
-								+ user_events_table.SaveWords + ","
-								+ user_events_table.Type + ") VALUES('" + date
-								+ "','" + event + "','" + major_words + "','"
-								+ type + "')";
+								+ user_events.Date + ","
+								+ user_events.Event + ","
+								+ user_events.Type + ") VALUES('" + date
+								+ "','" + event + "','" + type + "')";
 						System.out.println(sql);
 					}
 					// autoSync(sql, db, action, table, name, bool is_image,
@@ -428,36 +416,28 @@ public class EditEvents extends Activity {
 					values.put(events_table.Year, year);
 					values.put(events_table.Date, date);
 					values.put(events_table.Event, event);
-					values.put(events_table.SaveWords, major_words);
-					values.put(events_table.Acrostics, acrostics);
 					values.put("_id", id);
 					if (!check_shared_table.isChecked()) {
-						values.put(user_events_table.Type, type);
+						values.put(user_events.Type, type);
 					}
 					String[] selectionArgs = { String.valueOf(id) };
 					MainLfqActivity.getDatabase().update(table, values,
 							"_id=?", selectionArgs);
 					if (!check_shared_table.isChecked()) {
 						sql = "UPDATE " + lfq_table + " SET "
-								+ user_events_table.Date + "='" + date
-								+ "', " + user_events_table.Year + "', "
-								+ user_events_table.Event + "='" + event
-								+ "', " + user_events_table.SaveWords + "='"
-								+ major_words + "', "
-								+ user_events_table.Acrostics + "='"
-								+ acrostics + "' WHERE "
-								+ user_events_table.Year + "='" + year
-								+ "' AND ID='" + id + "'";
+								+ user_events.Date + "='" + date + "', "
+								+ user_events.Year + "', "
+								+ user_events.Event + "='" + event
+								+ "' WHERE " + user_events.Year + "='"
+								+ year + "' AND ID='" + id + "'";
 					} else {
 						sql = "UPDATE " + lfq_table + " SET "
 								+ events_table.Year + "='" + year + "', "
 								+ events_table.Date + "='" + date + "', "
 								+ events_table.Event + "='" + event + "', "
-								+ events_table.SaveWords + "='" + major_words
-								+ "', " + events_table.Acrostics + "='"
-								+ acrostics + "', " + events_table.Type + "='"
-								+ type + "' WHERE " + events_table.Year + "='"
-								+ year + "' AND ID='" + id + "'";
+								+ events_table.Type + "='" + type + "' WHERE "
+								+ events_table.Year + "='" + year
+								+ "' AND ID='" + id + "'";
 					}
 					// autoSync(sql, db, action, table, name, bool is_image,
 					// byte[] image)
@@ -538,20 +518,6 @@ public class EditEvents extends Activity {
 						if (c.getString(c.getColumnIndex(events_table.Event)) != null) {
 							event_text.setText(c.getString(c
 									.getColumnIndex(events_table.Event)));
-						}
-					}
-					if (c.getColumnIndex(events_table.SaveWords) != -1) {
-						if (c.getString(c
-								.getColumnIndex(events_table.SaveWords)) != null) {
-							major_words_text.setText(Html.fromHtml(c.getString(c
-									.getColumnIndex(events_table.SaveWords))));
-						}
-					}
-					if (c.getColumnIndex(events_table.Acrostics) != -1) {
-						if (c.getString(c
-								.getColumnIndex(events_table.Acrostics)) != null) {
-							acrostics_text.setText(Html.fromHtml(c.getString(c
-									.getColumnIndex(events_table.Acrostics))));
 						}
 					}
 					id = c.getInt(c.getColumnIndex(events_table._id));
@@ -664,8 +630,8 @@ public class EditEvents extends Activity {
 									.rawQuery(
 											"SELECT * FROM " + table
 													+ " WHERE "
-													+ events_table.Date
-													+ "='" + date + "' AND "
+													+ events_table.Date + "='"
+													+ date + "' AND "
 													+ events_table.Year
 													+ " LIKE '% BC' ORDER BY "
 													+ events_table.Year
@@ -697,9 +663,9 @@ public class EditEvents extends Activity {
 							"SELECT * FROM " + table + " WHERE "
 									+ events_table.Date + "<'" + date
 									+ "' AND " + events_table.Year + "='"
-									+ year + "' ORDER BY "
-									+ events_table.Date + " DESC,"
-									+ events_table._id + " DESC LIMIT 1", null);
+									+ year + "' ORDER BY " + events_table.Date
+									+ " DESC," + events_table._id
+									+ " DESC LIMIT 1", null);
 				}
 			}
 			if (c_get_last.moveToFirst() && number > 1) {
@@ -754,10 +720,6 @@ public class EditEvents extends Activity {
 				}
 				event_text.setText(c_get_last.getString(c_get_last
 						.getColumnIndex(events_table.Event)));
-				major_words_text.setText(c_get_last.getString(c_get_last
-						.getColumnIndex(events_table.SaveWords)));
-				acrostics_text.setText(c_get_last.getString(c_get_last
-						.getColumnIndex(events_table.Acrostics)));
 			}
 			c_get_last.close();
 			results.setText(results_text);
@@ -875,13 +837,15 @@ public class EditEvents extends Activity {
 						null);
 				if (c_get_next.getCount() == 0) {
 					c_get_next.close();
-					c_get_next = MainLfqActivity.getDatabase().rawQuery(
-							"SELECT * FROM " + table + " WHERE "
-									+ events_table.Date + ">'" + date
-									+ "' AND " + events_table.Year + "='"
-									+ year + "' ORDER BY "
-									+ events_table.Date + ","
-									+ events_table._id + " LIMIT 1", null);
+					c_get_next = MainLfqActivity.getDatabase()
+							.rawQuery(
+									"SELECT * FROM " + table + " WHERE "
+											+ events_table.Date + ">'" + date
+											+ "' AND " + events_table.Year
+											+ "='" + year + "' ORDER BY "
+											+ events_table.Date + ","
+											+ events_table._id + " LIMIT 1",
+									null);
 				}
 			}
 			if (c_get_next.moveToFirst() && number < total) {
@@ -935,10 +899,6 @@ public class EditEvents extends Activity {
 			if (c_get_next.moveToFirst()) {
 				event_text.setText(c_get_next.getString(c_get_next
 						.getColumnIndex(events_table.Event)));
-				major_words_text.setText(c_get_next.getString(c_get_next
-						.getColumnIndex(events_table.SaveWords)));
-				acrostics_text.setText(c_get_next.getString(c_get_next
-						.getColumnIndex(events_table.Acrostics)));
 				if (check_get_years.isChecked()) {
 					select_month.setSelection(month_index);
 					select_day.setSelection(day_index);
@@ -988,8 +948,6 @@ public class EditEvents extends Activity {
 			edit.setEnabled(false);
 			check_get_years.setEnabled(false);
 			event_text.setEnabled(false);
-			major_words_text.setEnabled(false);
-			acrostics_text.setEnabled(false);
 			left.setEnabled(false);
 			right.setEnabled(false);
 			results.setText(Html.fromHtml("<b>LOADING YEARS...</b>"));
@@ -1052,8 +1010,6 @@ public class EditEvents extends Activity {
 			edit.setEnabled(true);
 			check_get_years.setEnabled(true);
 			event_text.setEnabled(true);
-			major_words_text.setEnabled(true);
-			acrostics_text.setEnabled(true);
 			left.setEnabled(true);
 			right.setEnabled(true);
 			if (yearsAdapter.getCount() > 0) {
@@ -1101,8 +1057,8 @@ public class EditEvents extends Activity {
 		// ---------------
 		System.out.println("table=" + table + ", date=" + date);
 		Cursor c_first = MainLfqActivity.getDatabase().rawQuery(
-				"SELECT * FROM " + table + " WHERE " + events_table.Date
-						+ "='" + date + "' AND " + events_table.Year
+				"SELECT * FROM " + table + " WHERE " + events_table.Date + "='"
+						+ date + "' AND " + events_table.Year
 						+ " LIKE '% BC' ORDER BY " + events_table.Year
 						+ " DESC," + events_table._id + " ASC LIMIT 1", null);
 		count = 0;

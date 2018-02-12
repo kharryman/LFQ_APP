@@ -1,6 +1,8 @@
 package com.lfq.learnfactsquick;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -12,6 +14,7 @@ import com.lfq.learnfactsquick.Constants.cols.acrostics;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Base64;
@@ -103,6 +106,14 @@ public class DatabaseAcrostics extends SQLiteOpenHelper {
 					myLoader);
 		}
 		return sInstance;
+	}
+	
+	public DatabaseAcrostics(Context context) {
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		myContext = context;
+		status = "";
+		cv = new ContentValues();
+		act = activity.MAIN;
 	}
 
 	public DatabaseAcrostics(Context context,
@@ -271,6 +282,10 @@ public class DatabaseAcrostics extends SQLiteOpenHelper {
 
 		ct_tables++;
 		text = "ALL COMPLETE!!!    LOADED " + ct_tables + " TABLES!";
+		String timeStamp = new SimpleDateFormat("yyyy/MM/DD HH:mm:ss")
+					.format(Calendar.getInstance().getTime());
+		SharedPreferences sharedPref = myContext.getSharedPreferences(myContext.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+		sharedPref.edit().putString("TIME_SYNCED_FROM", timeStamp).commit();		
 		//text += OldSynchronize.setDatabaseDate("DATE_ACR_SYNCED");		
 		switch (act) {
 		case ACROSTICS:

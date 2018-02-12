@@ -609,6 +609,8 @@ public class EditNewWords extends Activity {
 								sql2 += ",";
 							}
 							sql += "('"
+									+ username
+									+ "','"
 									+ select_tables.get(i).getSelectedItem()
 											.toString()
 									+ "','"
@@ -616,6 +618,8 @@ public class EditNewWords extends Activity {
 											.toString() + "','" + edidate
 									+ "')";
 							sql2 += "('"
+									+ username
+									+ "','"									
 									+ select_tables.get(i).getSelectedItem()
 											.toString()
 									+ "','"

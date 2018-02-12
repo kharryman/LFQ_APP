@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="android.database.CursorWindow"/>
-<fullyQualifiedTypeName name="android.database.sqlite.SQLiteDatabase.CursorFactory"/>
-<fullyQualifiedTypeName name="android.view.View.OnAttachStateChangeListener"/>
-<fullyQualifiedTypeName name="android.view.View.OnKeyListener"/>
-<fullyQualifiedTypeName name="android.widget.TableLayout.LayoutParams"/>
-<fullyQualifiedTypeName name="android.graphics.Color"/>
 <fullyQualifiedTypeName name="android.telephony.TelephonyManager"/>
 <fullyQualifiedTypeName name="android.widget.HorizontalScrollView"/>
 <fullyQualifiedTypeName name="java.util.HashMap"/>
@@ -35,7 +29,6 @@
 <fullyQualifiedTypeName name="android.view.View"/>
 <fullyQualifiedTypeName name="android.widget.BaseAdapter"/>
 <fullyQualifiedTypeName name="java.lang.System"/>
-<fullyQualifiedTypeName name="android.text.TextUtils"/>
 <fullyQualifiedTypeName name="java.util.Arrays"/>
 <fullyQualifiedTypeName name="android.widget.AdapterView.OnItemSelectedListener"/>
 <fullyQualifiedTypeName name="android.util.Log"/>
@@ -58,6 +51,13 @@
 <fullyQualifiedTypeName name="android.database.sqlite.SQLiteDatabase"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.user_new_words"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.acrostics"/>
-<fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.alphabet"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.alphabet_tables"/>
+<fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.alphabet"/>
+<fullyQualifiedTypeName name="android.text.TextUtils"/>
+<fullyQualifiedTypeName name="java.sql.Date"/>
+<fullyQualifiedTypeName name="java.text.SimpleDateFormat"/>
+<fullyQualifiedTypeName name="java.util.Calendar"/>
+<fullyQualifiedTypeName name="android.content.SharedPreferences"/>
+<fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.user_events"/>
+<fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.user_numbers"/>
 </qualifiedTypeNameHistroy>

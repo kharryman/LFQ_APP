@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Locale;
 
 import com.lfq.learnfactsquick.Constants.cols.dictionarya;
-import com.lfq.learnfactsquick.Constants.cols.global_number_table;
+import com.lfq.learnfactsquick.Constants.cols.global_numbers;
+import com.lfq.learnfactsquick.Constants.cols.user_events;
 import com.lfq.learnfactsquick.Constants.cols.user_numbers_table;
+import com.lfq.learnfactsquick.Constants.cols.user_numbers;
 import com.lfq.learnfactsquick.Constants.tables;
 import com.lfq.learnfactsquick.Constants.cols.events_table;
 import com.lfq.learnfactsquick.Constants.cols.sync_table;
-import com.lfq.learnfactsquick.Constants.cols.user_events_table;
+import com.lfq.learnfactsquick.Constants.cols.user_events;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -66,12 +68,16 @@ public class Timeline extends Activity {
 			c_totals = null;
 	private android.widget.RelativeLayout.LayoutParams params;
 	private Boolean is_event_edit, logged_in, display_savedwords;
-	private List<String> input_saved_words, months, days, months_complete;
+	private List<String> input_saved_numbers, input_saved_words,
+			input_saved_infos, months, days, months_complete;
+	private List<String> list_saved_numbers, list_saved_words,
+			list_saved_infos;
 	private int number, ct_tot, ct_all;
-	private String out, begnum, midnum, endnum, which_events, id,
-			edit_save_words, ign_lets, dbl_lets, username, password, wriwor,
-			year, date, edit_date_number, event, display_date,
-			date_number_string;
+	private String out, begnum, midnum, endnum, which_events, id, ign_lets,
+			dbl_lets, username, password, wriwor, year, date, edit_date_number,
+			event, display_date, date_number_string;
+	private List<List<String>> edit_save_words;
+	private String edit_save_words_string;
 	private int own_word_ind;
 	private List<EditText> input_words;
 	private List<RadioGroup> radio_groups;
@@ -111,17 +117,23 @@ public class Timeline extends Activity {
 		display_date = "";
 		out = "";
 		which_events = "";
-		edit_save_words = "";
 		id = "";
 		own_word_ind = 0;
 		username = "";
 		password = "";
+		edit_save_words_string = "";
 		months = new ArrayList<String>();
 		days = new ArrayList<String>();
 		months_complete = new ArrayList<String>();
 		input_words = new ArrayList<EditText>();
 		radio_groups = new ArrayList<RadioGroup>();
+		input_saved_numbers = new ArrayList<String>();
 		input_saved_words = new ArrayList<String>();
+		input_saved_infos = new ArrayList<String>();
+		list_saved_numbers = new ArrayList<String>();
+		list_saved_words = new ArrayList<String>();
+		list_saved_infos = new ArrayList<String>();
+		edit_save_words = new ArrayList<List<String>>();
 		months.addAll(Arrays.asList(new String[] { "01", "02", "03", "04",
 				"05", "06", "07", "08", "09", "10", "11", "12" }));
 		days.addAll(Arrays.asList(new String[] { "01", "02", "03", "04", "05",
@@ -457,9 +469,10 @@ public class Timeline extends Activity {
 						timeline_words_scroll.setLayoutParams(params);
 						words_layout.removeAllViews();
 						event_layout.removeAllViews();
-						c = MainLfqActivity.getDatabase().rawQuery(
+						String save_words = "", save_mnes = "";
+						c = MainLfqActivity.getMiscDb().rawQuery(
 								"SELECT * FROM " + table + " WHERE "
-										+ events_table.SaveWords + "<>'' AND "
+										+ events_table.Number1 + "<>'' AND "
 										+ events_table.Year
 										+ " LIKE '% BC' ORDER BY "
 										+ events_table.Year + " DESC", null);
@@ -467,40 +480,145 @@ public class Timeline extends Activity {
 							do {
 								TextView tv = new TextView(this_act);
 								tv.setTextSize(15);
+								save_words = "";
+								save_mnes = "";
+								if (!c.getString(
+										c.getColumnIndex(events_table.Number1))
+										.equals("")) {
+									save_words += c.getString(c
+											.getColumnIndex(events_table.Number1))
+											+ " ";
+									save_mnes += c.getString(c
+											.getColumnIndex(events_table.Number_Mnemonic1));
+									save_mnes += "("
+											+ c.getString(c
+													.getColumnIndex(events_table.Number_Info1))
+											+ ")";
+								}
+								if (!c.getString(
+										c.getColumnIndex(events_table.Number2))
+										.equals("")) {
+									save_words += c.getString(c
+											.getColumnIndex(events_table.Number2))
+											+ " ";
+									save_mnes += c.getString(c
+											.getColumnIndex(events_table.Number_Mnemonic2));
+									save_mnes += "("
+											+ c.getString(c
+													.getColumnIndex(events_table.Number_Info2))
+											+ ")";
+								}
+								if (!c.getString(
+										c.getColumnIndex(events_table.Number3))
+										.equals("")) {
+									save_words += c.getString(c
+											.getColumnIndex(events_table.Number3))
+											+ " ";
+									save_mnes += c.getString(c
+											.getColumnIndex(events_table.Number_Mnemonic3));
+									save_mnes += "("
+											+ c.getString(c
+													.getColumnIndex(events_table.Number_Info3))
+											+ ")";
+								}
+								if (!c.getString(
+										c.getColumnIndex(events_table.Number4))
+										.equals("")) {
+									save_words += c.getString(c
+											.getColumnIndex(events_table.Number4))
+											+ " ";
+									save_mnes += c.getString(c
+											.getColumnIndex(events_table.Number_Mnemonic4));
+									save_mnes += "("
+											+ c.getString(c
+													.getColumnIndex(events_table.Number_Info4))
+											+ ")";
+								}
 								tv.setText(Html.fromHtml("<b>DATE:"
 										+ c.getString(c
 												.getColumnIndex(events_table.Date))
 										+ "<br/>EVENT:<br/>"
 										+ c.getString(c
 												.getColumnIndex(events_table.Event))
-										+ "<br/>SAVED WORDS:<br/>"
-										+ c.getString(c
-												.getColumnIndex(events_table.SaveWords))
-										+ "<br/></b>"));
+										+ "<br/>SAVED WORDS:<br/>" + save_words
+										+ "<br />" + save_mnes + "<br/></b>"));
 								words_layout.addView(tv);
 							} while (c.moveToNext());
 						}
 						c.close();
-						c = MainLfqActivity.getDatabase().rawQuery(
+						c = MainLfqActivity.getMiscDb().rawQuery(
 								"SELECT * FROM " + table + " WHERE "
-										+ events_table.SaveWords + "<>'' AND "
+										+ events_table.Number1 + "<>'' AND "
 										+ events_table.Year
 										+ " NOT LIKE '% BC' ORDER BY "
 										+ events_table.Year + " ASC", null);
+
 						if (c.moveToFirst()) {
 							do {
 								TextView tv = new TextView(this_act);
 								tv.setTextSize(15);
+								save_words = "";
+								save_mnes = "";
+								if (!c.getString(
+										c.getColumnIndex(events_table.Number1))
+										.equals("")) {
+									save_words += c.getString(c
+											.getColumnIndex(events_table.Number1))
+											+ " ";
+									save_mnes += c.getString(c
+											.getColumnIndex(events_table.Number_Mnemonic1));
+									save_mnes += "("
+											+ c.getString(c
+													.getColumnIndex(events_table.Number_Info1))
+											+ ")";
+								}
+								if (!c.getString(
+										c.getColumnIndex(events_table.Number2))
+										.equals("")) {
+									save_words += c.getString(c
+											.getColumnIndex(events_table.Number2))
+											+ " ";
+									save_mnes += c.getString(c
+											.getColumnIndex(events_table.Number_Mnemonic2));
+									save_mnes += "("
+											+ c.getString(c
+													.getColumnIndex(events_table.Number_Info2))
+											+ ")";
+								}
+								if (!c.getString(
+										c.getColumnIndex(events_table.Number3))
+										.equals("")) {
+									save_words += c.getString(c
+											.getColumnIndex(events_table.Number3))
+											+ " ";
+									save_mnes += c.getString(c
+											.getColumnIndex(events_table.Number_Mnemonic3));
+									save_mnes += "("
+											+ c.getString(c
+													.getColumnIndex(events_table.Number_Info3))
+											+ ")";
+								}
+								if (!c.getString(
+										c.getColumnIndex(events_table.Number4))
+										.equals("")) {
+									save_words += c.getString(c
+											.getColumnIndex(events_table.Number4))
+											+ " ";
+									save_mnes += c.getString(c
+											.getColumnIndex(events_table.Number_Mnemonic4));
+									save_mnes += "("
+											+ c.getString(c
+													.getColumnIndex(events_table.Number_Info4))
+											+ ")";
+								}
 								tv.setText(Html.fromHtml("<b>DATE:"
 										+ c.getString(c
 												.getColumnIndex(events_table.Date))
 										+ "<br/>EVENT:<br/>"
 										+ c.getString(c
 												.getColumnIndex(events_table.Event))
-										+ "<br/>SAVED WORDS:<br/>"
-										+ c.getString(c
-												.getColumnIndex(events_table.SaveWords))
-										+ "<br/></b>"));
+										+ "<br/>SAVED WORDS:<br/>" + save_words
+										+ "<br />" + save_mnes + "<br/></b>"));
 								words_layout.addView(tv);
 							} while (c.moveToNext());
 						}
@@ -523,71 +641,64 @@ public class Timeline extends Activity {
 				is_event_edit = false;
 				if (which_events.equals("user_personal")
 						|| which_events.equals("user_historical")) {
-					c_get_last = MainLfqActivity.getDatabase().rawQuery(
+					c_get_last = MainLfqActivity.getMiscDb().rawQuery(
 							"SELECT * FROM " + table + " WHERE "
-									+ user_events_table.Date + "='" + date
-									+ "' AND " + user_events_table.Year + "='"
-									+ year + "' AND " + user_events_table.Type
-									+ "='" + type_clause + "' AND "
-									+ user_events_table._id + "<'" + id
-									+ "' ORDER BY " + user_events_table._id
+									+ user_events.Date + "='" + date + "' AND "
+									+ user_events.Year + "='" + year + "' AND "
+									+ user_events.Type + "='" + type_clause
+									+ "' AND " + user_events._id + "<'" + id
+									+ "' ORDER BY " + user_events._id
 									+ " DESC LIMIT 1", null);
 					if (c_get_last.getCount() == 0) {
 						c_get_last.close();
-						c_get_last = MainLfqActivity.getDatabase().rawQuery(
+						c_get_last = MainLfqActivity.getMiscDb().rawQuery(
 								"SELECT * FROM " + table + " WHERE "
-										+ user_events_table.Date + "<'"
-										+ date + "' AND "
-										+ user_events_table.Year + "='" + year
-										+ "' AND " + user_events_table.Type
+										+ user_events.Date + "<'" + date
+										+ "' AND " + user_events.Year + "='"
+										+ year + "' AND " + user_events.Type
 										+ "='" + type_clause + "' ORDER BY "
-										+ user_events_table.Date + " DESC,"
-										+ user_events_table._id
-										+ " DESC LIMIT 1", null);
+										+ user_events.Date + " DESC,"
+										+ user_events._id + " DESC LIMIT 1",
+								null);
 						if (c_get_last.getCount() == 0) {
 							if (year.contains("BC")) {// IS BC YEAR:
 								c_get_last.close();
 								c_get_last = MainLfqActivity
-										.getDatabase()
+										.getMiscDb()
 										.rawQuery(
-												"SELECT * FROM "
-														+ table
+												"SELECT * FROM " + table
 														+ " WHERE "
-														+ user_events_table.Year
+														+ user_events.Year
 														+ " LIKE '% BC' AND "
-														+ user_events_table.Year
-														+ ">'"
-														+ year
+														+ user_events.Year
+														+ ">'" + year
 														+ "' AND "
-														+ user_events_table.Type
-														+ "='"
-														+ type_clause
+														+ user_events.Type
+														+ "='" + type_clause
 														+ "' ORDER BY "
-														+ user_events_table.Year
+														+ user_events.Year
 														+ " ASC,"
-														+ user_events_table._id
+														+ user_events._id
 														+ " DESC LIMIT 1", null);
 							} else {// FOR AD Year:
 								c_get_last.close();
 								c_get_last = MainLfqActivity
-										.getDatabase()
+										.getMiscDb()
 										.rawQuery(
 												"SELECT * FROM "
 														+ table
 														+ " WHERE "
-														+ user_events_table.Year
+														+ user_events.Year
 														+ " NOT LIKE '% BC' AND "
-														+ user_events_table.Year
-														+ "<'"
-														+ year
+														+ user_events.Year
+														+ "<'" + year
 														+ "' AND "
-														+ user_events_table.Type
-														+ "='"
-														+ type_clause
+														+ user_events.Type
+														+ "='" + type_clause
 														+ "' ORDER BY "
-														+ user_events_table.Year
+														+ user_events.Year
 														+ " DESC,"
-														+ user_events_table._id
+														+ user_events._id
 														+ " DESC LIMIT 1", null);
 								if (c_get_last.getCount() == 0) {// YEAR IS
 																	// EARLIEST
@@ -596,20 +707,20 @@ public class Timeline extends Activity {
 																	// BC:
 									c_get_last.close();
 									c_get_last = MainLfqActivity
-											.getDatabase()
+											.getMiscDb()
 											.rawQuery(
 													"SELECT * FROM "
 															+ table
 															+ " WHERE "
-															+ user_events_table.Year
+															+ user_events.Year
 															+ " LIKE '% BC' AND "
-															+ user_events_table.Type
+															+ user_events.Type
 															+ "='"
 															+ type_clause
 															+ "' ORDER BY "
-															+ user_events_table.Year
+															+ user_events.Year
 															+ " ASC,"
-															+ user_events_table._id
+															+ user_events._id
 															+ " DESC LIMIT 1",
 													null);
 
@@ -625,7 +736,7 @@ public class Timeline extends Activity {
 								.fromHtml("<b>MUST ENTER A YEAR</b>"));
 						return;
 					}
-					c_get_last = MainLfqActivity.getDatabase().rawQuery(
+					c_get_last = MainLfqActivity.getMiscDb().rawQuery(
 							"SELECT * FROM " + table + " WHERE "
 									+ events_table.Date + "='" + date
 									+ "' AND " + events_table.Year + "='"
@@ -636,13 +747,17 @@ public class Timeline extends Activity {
 					if (c_get_last.getCount() == 0) {
 						c_get_last.close();
 						c_get_last = MainLfqActivity
-								.getDatabase()
+								.getMiscDb()
 								.rawQuery(
 										"SELECT * FROM "
 												+ table
-												+ " WHERE " + events_table.Date + "<'"
+												+ " WHERE "
+												+ events_table.Date
+												+ "<'"
 												+ date
-												+ "' AND " + events_table.Year + "='"
+												+ "' AND "
+												+ events_table.Year
+												+ "='"
 												+ year
 												+ "' ORDER BY Date DESC,_id DESC LIMIT 1",
 										null);
@@ -661,7 +776,7 @@ public class Timeline extends Activity {
 					date_number_string = String.valueOf(select_timeline_month
 							.getSelectedItemPosition() + 1)
 							+ select_timeline_day.getSelectedItem().toString();
-					c_get_last = MainLfqActivity.getDatabase()
+					c_get_last = MainLfqActivity.getMiscDb()
 							.rawQuery(
 									"SELECT * FROM " + table + " WHERE Date='"
 											+ date + "' AND Year='" + year
@@ -670,7 +785,7 @@ public class Timeline extends Activity {
 						if (year.contains("BC")) {// IS BC YEAR:
 							c_get_last.close();
 							c_get_last = MainLfqActivity
-									.getDatabase()
+									.getMiscDb()
 									.rawQuery(
 											"SELECT * FROM "
 													+ table
@@ -683,7 +798,7 @@ public class Timeline extends Activity {
 						} else {// FOR AD Year:
 							c_get_last.close();
 							c_get_last = MainLfqActivity
-									.getDatabase()
+									.getMiscDb()
 									.rawQuery(
 											"SELECT * FROM "
 													+ table
@@ -698,7 +813,7 @@ public class Timeline extends Activity {
 																// BC:
 								c_get_last.close();
 								c_get_last = MainLfqActivity
-										.getDatabase()
+										.getMiscDb()
 										.rawQuery(
 												"SELECT * FROM "
 														+ table
@@ -715,8 +830,32 @@ public class Timeline extends Activity {
 					event_tv.setText(c_get_last.getString(c_get_last
 							.getColumnIndex("Event")));
 					id = c_get_last.getString(c_get_last.getColumnIndex("_id"));
-					saved_words = c_get_last.getString(c_get_last
-							.getColumnIndex("SaveWords"));
+					saved_words = getSavedWords(
+							c_get_last.getString(c_get_last
+									.getColumnIndex(events_table.Number1)),
+							c_get_last.getString(c_get_last
+									.getColumnIndex(events_table.Number_Info1)),
+							c_get_last.getString(c_get_last
+									.getColumnIndex(events_table.Number_Mnemonic1)),
+							c_get_last.getString(c_get_last
+									.getColumnIndex(events_table.Number2)),
+							c_get_last.getString(c_get_last
+									.getColumnIndex(events_table.Number_Info2)),
+							c_get_last.getString(c_get_last
+									.getColumnIndex(events_table.Number_Mnemonic2)),
+							c_get_last.getString(c_get_last
+									.getColumnIndex(events_table.Number3)),
+							c_get_last.getString(c_get_last
+									.getColumnIndex(events_table.Number_Info3)),
+							c_get_last.getString(c_get_last
+									.getColumnIndex(events_table.Number_Mnemonic3)),
+							c_get_last.getString(c_get_last
+									.getColumnIndex(events_table.Number4)),
+							c_get_last.getString(c_get_last
+									.getColumnIndex(events_table.Number_Info4)),
+							c_get_last.getString(c_get_last
+									.getColumnIndex(events_table.Number_Mnemonic4)));
+
 					date = c_get_last.getString(c_get_last
 							.getColumnIndex("Date"));
 					date_number_string = String.valueOf(Integer
@@ -755,68 +894,100 @@ public class Timeline extends Activity {
 				is_event_edit = false;
 				if (which_events.equals("user_personal")
 						|| which_events.equals("user_historical")) {
-					c_get_next = MainLfqActivity.getDatabase().rawQuery(
-							"SELECT * FROM " + table + " WHERE Date='" + date
-									+ "' AND Year='" + year + "' AND Type='"
-									+ type_clause + "' AND _id>'" + id
-									+ "' ORDER BY _id ASC LIMIT 1", null);
+					c_get_next = MainLfqActivity.getMiscDb().rawQuery(
+							"SELECT * FROM " + table + " WHERE "
+									+ user_events.Username + "='" + username
+									+ ", " + user_events.Date + "='" + date
+									+ "' AND " + user_events.Year + "='" + year
+									+ "' AND " + user_events.Type + "='"
+									+ type_clause + "' AND " + user_events._id
+									+ ">'" + id + "' ORDER BY "
+									+ user_events._id + " ASC LIMIT 1", null);
 					if (c_get_next.getCount() == 0) {
 						c_get_next.close();
-						c_get_next = MainLfqActivity
-								.getDatabase()
-								.rawQuery(
-										"SELECT * FROM "
-												+ table
-												+ " WHERE Date>'"
-												+ date
-												+ "' AND Year='"
-												+ year
-												+ "' AND Type='"
-												+ type_clause
-												+ "' ORDER BY Date ASC,_id ASC LIMIT 1",
-										null);
+						c_get_next = MainLfqActivity.getMiscDb().rawQuery(
+								"SELECT * FROM " + table + " WHERE "
+										+ user_events.Username + "='"
+										+ username + "' " + user_events.Date
+										+ ">'" + date + "' AND "
+										+ user_events.Year + "='" + year
+										+ "' AND " + user_events.Type + "='"
+										+ type_clause + "' ORDER BY "
+										+ user_events.Date + " ASC, "
+										+ user_events._id + " ASC LIMIT 1",
+								null);
 						if (c_get_next.getCount() == 0) {
 							if (year.contains("BC")) {// IS BC YEAR:
 								c_get_next.close();
-								c_get_next = MainLfqActivity
-										.getDatabase()
+								c_get_next = MainLfqActivity.getMiscDb()
 										.rawQuery(
-												"SELECT * FROM "
-														+ table
-														+ " WHERE Year LIKE '% BC' AND Year<'"
-														+ year
-														+ "' AND Type='"
-														+ type_clause
-														+ "' ORDER BY Year DESC,_id ASC LIMIT 1",
-												null);
+												"SELECT * FROM " + table
+														+ " WHERE "
+														+ user_events.Username
+														+ "='" + username
+														+ "' AND "
+														+ user_events.Year
+														+ " LIKE '% BC' AND "
+														+ user_events.Year
+														+ "<'" + year
+														+ "' AND "
+														+ user_events.Type
+														+ "='" + type_clause
+														+ "' ORDER BY "
+														+ user_events.Year
+														+ " DESC, "
+														+ user_events._id
+														+ " ASC LIMIT 1", null);
 								if (c_get_next.getCount() == 0) {// NO MORE BC,
 																	// SO
 									// GET FIRST AD:
 									c_get_next.close();
 									c_get_next = MainLfqActivity
-											.getDatabase()
+											.getMiscDb()
 											.rawQuery(
 													"SELECT * FROM "
 															+ table
-															+ " WHERE Year NOT LIKE '% BC' AND Type='"
+															+ " WHERE "
+															+ user_events.Username
+															+ "='"
+															+ username
+															+ "' AND "
+															+ user_events.Year
+															+ " NOT LIKE '% BC' AND "
+															+ user_events.Type
+															+ "='"
 															+ type_clause
-															+ "' ORDER BY Year,_id LIMIT 1",
-													null);
+															+ "' ORDER BY "
+															+ user_events.Year
+															+ ", "
+															+ user_events._id
+															+ " LIMIT 1", null);
 								}
 
 							} else {// FOR AD Year:
 								c_get_next.close();
 								c_get_next = MainLfqActivity
-										.getDatabase()
+										.getMiscDb()
 										.rawQuery(
 												"SELECT * FROM "
 														+ table
-														+ " WHERE Year NOT LIKE '% BC' AND Year>'"
-														+ year
-														+ "' AND Type='"
-														+ type_clause
-														+ "' ORDER BY Year ASC,_id ASC LIMIT 1",
-												null);
+														+ " WHERE "
+														+ user_events.Username
+														+ "='"
+														+ username
+														+ "' AND "
+														+ user_events.Year
+														+ " NOT LIKE '% BC' AND "
+														+ user_events.Year
+														+ ">'" + year
+														+ "' AND "
+														+ user_events.Type
+														+ "='" + type_clause
+														+ "' ORDER BY "
+														+ user_events.Year
+														+ " ASC, "
+														+ user_events._id
+														+ " ASC LIMIT 1", null);
 							}
 						}
 					}
@@ -828,7 +999,7 @@ public class Timeline extends Activity {
 								.fromHtml("<b>MUST ENTER A YEAR</b>"));
 						return;
 					}
-					c_get_next = MainLfqActivity.getDatabase().rawQuery(
+					c_get_next = MainLfqActivity.getMiscDb().rawQuery(
 							"SELECT * FROM " + table + " WHERE Date='" + date
 									+ "' AND Year='" + year + "' AND _id>'"
 									+ id + "' ORDER BY _id DESC LIMIT 1", null);
@@ -836,7 +1007,7 @@ public class Timeline extends Activity {
 					if (c_get_next.getCount() == 0) {
 						c_get_next.close();
 						c_get_next = MainLfqActivity
-								.getDatabase()
+								.getMiscDb()
 								.rawQuery(
 										"SELECT * FROM "
 												+ table
@@ -858,50 +1029,55 @@ public class Timeline extends Activity {
 
 				}
 				if (which_events.equals("date_events")) {
-					c_get_next = MainLfqActivity.getDatabase().rawQuery(
-							"SELECT * FROM " + table + " WHERE Date='" + date
-									+ "' AND Year='" + year + "' AND _id>'"
+					c_get_next = MainLfqActivity.getMiscDb().rawQuery(
+							"SELECT * FROM " + table + " WHERE "
+									+ events_table.Date + "='" + date
+									+ "' AND " + events_table.Year + "='"
+									+ year + "' AND " + events_table._id + ">'"
 									+ id + "'", null);
 					if (c_get_next.getCount() == 0) {
 						if (year.contains("BC")) {
 							c_get_next.close();
-							c_get_next = MainLfqActivity
-									.getDatabase()
-									.rawQuery(
-											"SELECT * FROM "
-													+ table
-													+ " WHERE Date='"
-													+ date
-													+ "' AND Year LIKE '% BC' AND Year<'"
-													+ year
-													+ "' ORDER BY Year DESC,_id ASC LIMIT 1",
-											null);
+							c_get_next = MainLfqActivity.getMiscDb().rawQuery(
+									"SELECT * FROM " + table + " WHERE "
+											+ events_table.Date + "='" + date
+											+ "' AND " + events_table.Year
+											+ " LIKE '% BC' AND "
+											+ events_table.Year + "<'" + year
+											+ "' ORDER BY " + events_table.Year
+											+ " DESC," + events_table._id
+											+ " ASC LIMIT 1", null);
 							if (c_get_next.getCount() == 0) {// NO MORE BC, SO
 																// GET FIRST AD:
 								c_get_next.close();
 								c_get_next = MainLfqActivity
-										.getDatabase()
+										.getMiscDb()
 										.rawQuery(
 												"SELECT * FROM "
 														+ table
-														+ " WHERE Date='"
+														+ " WHERE "
+														+ events_table.Date
+														+ "='"
 														+ date
-														+ "' AND Year NOT LIKE '% BC' ORDER BY Year,_id LIMIT 1",
-												null);
+														+ "' AND "
+														+ events_table.Year
+														+ " NOT LIKE '% BC' ORDER BY "
+														+ events_table.Year
+														+ ","
+														+ events_table._id
+														+ " LIMIT 1", null);
 							}
 						} else {// FOR AD Year:
 							c_get_next.close();
-							c_get_next = MainLfqActivity
-									.getDatabase()
-									.rawQuery(
-											"SELECT * FROM "
-													+ table
-													+ " WHERE Date='"
-													+ date
-													+ "' AND Year NOT LIKE '% BC' AND Year>'"
-													+ year
-													+ "' ORDER BY Year,_id LIMIT 1",
-											null);
+							c_get_next = MainLfqActivity.getMiscDb().rawQuery(
+									"SELECT * FROM " + table + " WHERE "
+											+ events_table.Date + "='" + date
+											+ "' AND " + events_table.Year
+											+ " NOT LIKE '% BC' AND "
+											+ events_table.Year + " >'" + year
+											+ "' ORDER BY " + events_table.Year
+											+ "," + events_table._id
+											+ " LIMIT 1", null);
 						}
 					}
 				}
@@ -909,8 +1085,32 @@ public class Timeline extends Activity {
 					event_tv.setText(c_get_next.getString(c_get_next
 							.getColumnIndex("Event")));
 					id = c_get_next.getString(c_get_next.getColumnIndex("_id"));
-					saved_words = c_get_next.getString(c_get_next
-							.getColumnIndex("SaveWords"));
+
+					saved_words = getSavedWords(
+							c_get_next.getString(c_get_next
+									.getColumnIndex(events_table.Number1)),
+							c.getString(c_get_next
+									.getColumnIndex(events_table.Number_Info1)),
+							c_get_next.getString(c_get_next
+									.getColumnIndex(events_table.Number_Mnemonic1)),
+							c_get_next.getString(c_get_next
+									.getColumnIndex(events_table.Number2)),
+							c_get_next.getString(c_get_next
+									.getColumnIndex(events_table.Number_Info2)),
+							c_get_next.getString(c_get_next
+									.getColumnIndex(events_table.Number_Mnemonic2)),
+							c_get_next.getString(c_get_next
+									.getColumnIndex(events_table.Number3)),
+							c_get_next.getString(c_get_next
+									.getColumnIndex(events_table.Number_Info3)),
+							c_get_next.getString(c_get_next
+									.getColumnIndex(events_table.Number_Mnemonic3)),
+							c_get_next.getString(c_get_next
+									.getColumnIndex(events_table.Number4)),
+							c_get_next.getString(c_get_next
+									.getColumnIndex(events_table.Number_Info4)),
+							c_get_next.getString(c_get_next
+									.getColumnIndex(events_table.Number_Mnemonic4)));
 					date = c_get_next.getString(c_get_next
 							.getColumnIndex("Date"));
 					date_number_string = String.valueOf(Integer
@@ -957,13 +1157,17 @@ public class Timeline extends Activity {
 					event_tv.setText(event);
 					ContentValues values = new ContentValues();
 					values.put("Event", event);
-					MainLfqActivity.getDatabase().update(date, values,
-							"Year=?,Date=?", new String[] { year, date });
+					MainLfqActivity.getMiscDb().update(
+							tables.events_table,
+							values,
+							events_table.Year + "=?, " + events_table.Date
+									+ "=?", new String[] { year, date });
 					results.setText(Html.fromHtml("<b>EVENT " + year + " "
 							+ date + " UPDATED."));
 					// SYNCHRONIZE EVENT IN EVENT DATABASE:
 					sql = "UPDATE " + lfq_table + " SET Event='" + event
-							+ "' WHERE Year='" + year + "' AND Date='" + date
+							+ "' WHERE " + events_table.Year + "='" + year
+							+ "' AND " + events_table.Date + "='" + date
 							+ "' AND ID='" + id + "'";
 
 					// autoSync(sql, db, action, table, name, bool is_image,
@@ -988,27 +1192,15 @@ public class Timeline extends Activity {
 				}
 				if (rb_click_count != own_word_ind) {
 					results.setText(Html
-							.fromHtml("<b><u>PLEASE SELECT WORDS! own_wor_ind="
-									+ own_word_ind + ", click="
-									+ rb_click_count + "</u></b>"));
+							.fromHtml("<b><u>PLEASE SELECT WORDS!</u></b>"));
 					return;
 				}
-				ContentValues values = new ContentValues();
-				MainLfqActivity.getDatabase().execSQL(
-						"UPDATE " + table + " SET SaveWords='"
-								+ edit_save_words + "' WHERE Year='" + year
-								+ "' AND Date='" + date + "'");
-				String save_results = "UPDATED SAVED WORDS ON " + display_date
-						+ ", " + year + ".";
-				// SYNCHRONIZE EVENTS DB
-				sql = "UPDATE " + lfq_table + " SET SaveWords='"
-						+ edit_save_words + "' WHERE Year='" + year
-						+ "' AND Date='" + date + "'";
-				// autoSync(sql, db, action, table, name, bool is_image,
-				// byte[]
-				// image)
-				Synchronize.autoSync(sql, database_string, "update", table,
-						date, false, null);
+				ContentValues values_events = new ContentValues();
+				ContentValues values_global = new ContentValues();
+				ContentValues values_personal = new ContentValues();
+				String sync_upd_events_str = "";
+				int entry_number_global = 0, entry_number_personal = 0;
+				int entry_index = 0;// FOR BOTH global and personal.
 				if (check_save_timeline_global.isChecked()
 						|| check_save_timeline_personal.isChecked()) {
 					if (is_event_edit == false) {
@@ -1016,54 +1208,129 @@ public class Timeline extends Activity {
 					} else {
 						event = event_edit_et.getText().toString();
 					}
-					values.clear();
-					values.put(global_number_table.Number, edit_date_number);
-					values.put(global_number_table.NumInf, event);
-					values.put(global_number_table.NumWors, edit_save_words);
-					values.put(global_number_table.Type, "HISTORICAL NUMBERS");
 					if (check_save_timeline_global.isChecked()) {
-						MainLfqActivity.getMiscDb().insert(
-								tables.global_number_table, null, values);
-						save_results += " INSERTED INTO GLOBAL NUMBER TABLE.";
-						// SYNCHRONIZE NUMBER GLOBAL TABLE
-						sql = "INSERT INTO " + Helpers.db_prefix + "events."
-								+ tables.global_number_table + "("
-								+ global_number_table.Number + ","
-								+ global_number_table.NumInf + ","
-								+ global_number_table.NumWors + ","
-								+ global_number_table.Type + ") VALUES('"
-								+ edit_date_number + "','" + event + "','"
-								+ edit_save_words + "','HISTORICAL NUMBERS')";
-						// autoSync(sql, db, action, table, name, bool is_image,
-						// byte[]
-						// image)
-						save_results += Synchronize.autoSync(sql, "num_db",
-								"insert", "global_number_table",
-								edit_date_number, false, null);
+						// GET Entry Number:
+						Cursor c_max = MainLfqActivity.getMiscDb().rawQuery(
+								"SELECT MAX(" + global_numbers.Entry_Number
+										+ ") AS MAX FROM "
+										+ tables.global_numbers, null);
+						if (c_max.moveToFirst()) {
+							entry_number_global = c_max.getInt(0);
+						}
 					}
 					if (check_save_timeline_personal.isChecked()) {
-						String numbers_table = username + "_numbertable";
-						MainLfqActivity.getMiscDb().insert(numbers_table,
-								null, values);
+						// GET Entry Number:
+						Cursor c_max = MainLfqActivity.getMiscDb().rawQuery(
+								"SELECT MAX(" + user_numbers.Entry_Number
+										+ ") AS MAX FROM "
+										+ tables.user_numbers, null);
+						if (c_max.moveToFirst()) {
+							entry_number_personal = c_max.getInt(0);
+						}
+					}
+				}
+				String save_results = "";
+				for (int i = 0; i < edit_save_words.size(); i++) {
+					// DO EVENTS:
+					values_events.put("Number" + (i + 1), edit_save_words
+							.get(i).get(0));
+					values_events.put("Number" + (i + 1), edit_save_words
+							.get(i).get(1));
+					values_events.put("Number_Info" + (i + 1), edit_save_words
+							.get(i).get(2));
+					sync_upd_events_str += "Number" + (i + 1) + "='"
+							+ edit_save_words.get(i).get(0) + "', "
+							+ "Number_Mnemonic" + (i + 1) + "='"
+							+ edit_save_words.get(i).get(1) + "', "
+							+ "Number_Info" + (i + 1) + "='"
+							+ edit_save_words.get(i).get(2) + "'";
+					if (check_save_timeline_personal.isChecked()) {
+						entry_index++;
+						values_personal.clear();
+						values_personal.put(user_numbers.Title, event);
+						values_personal.put(global_numbers.Entry_Number,
+								entry_number_personal);
+						values_personal.put(user_numbers.Entry_Index,
+								entry_index);
+						values_personal.put(global_numbers.Entry,
+								edit_save_words.get(i).get(0));
+						values_personal.put(user_numbers.Entry_Mnemonic,
+								edit_save_words.get(i).get(1));
+						values_personal.put(user_numbers.Entry_Info,
+								edit_save_words.get(i).get(2));
+						MainLfqActivity.getMiscDb().insert(tables.user_numbers, null,
+								values_personal);
 						save_results += " INSERTED INTO " + username
 								+ "'S HISTORICAL TABLE.";
 						// SYNCHRONIZE NUMBER PERSONAL HISTORICAL TABLE
-						sql = "INSERT INTO " + Helpers.db_prefix + "newwords."
-								+ numbers_table + "("
-								+ user_numbers_table.Number + ","
-								+ user_numbers_table.NumInf + ","
-								+ user_numbers_table.NumWors + ","
-								+ user_numbers_table.Type + ") VALUES('"
-								+ edit_date_number + "','" + event + "','"
-								+ edit_save_words + "','PERSONAL NUMBERS')";
-						// autoSync(sql, db, action, table, name, bool is_image,
-						// byte[]
-						// image)
-						save_results += Synchronize.autoSync(sql, "num_db",
-								"insert", numbers_table, edit_date_number,
-								false, null);
+						sql = "INSERT INTO " + Helpers.db_prefix + "_misc."
+								+ tables.user_numbers + "(" + user_numbers.Title
+								+ "," + user_numbers.Entry + ","
+								+ user_numbers.Entry_Number + ","
+								+ user_numbers.Entry_Index + ","
+								+ user_numbers.Entry_Mnemonic + ","
+								+ user_numbers.Entry_Info + "," + user_numbers.Type
+								+ ") VALUES('" + event + "','"
+								+ edit_save_words.get(i).get(0) + "','"
+								+ entry_number_personal + "','" + entry_index + "','"
+								+ edit_save_words.get(i).get(1) + "','"
+								+ edit_save_words.get(i).get(2)
+								+ "','PERSONAL NUMBERS')";
+						save_results += Synchronize.autoSync(sql, "misc_db",
+								"insert", tables.user_numbers, edit_date_number, false,
+								null);						
 					}
-				}
+					if (check_save_timeline_global.isChecked()) {
+						// UPDATE NUMBER GLOBAL TABLE--------------------------------
+						entry_index++;
+						values_global.clear();
+						values_global.put(global_numbers.Title, event);
+						values_global.put(global_numbers.Entry_Number,
+								edit_date_number);
+						values_global.put(global_numbers.Entry_Index,
+								entry_index);
+						values_global.put(global_numbers.Entry, edit_save_words
+								.get(i).get(0));
+						values_global.put(global_numbers.Entry_Mnemonic,
+								edit_save_words.get(i).get(1));
+						values_global.put(global_numbers.Entry_Mnemonic_Info,
+								edit_save_words.get(i).get(2));
+						MainLfqActivity.getMiscDb().insert(tables.global_numbers,
+								null, values_global);
+						save_results += " INSERTED INTO GLOBAL NUMBER TABLE.";
+						sql = "INSERT INTO " + Helpers.db_prefix + "misc."
+								+ tables.global_numbers + "("
+								+ global_numbers.Title + ","
+								+ global_numbers.Entry_Number + ","
+								+ global_numbers.Entry_Index + ","
+								+ global_numbers.Entry + ","
+								+ global_numbers.Entry_Mnemonic + ","
+								+ global_numbers.Entry_Mnemonic_Info + ") VALUES('"
+								+ event + "','" + entry_number_global + "','"
+								+ entry_index + "','"
+								+ edit_save_words.get(i).get(0) + "','"
+								+ edit_save_words.get(i).get(1) + "','"
+								+ edit_save_words.get(i).get(2) + "')";
+						save_results += Synchronize.autoSync(sql, "misc_db",
+								"insert", tables.global_numbers, edit_date_number,
+								false, null);						
+						//-------------------------------------------------------------
+					}
+				}//END edit_save_words LOOP...
+				// UPDATE events_table-----------------------------------------------
+				MainLfqActivity.getMiscDb().update(
+						tables.events_table,
+						values_events,
+						events_table.Year + "=?, " + events_table.Date
+								+ "=?", new String[] { year, date });
+				save_results += "UPDATED SAVED WORDS ON "
+						+ display_date + ", " + year + ".";
+				sql = "UPDATE " + lfq_table + " SET " + sync_upd_events_str
+						+ " WHERE " + events_table.Year + "='" + year
+						+ "' AND " + events_table.Date + "='" + date + "'";
+				Synchronize.autoSync(sql, database_string, "update", table,
+						date, false, null);
+				//-----------------------------------------------------------------
 				results.setText(Html.fromHtml("<b>" + save_results + "</b>."));
 			}
 		});
@@ -1111,9 +1378,16 @@ public class Timeline extends Activity {
 		timeline_event_scroll.setLayoutParams(params);
 		own_word_ind = 0;
 		input_words.clear();
+		//LISTS TO SAVE DICTIONARY WORDS:
+		list_saved_numbers.clear();
+		list_saved_words.clear();
+		list_saved_infos.clear();
+		//INPUTS TO SAVE SELECTIONS:
+		input_saved_numbers.clear();
 		input_saved_words.clear();
+		input_saved_infos.clear();
 		radio_groups.clear();
-		edit_save_words = "";
+		edit_save_words.clear();
 		String date_num = myDateNumber;
 		String num_wors_str = select_timeline_number_major_words
 				.getSelectedItem().toString();
@@ -1121,7 +1395,6 @@ public class Timeline extends Activity {
 		if (display_savedwords == false) {
 			num_wors_str = select_number_major_words_again.getSelectedItem()
 					.toString();
-		} else {
 		}
 
 		int num_wors = 0;
@@ -1415,6 +1688,42 @@ public class Timeline extends Activity {
 		return wriwor;
 	}
 
+	// @FOR PARSING DATABASE SAVED WORDS INTO A STRING:
+	public String getSavedWords(String num1, String inf1, String mne1,
+			String num2, String inf2, String mne2, String num3, String inf3,
+			String mne3, String num4, String inf4, String mne4) {
+		String saved_words = "";
+		if (!num1.equals("")) {
+			saved_words += num1;
+			if (!inf1.equals("")) {
+				saved_words += "(" + inf1 + ") ";
+			}
+			saved_words += mne1 + ". ";
+		}
+		if (!num2.equals("")) {
+			saved_words += num1;
+			if (!inf2.equals("")) {
+				saved_words += "(" + inf2 + ") ";
+			}
+			saved_words += mne2 + ". ";
+		}
+		if (!num3.equals("")) {
+			saved_words += num3;
+			if (!inf3.equals("")) {
+				saved_words += "(" + inf3 + ") ";
+			}
+			saved_words += mne3 + ". ";
+		}
+		if (!num4.equals("")) {
+			saved_words += num4;
+			if (!inf4.equals("")) {
+				saved_words += "(" + inf4 + ") ";
+			}
+			saved_words += mne4 + ". ";
+		}
+		return saved_words;
+	}
+
 	public boolean addRadioGroup(RadioGroup rg, String prompt,
 			String find_word, int limit) {
 		Cursor myc = MainLfqActivity.getMiscDb()
@@ -1437,28 +1746,42 @@ public class Timeline extends Activity {
 			EditText input_own_word = new EditText(this_act);
 			input_own_word.setWidth(300);
 			input_words.add(input_own_word);
+			input_saved_numbers.add("");
 			input_saved_words.add("");
+			input_saved_infos.add("");
 			input_own_word
 					.setBackgroundResource(R.drawable.rounded_edittext_red);
 			own_word_layout.addView(prompt_own_word);
 			own_word_layout.addView(input_own_word);
 			final int final_own_word_ind = own_word_ind;
+			final String final_find_word = find_word;
 			input_own_word.addTextChangedListener(new TextWatcher() {
 				@Override
 				public void afterTextChanged(Editable arg0) {
 					input_saved_words.set(
 							final_own_word_ind,
-							formatWord(
-									Helpers.explode(input_words
-											.get(final_own_word_ind).getText()
-											.toString()),
+							formatWord(Helpers.explode(list_saved_words
+									.get(final_own_word_ind)),
 									final_find_word_length));
-					edit_save_words = "";
+					input_saved_numbers
+							.set(final_own_word_ind, final_find_word);
+					input_saved_infos.set(final_own_word_ind,
+							list_saved_infos.get(final_own_word_ind));
+					edit_save_words.clear();
+					edit_save_words_string = "";
+					String edit_numbers = "";
+					String edit_words_infos = "";
 					for (int i = 0; i < own_word_ind; i++) {
-						edit_save_words += input_saved_words.get(i) + " ";
+						edit_save_words.add(new ArrayList<String>());
+						edit_save_words.get(i).add(input_saved_numbers.get(i));
+						edit_save_words.get(i).add(input_saved_words.get(i));
+						edit_save_words.get(i).add(input_saved_infos.get(i));
+						edit_numbers += input_saved_numbers.get(i) + " ";
+						edit_words_infos +=  input_saved_words.get(i) + "(" + input_saved_infos.get(i) + ") ";
 					}
+					edit_save_words_string = edit_numbers + edit_words_infos;
 					results.setText(Html.fromHtml("<b>SAVE WORDS:"
-							+ edit_save_words + "</b>"));
+							+ edit_save_words_string + "</b>"));
 				}
 
 				@Override
@@ -1492,14 +1815,42 @@ public class Timeline extends Activity {
 						input_words.get(final_own_word_ind)
 								.setBackgroundResource(
 										R.drawable.rounded_edittext);
+						
 						input_saved_words.set(final_own_word_ind,
 								((RadioButton) v).getText().toString());
+
 						edit_save_words = "";
 						for (int i = 0; i < own_word_ind; i++) {
 							edit_save_words += input_saved_words.get(i) + " ";
 						}
 						results.setText(Html.fromHtml("<b>SAVED WORDS:"
 								+ edit_save_words + "</b>"));
+						
+						input_saved_words.set(
+								final_own_word_ind,
+								formatWord(Helpers.explode(list_saved_words
+										.get(final_own_word_ind)),
+										final_find_word_length));
+						input_saved_numbers
+								.set(final_own_word_ind, final_find_word);
+						input_saved_infos.set(final_own_word_ind,
+								list_saved_infos.get(final_own_word_ind));
+						edit_save_words.clear();
+						edit_save_words_string = "";
+						String edit_numbers = "";
+						String edit_words_infos = "";
+						for (int i = 0; i < own_word_ind; i++) {
+							edit_save_words.add(new ArrayList<String>());
+							edit_save_words.get(i).add(input_saved_numbers.get(i));
+							edit_save_words.get(i).add(input_saved_words.get(i));
+							edit_save_words.get(i).add(input_saved_infos.get(i));
+							edit_numbers += input_saved_numbers.get(i) + " ";
+							edit_words_infos +=  input_saved_words.get(i) + "(" + input_saved_infos.get(i) + ") ";
+						}
+						edit_save_words_string = edit_numbers + edit_words_infos;
+						results.setText(Html.fromHtml("<b>SAVE WORDS:"
+								+ edit_save_words_string + "</b>"));
+						
 					}
 				});
 				flag = true;
@@ -1610,17 +1961,18 @@ public class Timeline extends Activity {
 			ct_tot = 0;
 			ct_all = 0;
 			c_totals = MainLfqActivity.getMiscDb().rawQuery(
-					"SELECT _id FROM " + tables.events_table, null);
+					"SELECT " + events_table._id + " FROM "
+							+ tables.events_table, null);
 			ct_all = c_totals.getCount();
 			c_totals.close();
 			for (int i = 0; i < months.size(); i++) {
 				for (int j = 0; j < days.size(); j++) {
 					c_totals = MainLfqActivity.getMiscDb().rawQuery(
-							"SELECT _id FROM " + tables.events_table
-									+ " WHERE " + events_table.Date + "='"
-									+ months.get(i) + "-" + days.get(j)
-									+ "' AND " + events_table.SaveWords
-									+ "<>''", null);
+							"SELECT " + events_table._id + " FROM "
+									+ tables.events_table + " WHERE "
+									+ events_table.Date + "='" + months.get(i)
+									+ "-" + days.get(j) + "' AND "
+									+ events_table.Number1 + "<>''", null);
 					publishProgress(months_complete.get(i) + " " + days.get(j)
 							+ " HAS " + c_totals.getCount() + " SAVED WORDS.",
 							"NOT_LAST");
@@ -1661,20 +2013,22 @@ public class Timeline extends Activity {
 
 		@Override
 		protected String doInBackground(String... params) {
-			c_years = MainLfqActivity.getDatabase().rawQuery(
-					"SELECT DISTINCT Year FROM " + table
-							+ " WHERE Year LIKE '% BC' ORDER BY Year DESC",
-					null);
+			c_years = MainLfqActivity.getMiscDb().rawQuery(
+					"SELECT DISTINCT " + events_table.Year + " FROM " + table
+							+ " WHERE " + events_table.Year
+							+ " LIKE '% BC' ORDER BY " + events_table.Year
+							+ " DESC", null);
 			if (c_years.moveToFirst()) {
 				do {
 					publishProgress(c_years.getString(0));
 				} while (c_years.moveToNext());
 			}
 			c_years.close();
-			c_years = MainLfqActivity.getDatabase().rawQuery(
-					"SELECT DISTINCT Year FROM " + table
-							+ " WHERE Year NOT LIKE '% BC' ORDER BY Year ASC",
-					null);
+			c_years = MainLfqActivity.getMiscDb().rawQuery(
+					"SELECT DISTINCT " + events_table.Year + " FROM " + table
+							+ " WHERE " + events_table.Year
+							+ " NOT LIKE '% BC' ORDER BY " + events_table.Year
+							+ " ASC", null);
 			if (c_years.moveToFirst()) {
 				do {
 					publishProgress(c_years.getString(0));
@@ -1746,37 +2100,47 @@ public class Timeline extends Activity {
 			is_event_edit = false;
 
 			if (get_events.equals("shared_date_events")) {
-				c2 = MainLfqActivity.getDatabase().rawQuery(
-						"SELECT _id FROM " + table + " WHERE Date='" + date
-								+ "'", null);
+				c2 = MainLfqActivity.getMiscDb().rawQuery(
+						"SELECT " + events_table._id + " FROM "
+								+ tables.events_table + " WHERE "
+								+ events_table.Date + "='" + date + "'", null);
 				total = c2.getCount();
 				c2.close();
-				c = MainLfqActivity.getDatabase().rawQuery(
-						"SELECT * FROM " + table + " WHERE Date='" + date
-								+ "' ORDER BY Year LIMIT 1", null);
+				c = MainLfqActivity.getMiscDb().rawQuery(
+						"SELECT * FROM " + tables.events_table + " WHERE "
+								+ events_table.Date + "='" + date
+								+ "' ORDER BY " + events_table.Year
+								+ " LIMIT 1", null);
 			}
 
 			if (get_events.equals("shared_year_events")) {
-				c2 = MainLfqActivity.getDatabase().rawQuery(
-						"SELECT _id FROM " + table + " WHERE Year='" + year
-								+ "'", null);
+				c2 = MainLfqActivity.getMiscDb().rawQuery(
+						"SELECT " + events_table._id + " FROM "
+								+ tables.events_table + " WHERE "
+								+ events_table.Year + "='" + year + "'", null);
 				total = c2.getCount();
 				c2.close();
-				c = MainLfqActivity.getDatabase().rawQuery(
-						"SELECT * FROM " + table + " WHERE Year='" + year
-								+ "' ORDER BY Date ASC,_id ASC LIMIT 1", null);
+				c = MainLfqActivity.getMiscDb().rawQuery(
+						"SELECT * FROM " + tables.events_table + " WHERE "
+								+ events_table.Year + "='" + year
+								+ "' ORDER BY " + events_table.Date + " ASC, "
+								+ events_table._id + " ASC LIMIT 1", null);
 			}
 			if (get_events.equals("user_personal_events")
 					|| get_events.equals("user_historical_events")) {
-				c2 = MainLfqActivity.getDatabase().rawQuery(
-						"SELECT _id FROM " + table + " WHERE Type='"
+				c2 = MainLfqActivity.getMiscDb().rawQuery(
+						"SELECT " + user_events._id + " FROM "
+								+ tables.user_events + " WHERE "
+								+ user_events.Username + "='" + username
+								+ "' AND " + user_events.Type + "='"
 								+ type_clause + "'", null);
 				total = c2.getCount();
-				c = MainLfqActivity.getDatabase()
-						.rawQuery(
-								"SELECT * FROM " + table + " WHERE Type='"
-										+ type_clause
-										+ "' ORDER BY Year LIMIT 1", null);
+				c = MainLfqActivity.getMiscDb().rawQuery(
+						"SELECT * FROM " + tables.user_events + " WHERE "
+								+ user_events.Username + "='" + username
+								+ "' AND " + user_events.Type + "='"
+								+ type_clause + "' ORDER BY "
+								+ user_events.Year + " LIMIT 1", null);
 			}
 			if (c.moveToFirst()) {
 				id = c.getString(c.getColumnIndex("_id"));
@@ -1794,7 +2158,25 @@ public class Timeline extends Activity {
 						+ String.valueOf(Integer.parseInt(c.getString(
 								c.getColumnIndex("Date")).substring(3)));
 				event_tv.setText(event);
-				saved_words = c.getString(c.getColumnIndex("SaveWords"));
+
+				saved_words = getSavedWords(
+						c.getString(c.getColumnIndex(events_table.Number1)),
+						c.getString(c.getColumnIndex(events_table.Number_Info1)),
+						c.getString(c
+								.getColumnIndex(events_table.Number_Mnemonic1)),
+						c.getString(c.getColumnIndex(events_table.Number2)),
+						c.getString(c.getColumnIndex(events_table.Number_Info2)),
+						c.getString(c
+								.getColumnIndex(events_table.Number_Mnemonic2)),
+						c.getString(c.getColumnIndex(events_table.Number3)),
+						c.getString(c.getColumnIndex(events_table.Number_Info3)),
+						c.getString(c
+								.getColumnIndex(events_table.Number_Mnemonic3)),
+						c.getString(c.getColumnIndex(events_table.Number4)),
+						c.getString(c.getColumnIndex(events_table.Number_Info4)),
+						c.getString(c
+								.getColumnIndex(events_table.Number_Mnemonic4)));
+
 				results2.setText(Html.fromHtml("<b>1 OF " + total
 						+ " EVENTS.</b>"));
 				show_year.setText(Html.fromHtml("<b>YEAR:" + year + "</b>"));
@@ -1818,21 +2200,26 @@ public class Timeline extends Activity {
 			params.addRule(RelativeLayout.BELOW, savewords_layout.getId());
 			timeline_words_scroll.setLayoutParams(params);
 			if (get_events.equals("shared_date_events")) {
-				c = MainLfqActivity.getDatabase().rawQuery(
-						"SELECT * FROM " + table + " WHERE Date='" + date
-								+ "' AND SaveWords<>''", null);
+				c = MainLfqActivity.getMiscDb().rawQuery(
+						"SELECT * FROM " + tables.events_table + " WHERE "
+								+ events_table.Date + "='" + date + "' AND "
+								+ user_events.Number1 + "<>''", null);
 			}
 			if (get_events.equals("shared_year_events")) {
-				c = MainLfqActivity.getDatabase().rawQuery(
-						"SELECT * FROM " + table + " WHERE Year='" + year
-								+ "' AND SaveWords<>'' ORDER BY Date", null);
+				c = MainLfqActivity.getMiscDb().rawQuery(
+						"SELECT * FROM " + table + " WHERE "
+								+ events_table.Year + "='" + year + "' AND "
+								+ events_table.Number1 + "<>'' ORDER BY "
+								+ events_table.Date, null);
 			}
 			if (get_events.equals("user_personal_events")
 					|| get_events.equals("user_historical_events")) {
-				c = MainLfqActivity.getDatabase().rawQuery(
-						"SELECT * FROM " + table
-								+ " WHERE SaveWords<>'' AND Type='"
-								+ type_clause + "'", null);
+				c = MainLfqActivity.getMiscDb().rawQuery(
+						"SELECT * FROM " + tables.user_events + " WHERE "
+								+ user_events.Username + "='" + username
+								+ "' AND " + user_events.Number1 + "<>'' AND "
+								+ user_events.Type + "='" + type_clause + "'",
+						null);
 			}
 			words_layout.removeAllViews();
 			event_layout.removeAllViews();
@@ -1842,11 +2229,37 @@ public class Timeline extends Activity {
 					TextView tv = new TextView(this_act);
 					tv.setTextSize(15);
 					tv.setText(Html.fromHtml("<b>DATE:"
-							+ c.getString(c.getColumnIndex("Year")) + ", "
-							+ date + "<br/>EVENT:<br/>"
+							+ c.getString(c.getColumnIndex("Year"))
+							+ ", "
+							+ date
+							+ "<br/>EVENT:<br/>"
 							+ c.getString(c.getColumnIndex("Event"))
 							+ "<br/>SAVED WORDS:<br/>"
-							+ c.getString(c.getColumnIndex("SaveWords"))
+							+ getSavedWords(
+									c.getString(c
+											.getColumnIndex(events_table.Number1)),
+									c.getString(c
+											.getColumnIndex(events_table.Number_Info1)),
+									c.getString(c
+											.getColumnIndex(events_table.Number_Mnemonic1)),
+									c.getString(c
+											.getColumnIndex(events_table.Number2)),
+									c.getString(c
+											.getColumnIndex(events_table.Number_Info2)),
+									c.getString(c
+											.getColumnIndex(events_table.Number_Mnemonic2)),
+									c.getString(c
+											.getColumnIndex(events_table.Number3)),
+									c.getString(c
+											.getColumnIndex(events_table.Number_Info3)),
+									c.getString(c
+											.getColumnIndex(events_table.Number_Mnemonic3)),
+									c.getString(c
+											.getColumnIndex(events_table.Number4)),
+									c.getString(c
+											.getColumnIndex(events_table.Number_Info4)),
+									c.getString(c
+											.getColumnIndex(events_table.Number_Mnemonic4)))
 							+ "<br/></b>"));
 					words_layout.addView(tv);
 				} while (c.moveToNext());
@@ -1879,7 +2292,7 @@ public class Timeline extends Activity {
 
 		} else {
 			username = Helpers.getUsername();
-			table = username + "_eventtable";
+			table = tables.user_events;
 			MainLfqActivity.setDatabase("nw_db");
 			database_string = "nw_db";
 			lfq_table = "" + Helpers.db_prefix + "newwords." + table;
