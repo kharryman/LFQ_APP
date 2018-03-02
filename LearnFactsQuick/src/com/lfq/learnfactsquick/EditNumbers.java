@@ -2,7 +2,8 @@ package com.lfq.learnfactsquick;
 
 import java.util.HashMap;
 
-import com.lfq.learnfactsquick.Constants.cols.user_numbers_table;
+import com.lfq.learnfactsquick.Constants.cols.global_numbers;
+import com.lfq.learnfactsquick.Constants.cols.user_numbers;
 import com.lfq.learnfactsquick.Constants.tables;
 
 import android.app.Activity;
@@ -226,8 +227,6 @@ public class EditNumbers extends Activity {
 		do_edit_numbers = (Button) findViewById(R.id.do_edit_numbers_table);
 		do_fullscreen = (Button) findViewById(R.id.do_edit_numbers_fullscreen);
 		do_backup = (Button) findViewById(R.id.do_edit_numbers_backup);
-		
-		
 
 		// EDITTEXTS:
 		username_input = (EditText) findViewById(R.id.edit_numbers_username);
@@ -253,7 +252,7 @@ public class EditNumbers extends Activity {
 		check_delete_numbers = (RadioButton) findViewById(R.id.check_delete_numbers);
 		check_insert_numbers = (RadioButton) findViewById(R.id.check_insert_numbers);
 
-		//SPINNERS:
+		// SPINNERS:
 		select_number_title = (Spinner) findViewById(R.id.select_edit_numbers_title);
 	}
 
@@ -286,7 +285,7 @@ public class EditNumbers extends Activity {
 				do_backup.setVisibility(View.GONE);
 				do_fullscreen.setVisibility(View.VISIBLE);
 			}
-		});		
+		});
 
 		do_login.setOnClickListener(new View.OnClickListener() {
 
@@ -339,54 +338,43 @@ public class EditNumbers extends Activity {
 			@Override
 			public void onClick(View v) {
 				num_entries++;
-				//wordspl.add("");
-				//infospl.add("");
-				//doAddEntries(type, word.size(), word.size() + 1);
+				// wordspl.add("");
+				// infospl.add("");
+				// doAddEntries(type, word.size(), word.size() + 1);
 			}
 		});
-		//Number,NumInf,NumWors,Type
-		
+		// Number,NumInf,NumWors,Type
+
 		remove_number.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				/*
-				System.out.println("infospl size=" + infospl.size());
-				System.out.println("wordspl size=" + wordspl.size());
-				System.out.println("mnespl size=" + mnespl.size());
-				if (num_entries > 0) {
-					num_entries--;
-				}
-				if (type != "anagram") {
-					scroll.removeView(tv_mnemonic.get(tv_mnemonic.size() - 1));
-					tv_mnemonic.remove(tv_mnemonic.size() - 1);
-					scroll.removeView(mnemonic.get(mnemonic.size() - 1));
-					mnemonic.remove(mnemonic.size() - 1);
-				}
-				scroll.removeView(tv_word.get(tv_word.size() - 1));
-				tv_word.remove(tv_word.size() - 1);
-				scroll.removeView(word.get(word.size() - 1));
-				word.remove(word.size() - 1);
-				scroll.removeView(tv_info.get(tv_info.size() - 1));
-				tv_info.remove(tv_info.size() - 1);
-				scroll.removeView(info.get(info.size() - 1));
-				info.remove(info.size() - 1);
-				if (!type.equals("anagram")) {
-					if (mnespl.size() > 0) {
-						mnespl.remove(mnespl.size() - 1);
-					}
-				}
-				if (wordspl.size() > 0) {
-					wordspl.remove(wordspl.size() - 1);
-				}
-				if (infospl.size() > 0) {
-					infospl.remove(infospl.size() - 1);
-				}
-				*/
-				
+				 * System.out.println("infospl size=" + infospl.size());
+				 * System.out.println("wordspl size=" + wordspl.size());
+				 * System.out.println("mnespl size=" + mnespl.size()); if
+				 * (num_entries > 0) { num_entries--; } if (type != "anagram") {
+				 * scroll.removeView(tv_mnemonic.get(tv_mnemonic.size() - 1));
+				 * tv_mnemonic.remove(tv_mnemonic.size() - 1);
+				 * scroll.removeView(mnemonic.get(mnemonic.size() - 1));
+				 * mnemonic.remove(mnemonic.size() - 1); }
+				 * scroll.removeView(tv_word.get(tv_word.size() - 1));
+				 * tv_word.remove(tv_word.size() - 1);
+				 * scroll.removeView(word.get(word.size() - 1));
+				 * word.remove(word.size() - 1);
+				 * scroll.removeView(tv_info.get(tv_info.size() - 1));
+				 * tv_info.remove(tv_info.size() - 1);
+				 * scroll.removeView(info.get(info.size() - 1));
+				 * info.remove(info.size() - 1); if (!type.equals("anagram")) {
+				 * if (mnespl.size() > 0) { mnespl.remove(mnespl.size() - 1); }
+				 * } if (wordspl.size() > 0) { wordspl.remove(wordspl.size() -
+				 * 1); } if (infospl.size() > 0) { infospl.remove(infospl.size()
+				 * - 1); }
+				 */
+
 			}
-			
+
 		});
-				
+
 		select_number_title
 				.setOnItemSelectedListener(new OnItemSelectedListener() {
 					@Override
@@ -402,8 +390,6 @@ public class EditNumbers extends Activity {
 
 				});
 
-
-
 		do_edit_numbers.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -416,7 +402,7 @@ public class EditNumbers extends Activity {
 					updateTable();
 				}
 			}
-		});		
+		});
 
 	}
 
@@ -535,9 +521,9 @@ public class EditNumbers extends Activity {
 		}
 
 	}
-	
+
 	public void getTitles() {
-		
+
 	}
 
 	public void getEntry() {
@@ -545,14 +531,14 @@ public class EditNumbers extends Activity {
 		numbers_table = "";
 		username = username_input.getText().toString();
 		if (check_edit_shared_numbers.isChecked()) {
-			numbers_table = tables.global_number_table;
+			numbers_table = tables.global_numbers;
 		}
 		if (check_edit_user_numbers.isChecked()) {
 			if (logged_in == false) {
 				results.setText("NOT LOGGED IN");
 				return;
 			}
-			numbers_table = username + "_numbertable";
+			numbers_table = tables.user_numbers;
 		}
 		text = "";
 		entries_layout.removeAllViews();
@@ -562,7 +548,7 @@ public class EditNumbers extends Activity {
 
 		Cursor c_get = MainLfqActivity.getMiscDb().rawQuery(
 				"SELECT * FROM " + numbers_table + " ORDER BY "
-						+ user_numbers_table.Type, null);
+						+ user_numbers.Type, null);
 		if (c_get.moveToFirst()) {
 			text_list.clear();
 			rad_ents.setOrientation(1);
@@ -607,10 +593,10 @@ public class EditNumbers extends Activity {
 		numbers_table = "";
 		username = username_input.getText().toString();
 		if (check_edit_shared_numbers.isChecked()) {
-			numbers_table = tables.global_number_table;
+			numbers_table = tables.global_numbers;
 		}
 		if (check_edit_user_numbers.isChecked()) {
-			numbers_table = username + "_numbertable";
+			numbers_table = tables.user_numbers;
 		}
 		text = "";
 		entries_layout.removeAllViews();
@@ -619,30 +605,28 @@ public class EditNumbers extends Activity {
 				.rawQuery(
 						"SELECT * FROM " + numbers_table + " WHERE _id="
 								+ sav_id, null);
-		String[] mnespl = null;
 		String[] mne1spl = null;
 		if (c_get1.moveToFirst()) {
-			mnespl = c_get1.getString(
-					c_get1.getColumnIndex(user_numbers_table.NumWors)).split(
-					">>>");
-			num_entries = mnespl.length;
+			num_entries = c_get1.getCount();
 			input_number_numbers_entries.setText(String.valueOf(num_entries));
 			startInsert();
 			input_number.setText(c_get1.getString(c_get1
-					.getColumnIndex(user_numbers_table.Number)));
+					.getColumnIndex(user_numbers.Title)));
 			input_number_info.setText(c_get1.getString(c_get1
-					.getColumnIndex(user_numbers_table.NumInf)));
-
-			for (int i = 0; i < num_entries; i++) {
-				mne1spl = mnespl[i].split("@@@");
-				num_ent[i].setText(mne1spl[0]);
+					.getColumnIndex(user_numbers.Entry_Info)));
+			int i = 0;
+			do {
+				num_ent[i].setText(c_get1.getString(c_get1
+						.getColumnIndex(user_numbers.Entry)));
 				if (mne1spl.length > 1) {
 					mne_ent[i].setText(mne1spl[1]);
 				}
-			}
+				i++;
+			} while (c_get1.moveToNext());
+
 			results.setText("BEGIN UPDATE FOR "
 					+ c_get1.getString(c_get1
-							.getColumnIndex(user_numbers_table.Number)) + ".");
+							.getColumnIndex(user_numbers.Title)) + ".");
 		}
 	}
 
@@ -722,44 +706,50 @@ public class EditNumbers extends Activity {
 	public void updateTable() {
 		numbers_table = "";
 		username = username_input.getText().toString();
+		cv.clear();
+		String where_username = "";
 		if (check_edit_shared_numbers.isChecked()) {
-			numbers_table = tables.global_number_table;
+			numbers_table = tables.global_numbers;
+		}
+		if (check_edit_user_numbers.isChecked()) {
+			numbers_table = tables.user_numbers;
 			username = "";
 			if (Helpers.getLoginStatus() == true) {
 				username = Helpers.getUsername();
 			}
-		}
-		if (check_edit_user_numbers.isChecked()) {
-			numbers_table = username + "_numbertable";
+			cv.put(user_numbers.Username, username);
+			where_username = " AND " + user_numbers.Username + "='" + username
+					+ "'";
 		}
 		num_entries = Integer.parseInt(input_number_numbers_entries.getText()
 				.toString());
-		cv.clear();
-		cv.put(user_numbers_table.Number, input_number.getText().toString());
-		cv.put(user_numbers_table.NumInf, input_number_info.getText()
+		cv.put(user_numbers.Title, input_number.getText().toString());
+		cv.put(user_numbers.Entry_Number, input_number_info.getText()
 				.toString());
 		text = "";
 		for (int i = 0; i < num_entries; i++) {
-			text += num_ent[i].getText().toString() + "@@@"
-					+ mne_ent[i].getText().toString();
-			if (i != (num_entries - 1)) {
-				text += ">>>";
-			}
+			cv.put(global_numbers.Entry, num_ent[i].getText().toString());
+			cv.put(global_numbers.Entry_Mnemonic, mne_ent[i].getText()
+					.toString());
+			cv.put(global_numbers.Entry_Index, (i + 1));
+			MainLfqActivity.getMiscDb().update(numbers_table, cv,
+					global_numbers.Entry_Number + "=?",
+					new String[] { String.valueOf(sav_id) });
+			sql = "UPDATE " + Helpers.db_prefix + "misc." + numbers_table
+					+ " SET " + user_numbers.Title + "='"
+					+ input_number.getText().toString() + ", "
+					+ user_numbers.Entry + "='"
+					+ num_ent[i].getText().toString() + user_numbers.Entry_Info
+					+ "='" + input_number_info.getText().toString() + "', "
+					+ user_numbers.Entry_Mnemonic + "='"
+					+ mne_ent[i].getText().toString() + "' WHERE "
+					+ global_numbers.Entry_Number + "='" + sav_id + "'"
+					+ where_username;
+			// autoSync(sql, db, action, table, name, bool is_image, byte[]
+			// image)
+			autosync_text += Synchronize.autoSync(sql, "misc_db", "update",
+					numbers_table, String.valueOf(sav_id), false, null);
 		}
-		cv.put(user_numbers_table.NumWors, text);
-		MainLfqActivity.getMiscDb().update(numbers_table, cv,
-				"_id=" + sav_id, null);
-		sql = "UPDATE " + Helpers.db_prefix + "newwords." + numbers_table
-				+ " SET " + user_numbers_table.Number + "='"
-				+ input_number.getText().toString() + ", "
-				+ user_numbers_table.NumInf + "='"
-				+ input_number_info.getText().toString() + "', "
-				+ user_numbers_table.NumWors + "='" + text + "' WHERE ID='"
-				+ sav_id + "'";
-		// autoSync(sql, db, action, table, name, bool is_image, byte[]
-		// image)
-		autosync_text += Synchronize.autoSync(sql, "num_db", "update",
-				numbers_table, String.valueOf(sav_id), false, null);
 		results.setText("UPDATED NUMBER " + input_number.getText().toString()
 				+ ".");
 	}
@@ -772,37 +762,56 @@ public class EditNumbers extends Activity {
 		}
 		numbers_table = "";
 		username = username_input.getText().toString();
+		String username_value = "", username_column = "";
 		if (check_edit_shared_numbers.isChecked()) {
-			numbers_table = tables.global_number_table;
+			numbers_table = tables.global_numbers;
 		}
 		if (check_edit_user_numbers.isChecked()) {
-			numbers_table = username + "_numbertable";
+			numbers_table = tables.user_numbers;
+			if (Helpers.getLoginStatus() == true) {
+				username = Helpers.getUsername();
+			}
+			cv.put(user_numbers.Username, username);
+			String type = "";
+			cv.put(user_numbers.Type, type);
+			username_value = username + "','";
+			username_column = "," + user_numbers.Username;
 		}
 		text = "";
 		num_entries = Integer.parseInt(input_number_numbers_entries.getText()
 				.toString());
-		cv.clear();
-		cv.put(user_numbers_table.Number, input_number.getText().toString());
-		cv.put(user_numbers_table.NumInf, input_number_info.getText()
-				.toString());
-		for (int i = 0; i < num_entries; i++) {
-			text += num_ent[i].getText().toString() + "@@@"
-					+ mne_ent[i].getText().toString();
-			if (i != (num_entries - 1)) {
-				text += ">>>";
-			}
+		//GET Entry_Number:---------------------------------------
+		int entry_number = 0;
+		Cursor c_get_ent_num = MainLfqActivity.getMiscDb().rawQuery("SELECT MAX(" + global_numbers.Entry_Number + ") FROM " + numbers_table, null);
+		if (c_get_ent_num.moveToFirst()){
+			entry_number = c_get_ent_num.getInt(0);
 		}
-		cv.put(user_numbers_table.NumWors, text);
-		MainLfqActivity.getMiscDb().insert(numbers_table, null, cv);
-		sql = "INSERT INTO " + Helpers.db_prefix + "newwords." + numbers_table
-				+ "(" + user_numbers_table.Number + ","
-				+ user_numbers_table.NumInf + "," + user_numbers_table.NumWors
-				+ ") VALUES('" + input_number.getText().toString() + "','"
-				+ input_number_info.getText().toString() + "','" + text + "')";
-		// autoSync(sql, db, action, table, name, bool is_image, byte[]
-		// image)
-		autosync_text += Synchronize.autoSync(sql, "nu,_db", "insert",
-				numbers_table, "", false, null);
+		cv.clear();
+		cv.put(global_numbers.Title, input_number.getText().toString());
+		cv.put(global_numbers.Entry_Number, entry_number);
+
+		for (int i = 0; i < num_entries; i++) {
+			cv.put(global_numbers.Entry, num_ent[i].getText().toString());
+			cv.put(global_numbers.Entry_Mnemonic, mne_ent[i].getText()
+					.toString());
+			cv.put(global_numbers.Entry_Index, (i + 1));
+			MainLfqActivity.getMiscDb().insert(numbers_table, null, cv);
+			sql = "INSERT INTO  " + Helpers.db_prefix + "misc." + numbers_table
+					+ "(" + username_column + global_numbers.Title + ","
+					+ global_numbers.Entry_Number + ","
+					+ global_numbers.Entry_Index + "," + global_numbers.Entry
+					+ "," + global_numbers.Entry_Mnemonic + ") VALUES('"
+					+ username_value
+					+ input_number.getText().toString() + "','"
+					+ entry_number + "','"
+					+ (i+1) + "','"
+					+ num_ent[i].getText().toString() + "','" 
+					+ mne_ent[i].getText().toString() + "')";
+			// autoSync(sql, db, action, table, name, bool is_image, byte[]
+			// image)
+			autosync_text += Synchronize.autoSync(sql, "misc_db", "insert",
+					numbers_table, String.valueOf(sav_id), false, null);
+		}
 		results.setText("INSERTED NUMBER " + input_number.getText().toString()
 				+ "." + autosync_text);
 
@@ -816,37 +825,35 @@ public class EditNumbers extends Activity {
 		numbers_table = "";
 		username = username_input.getText().toString();
 		if (check_edit_shared_numbers.isChecked()) {
-			numbers_table = tables.global_number_table;
-			username = "";
+			numbers_table = tables.global_numbers;
+		}
+		if (check_edit_user_numbers.isChecked()) {
+			numbers_table = tables.user_numbers;
 			if (Helpers.getLoginStatus() == true) {
 				username = Helpers.getUsername();
 			}
 		}
-		if (check_edit_user_numbers.isChecked()) {
-			numbers_table = username + "_numbertable";
-		}
 		Cursor c_get1 = MainLfqActivity.getMiscDb()
 				.rawQuery(
-						"SELECT * FROM " + numbers_table + " WHERE _id="
-								+ sav_id, null);
+						"SELECT * FROM " + numbers_table + " WHERE " + global_numbers.Entry_Number + "=?", new String[]{String.valueOf(sav_id)});
 		if (c_get1.moveToFirst()) {
 			text = c_get1.getString(c_get1
-					.getColumnIndex(user_numbers_table.Number));
+					.getColumnIndex(global_numbers.Title));
 		}
 		MainLfqActivity.getMiscDb().execSQL(
-				"DELETE FROM " + numbers_table + " WHERE _id=" + sav_id);
-		sql = "DELETE FROM " + Helpers.db_prefix + "newwords." + numbers_table
-				+ " WHERE _id=" + sav_id;
+				"DELETE FROM " + numbers_table + " WHERE " + global_numbers.Entry_Number + "='" + sav_id + "'");
+		sql = "DELETE FROM " + Helpers.db_prefix + "misc." + numbers_table
+				+ " WHERE " + global_numbers.Entry_Number + "='" + sav_id + "'";
 		// autoSync(sql, db, action, table, name, bool is_image, byte[]
 		// image)
-		autosync_text += Synchronize.autoSync(sql, "num_db", "delete",
+		autosync_text += Synchronize.autoSync(sql, "misc_db", "delete",
 				numbers_table, String.valueOf(sav_id), false, null);
 		results.setText("DELETED " + text + "." + autosync_text);
 		getEntry();
 	}
-	
-	public void setVisibilities(){
-		
+
+	public void setVisibilities() {
+
 	}
 
 }

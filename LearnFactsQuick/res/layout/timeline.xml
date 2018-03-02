@@ -293,7 +293,7 @@
                     android:paddingRight="10px" >
 
                     <TextView
-                        android:id="@+id/timeline_results2"
+                        android:id="@+id/timeline_results_left"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text=""
@@ -307,7 +307,7 @@
                     android:layout_weight="0.5">
 
                     <TextView
-                        android:id="@+id/timeline_results"
+                        android:id="@+id/timeline_results_right"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text=""

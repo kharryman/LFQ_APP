@@ -1,6 +1,7 @@
 package com.lfq.learnfactsquick;
 
-import com.lfq.learnfactsquick.Constants.cols.global_number_table;
+import com.lfq.learnfactsquick.Constants.cols.global_numbers;
+import com.lfq.learnfactsquick.Constants.cols.user_numbers;
 import com.lfq.learnfactsquick.Constants.tables;
 
 import android.app.Activity;
@@ -29,7 +30,7 @@ public class Numbers extends Activity {
 	private EditText username_input, password_input;
 	private Button do_get_numbers, do_login, do_logout, backup;
 	private RadioButton check_user_numbers, check_shared_numbers;
-		
+
 	private String text;// to be used as a buffer(for debugging too)
 	private String[] textspl;
 	private String username, password;
@@ -63,7 +64,7 @@ public class Numbers extends Activity {
 	protected void onPause() {
 		super.onPause();
 		if (is_database_load == false) {
-			saveChanges();			
+			saveChanges();
 		}
 	}
 
@@ -90,7 +91,6 @@ public class Numbers extends Activity {
 			super.onBackPressed();
 		}
 	}
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -222,70 +222,94 @@ public class Numbers extends Activity {
 				numbers_header_table.setVisibility(View.VISIBLE);
 				Cursor c_get = null;
 				String table = "";
+				String orderby_type = "";
 				if (check_shared_numbers.isChecked()) {
-					table = tables.global_number_table;
+					table = tables.global_numbers;
 				}
 				if (check_user_numbers.isChecked()) {
 					if (logged_in == false) {
 						results.setText("NOT LOGGED IN.");
 						return;
 					}
-					table = username + "_numbertable";
+					table = tables.user_numbers;
+					orderby_type = " ORDER BY " + user_numbers.Type;
 				}
 				numbers_above_layout.setVisibility(View.GONE);
 				backup.setVisibility(View.VISIBLE);
-				c_get = MainLfqActivity.getMiscDb().rawQuery("SELECT * FROM " + table
-						+ " ORDER BY " + global_number_table.Type, null);
+				c_get = MainLfqActivity.getMiscDb().rawQuery(
+						"SELECT * FROM " + table + " GROUP BY "
+								+ global_numbers.Entry_Number + orderby_type,
+						null);
+				Cursor c_get_entry = null;
+				String major_word = "";
 				if (c_get.moveToFirst()) {
 					numbers_table.removeAllViews();
-
 					do {
-						TableRow row = new TableRow(this_act);
-						// row.setBackgroundColor(Color.WHITE);
-						// row.setLayoutParams(rowParams);
-						numbers_table.addView(row, rowParams);
-
-						cellParams = new TableRow.LayoutParams(150,
-								TableRow.LayoutParams.MATCH_PARENT);
-						TextView tv_type = new TextView(this_act);
-						tv_type.setText(c_get.getString(c_get
-								.getColumnIndex(global_number_table.Type)));
-						tv_type.setPadding(1, 1, 1, 1);
-						tv_type.setBackgroundResource(R.drawable.cell_shape);
-						row.addView(tv_type, cellParams);
-
-						cellParams = new TableRow.LayoutParams(150,
-								TableRow.LayoutParams.MATCH_PARENT);
-						TextView tv_num = new TextView(this_act);
-						tv_num.setText(c_get.getString(c_get
-								.getColumnIndex("Number")));
-						tv_num.setPadding(1, 1, 1, 1);
-						tv_num.setBackgroundResource(R.drawable.cell_shape);
-						row.addView(tv_num, cellParams);
-
-						cellParams = new TableRow.LayoutParams(400,
-								TableRow.LayoutParams.MATCH_PARENT);
-						TextView tv_info = new TextView(this_act);
-						tv_info.setPadding(1, 1, 1, 1);
-						tv_info.setText(c_get.getString(c_get
-								.getColumnIndex("NumInf")));
-						tv_info.setBackgroundResource(R.drawable.cell_shape);
-						row.addView(tv_info, cellParams);
-
-						cellParams = new TableRow.LayoutParams(400,
-								TableRow.LayoutParams.MATCH_PARENT);
-						TextView tv_words = new TextView(this_act);
-						tv_words.setPadding(1, 1, 1, 1);
-						text = c_get.getString(c_get.getColumnIndex(global_number_table.NumWors));
-						textspl = text.split("@@@");
-						text = "";
-						for (int i = 0; i < textspl.length; i++) {
-							text += textspl[i] + "<br />";
+						c_get_entry = MainLfqActivity
+								.getMiscDb()
+								.rawQuery(
+										"SELECT * FROM " + table + " WHERE "
+												+ global_numbers.Entry_Number
+												+ "=? ORDER BY "
+												+ global_numbers.Entry_Index,
+										new String[] { c_get.getString(c_get
+												.getColumnIndex(global_numbers.Entry_Number)) });
+						if (c_get_entry.moveToFirst()) {
+							do {
+								TableRow row = new TableRow(this_act);
+								// row.setBackgroundColor(Color.WHITE);
+								// row.setLayoutParams(rowParams);
+								numbers_table.addView(row, rowParams);
+								cellParams = new TableRow.LayoutParams(150,
+										TableRow.LayoutParams.MATCH_PARENT);
+								TextView tv_type = new TextView(this_act);
+								// SET
+								// TYPE--------------------------------------
+								if (table.equals(tables.user_numbers)) {
+									tv_type.setText(c_get_entry.getString(c_get_entry
+											.getColumnIndex(user_numbers.Type)));
+								} else {
+									tv_type.setText("HISTORICAL");
+								}
+								// -------------------------------------------------
+								tv_type.setPadding(1, 1, 1, 1);
+								tv_type.setBackgroundResource(R.drawable.cell_shape);
+								row.addView(tv_type, cellParams);
+								cellParams = new TableRow.LayoutParams(150,
+										TableRow.LayoutParams.MATCH_PARENT);
+								TextView tv_num = new TextView(this_act);
+								// SET ENTRY
+								// NUMBER:-----------------------------------
+								tv_num.setText(c_get_entry.getString(c_get_entry
+										.getColumnIndex(global_numbers.Entry)));
+								// ---------------------------------------------------
+								tv_num.setPadding(1, 1, 1, 1);
+								tv_num.setBackgroundResource(R.drawable.cell_shape);
+								row.addView(tv_num, cellParams);
+								cellParams = new TableRow.LayoutParams(400,
+										TableRow.LayoutParams.MATCH_PARENT);
+								TextView tv_info = new TextView(this_act);
+								tv_info.setPadding(1, 1, 1, 1);
+								// SET ENTRY
+								// INFO:-----------------------------------
+								tv_info.setText(c_get_entry.getString(c_get_entry
+										.getColumnIndex(global_numbers.Entry_Info)));
+								// ----------------------------------------------------
+								tv_info.setBackgroundResource(R.drawable.cell_shape);
+								row.addView(tv_info, cellParams);
+								cellParams = new TableRow.LayoutParams(400,
+										TableRow.LayoutParams.MATCH_PARENT);
+								TextView tv_words = new TextView(this_act);
+								tv_words.setPadding(1, 1, 1, 1);                                 
+								// SET ENTRY
+								// MNEMONIC:-----------------------------------
+								tv_words.setText(c_get_entry.getString(c_get_entry
+										.getColumnIndex(global_numbers.Entry_Mnemonic)));
+								//--------------------------------------------------
+								tv_words.setBackgroundResource(R.drawable.cell_shape);
+								row.addView(tv_words, cellParams);
+							} while (c_get_entry.moveToNext());
 						}
-						tv_words.setText(Html.fromHtml(text));
-						tv_words.setBackgroundResource(R.drawable.cell_shape);
-						row.addView(tv_words, cellParams);
-
 					} while (c_get.moveToNext());
 
 				}

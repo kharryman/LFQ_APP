@@ -2838,9 +2838,9 @@ containing a value of this type.
         public static final int timeline_login_status=0x7f050304;
         public static final int timeline_logout=0x7f0502fd;
         public static final int timeline_password=0x7f050301;
-        public static final int timeline_results=0x7f050317;
-        public static final int timeline_results2=0x7f050316;
         public static final int timeline_results_layout=0x7f050315;
+        public static final int timeline_results_left=0x7f050316;
+        public static final int timeline_results_right=0x7f050317;
         public static final int timeline_savewords_layout=0x7f050324;
         public static final int timeline_show_buttons=0x7f05030e;
         public static final int timeline_username=0x7f0502ff;

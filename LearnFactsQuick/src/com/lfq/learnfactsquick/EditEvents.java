@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.lfq.learnfactsquick.Constants.cols.user_events;
 import com.lfq.learnfactsquick.Constants.tables;
 import com.lfq.learnfactsquick.Constants.cols.events_table;
-import com.lfq.learnfactsquick.Constants.cols.global_number_table;
+import com.lfq.learnfactsquick.Constants.cols.global_numbers;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -384,9 +384,6 @@ public class EditEvents extends Activity {
 					values.put(events_table.Year, year);
 					values.put(events_table.Date, date);
 					values.put(events_table.Event, event);
-					if (!check_shared_table.isChecked()) {
-						values.put(global_number_table.Type, type);
-					}
 					MainLfqActivity.getDatabase().insert(table, null, values);
 					if (check_shared_table.isChecked()) {
 						sql = "INSERT INTO " + lfq_table + " ("
