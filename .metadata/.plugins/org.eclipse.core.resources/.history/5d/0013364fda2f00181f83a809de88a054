@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/del_num_ent_layout"
+    style="?android:attr/actionButtonStyle"
+    android:layout_width="100px"
+    android:layout_height="70px"
+    android:clickable="true"
+    android:orientation="horizontal"
+    android:contentDescription="Insert Above?" >
+
+    <TextView
+        android:id="@+id/insert_number_entry"
+        android:layout_width="0dp"
+        android:layout_weight="0.70"
+        android:layout_height="wrap_content"
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:text="Insert Above?"
+         />
+    <TextView
+        android:id="@+id/insert_number_entry_icon"
+        android:layout_width="0dp"
+        android:layout_weight="0.30"
+       android:background="@drawable/x"
+       android:text="" />
+</LinearLayout>

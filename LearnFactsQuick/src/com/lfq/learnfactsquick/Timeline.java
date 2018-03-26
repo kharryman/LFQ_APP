@@ -456,7 +456,9 @@ public class Timeline extends Activity {
 				.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						results_left.setText(Html.fromHtml("<b>" + which_events.replace("_", "").toUpperCase() + "</b>"));						
+						results_left.setText(Html.fromHtml("<b>"
+								+ which_events.replace("_", "").toUpperCase()
+								+ "</b>"));
 						prompt_timeline_words.setVisibility(View.GONE);
 						above_controls.setVisibility(View.GONE);
 						event_layout.setVisibility(View.GONE);
@@ -487,12 +489,12 @@ public class Timeline extends Activity {
 								save_words = "";
 								save_mnes = "";
 								for (int i = 1; i <= 4; i++) {
-									hm.put("Number" + i,
-											c.getString(c.getColumnIndex("Number" + i)));
+									hm.put("Number" + i, c.getString(c
+											.getColumnIndex("Number" + i)));
 									hm.put("Number_Info" + i, c.getString(c
 											.getColumnIndex("Number_Info" + i)));
-									hm.put("Number_Mnemonic" + i,
-											c.getString(c.getColumnIndex("Number_Mnemonic"
+									hm.put("Number_Mnemonic" + i, c.getString(c
+											.getColumnIndex("Number_Mnemonic"
 													+ i)));
 								}
 								saved_words = getSavedWords(hm);
@@ -509,8 +511,9 @@ public class Timeline extends Activity {
 										+ c.getString(
 												c.getColumnIndex(events_table.Event))
 												.substring((index_hyphen + 1))
-										+ "<br/>SAVED WORDS:<br/>" + saved_words
-										+ "<br />" + save_mnes + "<br/></b>"));
+										+ "<br/>SAVED WORDS:<br/>"
+										+ saved_words + "<br />" + save_mnes
+										+ "<br/></b>"));
 								words_layout.addView(tv);
 							} while (c.moveToNext());
 						}
@@ -528,12 +531,12 @@ public class Timeline extends Activity {
 								tv.setTextSize(15);
 								saved_words = "";
 								for (int i = 1; i <= 4; i++) {
-									hm.put("Number" + i,
-											c.getString(c.getColumnIndex("Number" + i)));
+									hm.put("Number" + i, c.getString(c
+											.getColumnIndex("Number" + i)));
 									hm.put("Number_Info" + i, c.getString(c
 											.getColumnIndex("Number_Info" + i)));
-									hm.put("Number_Mnemonic" + i,
-											c.getString(c.getColumnIndex("Number_Mnemonic"
+									hm.put("Number_Mnemonic" + i, c.getString(c
+											.getColumnIndex("Number_Mnemonic"
 													+ i)));
 								}
 								saved_words = getSavedWords(hm);
@@ -543,13 +546,15 @@ public class Timeline extends Activity {
 										+ "<br/>EVENT:<br/>"
 										+ c.getString(c
 												.getColumnIndex(events_table.Event))
-										+ "<br/>SAVED WORDS:<br/>" + saved_words
-										+ "<br />" + save_mnes + "<br/></b>"));
+										+ "<br/>SAVED WORDS:<br/>"
+										+ saved_words + "<br />" + save_mnes
+										+ "<br/></b>"));
 								words_layout.addView(tv);
 							} while (c.moveToNext());
 						}
 						c.close();
-						results_right.setText(ct_tot + " OF " + ct_all + " EVENTS");						
+						results_right.setText(ct_tot + " OF " + ct_all
+								+ " EVENTS");
 					}
 				});
 
@@ -687,15 +692,6 @@ public class Timeline extends Activity {
 												+ "' ORDER BY Date DESC,_id DESC LIMIT 1",
 										null);
 					}
-					display_date = months_complete.get(Integer
-							.parseInt(c_get_last.getString(
-									c_get_last.getColumnIndex("Date"))
-									.substring(0, 2)) - 1)
-							+ " "
-							+ Integer.parseInt(c_get_last.getString(
-									c_get_last.getColumnIndex("Date"))
-									.substring(3));
-
 				}
 				if (which_events.equals("date_events")) {
 					date_number_string = String.valueOf(select_timeline_month
@@ -752,17 +748,29 @@ public class Timeline extends Activity {
 					}
 				}
 				if (c_get_last.moveToFirst()) {
+					if (which_events.equals("year_events")) {
+						display_date = months_complete.get(Integer
+								.parseInt(c_get_last.getString(
+										c_get_last.getColumnIndex("Date"))
+										.substring(0, 2)) - 1)
+								+ " "
+								+ Integer.parseInt(c_get_last.getString(
+										c_get_last.getColumnIndex("Date"))
+										.substring(3));
+
+					}
 					event_tv.setText(c_get_last.getString(c_get_last
 							.getColumnIndex("Event")));
-					id = c_get_last.getString(c_get_last.getColumnIndex("_id"));					
+					id = c_get_last.getString(c_get_last.getColumnIndex("_id"));
 					for (int i = 1; i <= 4; i++) {
-						hm.put("Number" + i,
-								c.getString(c.getColumnIndex("Number" + i)));
-						hm.put("Number_Info" + i, c.getString(c
-								.getColumnIndex("Number_Info" + i)));
-						hm.put("Number_Mnemonic" + i,
-								c.getString(c.getColumnIndex("Number_Mnemonic"
-										+ i)));
+						hm.put("Number" + i, c_get_last.getString(c_get_last
+								.getColumnIndex("Number" + i)));
+						hm.put("Number_Info" + i, c_get_last
+								.getString(c_get_last
+										.getColumnIndex("Number_Info" + i)));
+						hm.put("Number_Mnemonic" + i, c_get_last
+								.getString(c_get_last
+										.getColumnIndex("Number_Mnemonic" + i)));
 					}
 					saved_words = getSavedWords(hm);
 					date = c_get_last.getString(c_get_last
@@ -785,8 +793,8 @@ public class Timeline extends Activity {
 				show_year.setText(Html.fromHtml("<b>YEAR:" + year + "</b>"));
 				show_date.setText(Html.fromHtml("<b>DATE:" + date + "</b>"));
 				c_get_last.close();
-				results_left.setText(Html.fromHtml("<b>" + number + " OF " + total
-						+ " EVENTS.</b>"));
+				results_left.setText(Html.fromHtml("<b>" + number + " OF "
+						+ total + " EVENTS.</b>"));
 			}
 		});
 
@@ -927,14 +935,6 @@ public class Timeline extends Activity {
 												+ "' ORDER BY Date ASC,_id ASC LIMIT 1",
 										null);
 					}
-					display_date = months_complete.get(Integer
-							.parseInt(c_get_next.getString(
-									c_get_next.getColumnIndex("Date"))
-									.substring(0, 2)) - 1)
-							+ " "
-							+ Integer.parseInt(c_get_next.getString(
-									c_get_next.getColumnIndex("Date"))
-									.substring(3));
 
 				}
 				if (which_events.equals("date_events")) {
@@ -991,17 +991,28 @@ public class Timeline extends Activity {
 					}
 				}
 				if (c_get_next.moveToFirst()) {
+					if (which_events.equals("year_events")) {
+						display_date = months_complete.get(Integer
+								.parseInt(c_get_next.getString(
+										c_get_next.getColumnIndex("Date"))
+										.substring(0, 2)) - 1)
+								+ " "
+								+ Integer.parseInt(c_get_next.getString(
+										c_get_next.getColumnIndex("Date"))
+										.substring(3));
+					}
 					event_tv.setText(c_get_next.getString(c_get_next
 							.getColumnIndex("Event")));
 					id = c_get_next.getString(c_get_next.getColumnIndex("_id"));
 					for (int i = 1; i <= 4; i++) {
-						hm.put("Number" + i,
-								c.getString(c.getColumnIndex("Number" + i)));
-						hm.put("Number_Info" + i, c.getString(c
-								.getColumnIndex("Number_Info" + i)));
-						hm.put("Number_Mnemonic" + i,
-								c.getString(c.getColumnIndex("Number_Mnemonic"
-										+ i)));
+						hm.put("Number" + i, c_get_next.getString(c_get_next
+								.getColumnIndex("Number" + i)));
+						hm.put("Number_Info" + i, c_get_next
+								.getString(c_get_next
+										.getColumnIndex("Number_Info" + i)));
+						hm.put("Number_Mnemonic" + i, c_get_next
+								.getString(c_get_next
+										.getColumnIndex("Number_Mnemonic" + i)));
 					}
 					saved_words = getSavedWords(hm);
 					date = c_get_next.getString(c_get_next
@@ -1024,8 +1035,8 @@ public class Timeline extends Activity {
 				show_year.setText(Html.fromHtml("<b>YEAR:" + year + "</b>"));
 				show_date.setText(Html.fromHtml("<b>DATE:" + date + "</b>"));
 				c_get_next.close();
-				results_left.setText(Html.fromHtml("<b>" + number + " OF " + total
-						+ " EVENTS.</b>"));
+				results_left.setText(Html.fromHtml("<b>" + number + " OF "
+						+ total + " EVENTS.</b>"));
 
 			}
 		});
@@ -1055,8 +1066,8 @@ public class Timeline extends Activity {
 							values,
 							events_table.Year + "=?, " + events_table.Date
 									+ "=?", new String[] { year, date });
-					results_right.setText(Html.fromHtml("<b>EVENT " + year + " "
-							+ date + " UPDATED."));
+					results_right.setText(Html.fromHtml("<b>EVENT " + year
+							+ " " + date + " UPDATED."));
 					// SYNCHRONIZE EVENT IN EVENT DATABASE:
 					sql = "UPDATE " + lfq_table + " SET Event='" + event
 							+ "' WHERE " + events_table.Year + "='" + year
@@ -1094,6 +1105,8 @@ public class Timeline extends Activity {
 				String sync_upd_events_str = "";
 				int entry_number_global = 0, entry_number_personal = 0;
 				int entry_index = 0;// FOR BOTH global and personal.
+				boolean is_ins_global = true;
+				boolean is_ins_personal = true;
 				if (check_save_timeline_global.isChecked()
 						|| check_save_timeline_personal.isChecked()) {
 					if (is_event_edit == false) {
@@ -1102,23 +1115,50 @@ public class Timeline extends Activity {
 						event = event_edit_et.getText().toString();
 					}
 					if (check_save_timeline_global.isChecked()) {
-						// GET Entry Number:
-						Cursor c_max = MainLfqActivity.getMiscDb().rawQuery(
-								"SELECT MAX(" + global_numbers.Entry_Number
-										+ ") AS MAX FROM "
-										+ tables.global_numbers, null);
-						if (c_max.moveToFirst()) {
-							entry_number_global = c_max.getInt(0);
+						Cursor c_check = MainLfqActivity.getMiscDb().rawQuery(
+								"SELECT " + global_numbers._id + " FROM "
+										+ tables.global_numbers + " WHERE "
+										+ global_numbers.Title + "=?",
+								new String[] { event });
+						if (c_check.getCount() > 0) {
+							is_ins_global = false;
+						} else {
+							c_check.close();
+							// GET Entry Number:
+							Cursor c_max = MainLfqActivity
+									.getMiscDb()
+									.rawQuery(
+											"SELECT MAX("
+													+ global_numbers.Entry_Number
+													+ ") AS MAX FROM "
+													+ tables.global_numbers,
+											null);
+							if (c_max.moveToFirst()) {
+								entry_number_global = c_max.getInt(0) + 1;
+							}
 						}
 					}
 					if (check_save_timeline_personal.isChecked()) {
-						// GET Entry Number:
-						Cursor c_max = MainLfqActivity.getMiscDb().rawQuery(
-								"SELECT MAX(" + user_numbers.Entry_Number
-										+ ") AS MAX FROM "
-										+ tables.user_numbers, null);
-						if (c_max.moveToFirst()) {
-							entry_number_personal = c_max.getInt(0);
+						Cursor c_check = MainLfqActivity.getMiscDb().rawQuery(
+								"SELECT " + user_numbers._id + " FROM "
+										+ tables.user_numbers + " WHERE "
+										+ user_numbers.Title + "=?",
+								new String[] { event });
+						if (c_check.getCount() > 0) {
+							is_ins_personal = false;
+						} else {
+							c_check.close();
+							// GET Entry Number:
+							Cursor c_max = MainLfqActivity
+									.getMiscDb()
+									.rawQuery(
+											"SELECT MAX("
+													+ user_numbers.Entry_Number
+													+ ") AS MAX FROM "
+													+ tables.user_numbers, null);
+							if (c_max.moveToFirst()) {
+								entry_number_personal = c_max.getInt(0) + 1;
+							}
 						}
 					}
 				}
@@ -1127,20 +1167,24 @@ public class Timeline extends Activity {
 					// DO EVENTS:
 					values_events.put("Number" + (i + 1), edit_save_words
 							.get(i).get(0));
-					values_events.put("Number" + (i + 1), edit_save_words
-							.get(i).get(1));
+					values_events.put("Number_Mnemonic" + (i + 1),
+							edit_save_words.get(i).get(1));
 					values_events.put("Number_Info" + (i + 1), edit_save_words
 							.get(i).get(2));
+					if (i > 0) {
+						sync_upd_events_str += ", ";
+					}
 					sync_upd_events_str += "Number" + (i + 1) + "='"
 							+ edit_save_words.get(i).get(0) + "', "
 							+ "Number_Mnemonic" + (i + 1) + "='"
 							+ edit_save_words.get(i).get(1) + "', "
 							+ "Number_Info" + (i + 1) + "='"
 							+ edit_save_words.get(i).get(2) + "'";
-					if (check_save_timeline_personal.isChecked()) {
+					if (check_save_timeline_personal.isChecked() && is_ins_personal) {
 						entry_index++;
 						values_personal.clear();
 						values_personal.put(user_numbers.Title, event);
+						values_personal.put(user_numbers.Type, "HISTORICAL NUMBERS");
 						values_personal.put(global_numbers.Entry_Number,
 								entry_number_personal);
 						values_personal.put(user_numbers.Entry_Index,
@@ -1156,7 +1200,7 @@ public class Timeline extends Activity {
 						save_results += " INSERTED INTO " + username
 								+ "'S HISTORICAL TABLE.";
 						// SYNCHRONIZE NUMBER PERSONAL HISTORICAL TABLE
-						sql = "INSERT INTO " + Helpers.db_prefix + "_misc."
+						sql = "INSERT INTO " + Helpers.db_prefix + "misc."
 								+ tables.user_numbers + "("
 								+ user_numbers.Title + "," + user_numbers.Entry
 								+ "," + user_numbers.Entry_Number + ","
@@ -1168,12 +1212,12 @@ public class Timeline extends Activity {
 								+ entry_number_personal + "','" + entry_index
 								+ "','" + edit_save_words.get(i).get(1) + "','"
 								+ edit_save_words.get(i).get(2)
-								+ "','PERSONAL NUMBERS')";
+								+ "','HISTORICAL NUMBERS')";
 						save_results += Synchronize.autoSync(sql, "misc_db",
 								"insert", tables.user_numbers,
 								edit_date_number, false, null);
 					}
-					if (check_save_timeline_global.isChecked()) {
+					if (check_save_timeline_global.isChecked() && is_ins_global) {
 						// UPDATE NUMBER GLOBAL
 						// TABLE--------------------------------
 						entry_index++;
@@ -1221,10 +1265,12 @@ public class Timeline extends Activity {
 				sql = "UPDATE " + lfq_table + " SET " + sync_upd_events_str
 						+ " WHERE " + events_table.Year + "='" + year
 						+ "' AND " + events_table.Date + "='" + date + "'";
-				Synchronize.autoSync(sql, database_string, "update", table,
-						date, false, null);
+				System.out.println("LFQ SQL=" + sql);
+				save_results += Synchronize.autoSync(sql, database_string,
+						"update", table, date, false, null);
 				// -----------------------------------------------------------------
-				results_right.setText(Html.fromHtml("<b>" + save_results + "</b>."));
+				results_right.setText(Html.fromHtml("<b>" + save_results
+						+ "</b>."));
 			}
 		});
 
@@ -1998,7 +2044,8 @@ public class Timeline extends Activity {
 		if (get_events.equals("shared_year_events")) {
 			year = select_years.getSelectedItem().toString();
 			if (year.length() == 0) {
-				results_right.setText(Html.fromHtml("<b>MUST ENTER A YEAR</b>"));
+				results_right
+						.setText(Html.fromHtml("<b>MUST ENTER A YEAR</b>"));
 				return;
 			}
 		}
@@ -2179,8 +2226,8 @@ public class Timeline extends Activity {
 					saved_words = getSavedWords(hm);
 					tv.setText(Html.fromHtml("<b>DATE:"
 							+ c.getString(c.getColumnIndex("Year")) + "-"
-							+ c.getString(c.getColumnIndex("Date")) + ", "
-							+ date + "<br/>EVENT:<br/>"
+							+ c.getString(c.getColumnIndex("Date"))
+							+ "<br/>EVENT:<br/>"
 							+ c.getString(c.getColumnIndex("Event"))
 							+ "<br/>SAVED WORDS:<br/>" + saved_words
 							+ "<br/></b>"));

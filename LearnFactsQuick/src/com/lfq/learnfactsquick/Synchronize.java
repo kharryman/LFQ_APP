@@ -26,18 +26,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.lfq.learnfactsquick.Constants.cols.acrostics;
 import com.lfq.learnfactsquick.Constants.cols.sync_table;
 import com.lfq.learnfactsquick.Constants.cols.user_new_words;
 import com.lfq.learnfactsquick.Constants.tables;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.telephony.TelephonyManager;
+import android.text.Html;
 import android.util.Base64;
 import android.util.Log;
 
@@ -69,6 +76,7 @@ public class Synchronize {
 			.getInstance().getSystemService(Context.TELEPHONY_SERVICE);
 	// private static String device_id = "";
 	private static String results = "";
+	private static  Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 	public Synchronize(Context context) {
 	}
@@ -444,6 +452,110 @@ public class Synchronize {
 			loader.doProgress(Helpers.arrToString(str, "@"));
 		}
 	}
+	
+	static class autoSync extends AsyncTask<String, String, String> {
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			System.out.println("AUTOSYNC CALLED");	
+			username = "";
+			if (Helpers.getLoginStatus() == true) {
+				username = Helpers.getUsername();
+			}
+			String text = "";
+		}
+
+		@Override
+		protected String doInBackground(String... vars) {
+			String is_image_str = "no";
+			String sql = vars[0];
+			String db = vars[1];
+			String action = vars[2];
+			String table = vars[3];
+			String name = vars[4];
+			String is_image = vars[5];
+			String image = vars[6];			
+			String autosync_result = "";
+
+			if (is_image.equals("TRUE")) {
+				is_image_str = "yes";
+			} else {
+				is_image_str = "no";
+			}
+			MainLfqActivity.getMiscDb().delete(
+					tables.sync_table,
+					sync_table.Action + "=? AND " + sync_table.Table_name
+							+ "=? AND " + sync_table.Name + "=?",
+					new String[] { action, table, name });
+			SharedPreferences sharedPref = LfqApp.getInstance()
+					.getSharedPreferences(
+							LfqApp.getInstance().getString(
+									R.string.preference_file_key),
+							Context.MODE_PRIVATE);		
+			if (sharedPref.getBoolean("AUTO SYNC", false) == false
+					|| !isConnected()) {
+				ContentValues cv = new ContentValues();
+				cv.clear();
+				cv.put(sync_table.SQL, sql);
+				cv.put(sync_table.DB, db);
+				cv.put(sync_table.Action, action);
+				cv.put(sync_table.Username, username);
+				cv.put(sync_table.Table_name, table);
+				cv.put(sync_table.Name, name);
+				cv.put(sync_table.Is_Image, is_image_str);
+				cv.put(sync_table.Image, image);
+				System.out.println("INSERTING TO SYNC DB");
+				MainLfqActivity.getMiscDb().insert(tables.sync_table, null, cv);
+				return "UPDATED SYNC TABLE.";
+			}
+			try {
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				params.clear();
+				System.out.println("sql=" + sql);
+				params.add(new BasicNameValuePair(sync_table.SQL, sql));
+				params.add(new BasicNameValuePair("User", username));
+				params.add(new BasicNameValuePair(sync_table.Is_Image, is_image_str));
+				if (is_image.equals("TRUE")) {
+					params.add(new BasicNameValuePair("table", table));
+					params.add(new BasicNameValuePair(sync_table.DB, db));
+					params.add(new BasicNameValuePair("name", name));
+					//Base64.encodeToString(image, 0);
+					params.add(new BasicNameValuePair("image", image));
+				}
+				String url = "http://www.learnfactsquick.com/lfq_app_php/synchronize_from_app_auto.php";
+				JSONObject myjson = makeHttpRequest(url, "POST", params);
+				if (myjson == null) {
+					return "";
+				}			
+				System.out.println("JSON=" + gson.toJson(myjson));
+				autosync_result = myjson.getString("result");
+				String debug = myjson.getString("DEBUG");
+				text += " SYNC TO LFQ " + autosync_result + ".";
+				if (sql != "") {
+					text += "mySQL = " + sql + ". ";
+				}
+				text += debug;
+			} catch (JSONException e) {
+				e.printStackTrace();
+				text += "...FAILED CONNECTION.";
+			}
+			return null;			
+		}
+
+		@Override
+		protected void onProgressUpdate(String... values) {
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			returnResult(text); 
+		}
+		
+	    private String returnResult(String result) {
+	        return result;
+	    }
+
+	}
 
 	public static String autoSync(String sql, String db, String action,
 			String table, String name, boolean is_image, byte[] image) {
@@ -517,7 +629,6 @@ public class Synchronize {
 			System.out.println("sql=" + sql);
 			params.add(new BasicNameValuePair(sync_table.SQL, sql));
 			params.add(new BasicNameValuePair("User", username));
-			// params.add(new BasicNameValuePair("Device_Id", device_id));
 			params.add(new BasicNameValuePair(sync_table.Is_Image, is_image_str));
 			if (is_image == true) {
 				params.add(new BasicNameValuePair("table", table));
@@ -527,12 +638,13 @@ public class Synchronize {
 						.encodeToString(image, 0)));
 			}
 			url = "http://www.learnfactsquick.com/lfq_app_php/synchronize_from_app_auto.php";
-			json = makeHttpRequest(url, "POST", params);
-			if (json == null) {
+			JSONObject myjson = makeHttpRequest(url, "POST", params);
+			if (myjson == null) {
 				return "";
-			}
-			autosync_result = json.getString("result");
-			String debug = json.getString("DEBUG");
+			}			
+			System.out.println("JSON=" + gson.toJson(myjson));
+			autosync_result = myjson.getString("result");
+			String debug = myjson.getString("DEBUG");
 			text += " SYNC TO LFQ " + autosync_result + ".";
 			if (sql != "") {
 				text += "mySQL = " + sql + ". ";
@@ -599,6 +711,7 @@ public class Synchronize {
 			}
 			is.close();
 			json_str = sb.toString();
+			System.out.println("JSON_STR=" + json_str);
 		} catch (Exception e) {
 			Log.e("Buffer Error", "Error converting result " + e.toString());
 		}

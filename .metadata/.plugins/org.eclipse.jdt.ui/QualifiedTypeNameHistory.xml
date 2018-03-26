@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="android.widget.HorizontalScrollView"/>
-<fullyQualifiedTypeName name="java.util.List"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
-<fullyQualifiedTypeName name="android.view.View.OnTouchListener"/>
-<fullyQualifiedTypeName name="android.content.ClipData.Item"/>
-<fullyQualifiedTypeName name="android.widget.RadioGroup"/>
-<fullyQualifiedTypeName name="android.app.AlertDialog"/>
-<fullyQualifiedTypeName name="android.app.Application"/>
 <fullyQualifiedTypeName name="android.content.Context"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Helpers"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.MainLfqActivity"/>
@@ -19,7 +11,6 @@
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.MainLfqActivity.doSyncTo"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.MainLfqActivity.doLoadDatabases"/>
 <fullyQualifiedTypeName name="android.widget.ScrollView"/>
-<fullyQualifiedTypeName name="com.lfq.learnfactsquick.R.drawable"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.R.color"/>
 <fullyQualifiedTypeName name="android.view.KeyEvent"/>
 <fullyQualifiedTypeName name="android.widget.AutoCompleteTextView"/>
@@ -29,7 +20,6 @@
 <fullyQualifiedTypeName name="java.util.Arrays"/>
 <fullyQualifiedTypeName name="android.widget.AdapterView.OnItemSelectedListener"/>
 <fullyQualifiedTypeName name="android.util.Log"/>
-<fullyQualifiedTypeName name="android.view.View.OnClickListener"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.mnemonics"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.user_review_times"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.user_saved_newwords"/>
@@ -41,10 +31,8 @@
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.global_number_table"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.user_numbers_table"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.dictionarya"/>
-<fullyQualifiedTypeName name="android.widget.LinearLayout"/>
 <fullyQualifiedTypeName name="android.widget.Spinner"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.R.id"/>
-<fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.tables"/>
 <fullyQualifiedTypeName name="android.database.sqlite.SQLiteDatabase"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.user_new_words"/>
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.acrostics"/>
@@ -60,4 +48,16 @@
 <fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.cols.user_numbers"/>
 <fullyQualifiedTypeName name="java.util.HashMap"/>
 <fullyQualifiedTypeName name="android.text.Html"/>
+<fullyQualifiedTypeName name="com.google.gson.Gson"/>
+<fullyQualifiedTypeName name="com.google.gson.GsonBuilder"/>
+<fullyQualifiedTypeName name="com.google.gson.JsonParser"/>
+<fullyQualifiedTypeName name="com.google.gson.JsonElement"/>
+<fullyQualifiedTypeName name="com.lfq.learnfactsquick.Synchronize.autoSync"/>
+<fullyQualifiedTypeName name="com.lfq.learnfactsquick.Constants.tables"/>
+<fullyQualifiedTypeName name="com.lfq.learnfactsquick.R.layout"/>
+<fullyQualifiedTypeName name="com.lfq.learnfactsquick.R.drawable"/>
+<fullyQualifiedTypeName name="android.widget.LinearLayout"/>
+<fullyQualifiedTypeName name="android.widget.TableLayout.LayoutParams"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="android.view.View.OnClickListener"/>
 </qualifiedTypeNameHistroy>
