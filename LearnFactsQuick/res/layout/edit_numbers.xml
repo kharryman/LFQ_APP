@@ -284,23 +284,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/numbers_mnemonic_entries_complete_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-                <RelativeLayout
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:id="@+id/numbers_mnemonic_entries_header_layout"
+                    android:layout_width="match_parent"                    
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                </LinearLayout>                
+                <LinearLayout
                     android:id="@+id/numbers_mnemonic_entries_layout"
                     android:layout_width="match_parent"                    
-                    android:layout_height="wrap_content" >
-                </RelativeLayout>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                </LinearLayout>
                 <Button
                     android:id="@+id/edit_numbers_add_after"
                     android:layout_width="match_parent"    
-                    android:layout_below="@+id/numbers_mnemonic_entries_layout"
                     android:text="Add Entry After?"                
                     android:layout_height="wrap_content" >
                 </Button>                
-            </RelativeLayout>
+            </LinearLayout>
         </ScrollView>
     </LinearLayout>
 

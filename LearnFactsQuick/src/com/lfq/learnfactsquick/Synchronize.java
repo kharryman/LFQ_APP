@@ -50,6 +50,7 @@ import android.util.Log;
 
 @SuppressLint("ClickableViewAccessibility")
 public class Synchronize {
+	private static final String TAG = "Synchronize";
 	private static String text, autosync_result;
 	JSONArray response = null;
 	private static InputStream is = null;
@@ -57,7 +58,6 @@ public class Synchronize {
 	private static String json_str = "";
 	private static Cursor c = null;
 	private static String username = "";
-	private static List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 	private static List<String[]> to_list = new ArrayList<String[]>(),
 			lfq_conflicts = new ArrayList<String[]>(),
@@ -74,9 +74,9 @@ public class Synchronize {
 	private static JSONObject json;
 	private static TelephonyManager telephonyManager = (TelephonyManager) LfqApp
 			.getInstance().getSystemService(Context.TELEPHONY_SERVICE);
-	// private static String device_id = "";
+	private static String device_id = "";
 	private static String results = "";
-	private static  Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 	public Synchronize(Context context) {
 	}
@@ -175,10 +175,15 @@ public class Synchronize {
 		// long num_del = MainLfqActivity.getMiscDb().delete(tables.sync_table,
 		// null, null);
 		// System.out.println("NUMBER DELETED=" + num_del);
-
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		try {
 			int count_to = 0;
-			params.clear();
+			device_id = telephonyManager.getDeviceId();
+			System.out.println("SYNC TO DEVICE ID = " + device_id);
+			params.add(new BasicNameValuePair("Device_Id", String
+					.valueOf(device_id)));
+			params.add(new BasicNameValuePair("Count_To_Queries", String
+					.valueOf(c.getCount())));
 			if (c.moveToFirst()) {
 				do {
 					System.out.println("SQL="
@@ -216,9 +221,6 @@ public class Synchronize {
 					params.add(new BasicNameValuePair(sync_table.Name
 							+ count_to, c.getString(c
 							.getColumnIndex(sync_table.Name))));
-					// params.add(new BasicNameValuePair("Device_Id" + count_to,
-					// c.getString(c.getColumnIndex("Device_Id"))));
-					// sql,user,password,is_image,image,table,name,device_id
 					String image_string = "";
 					if (c.getString(c.getColumnIndex(sync_table.Is_Image))
 							.equals("yes")) {
@@ -233,10 +235,7 @@ public class Synchronize {
 							c.getString(c.getColumnIndex(sync_table.Is_Image)),
 							image_string,
 							c.getString(c.getColumnIndex(sync_table.Table_name)),
-							c.getString(c.getColumnIndex(sync_table.Name)),
-					// c.getString(c.getColumnIndex("Device_Id"))
-
-					});
+							c.getString(c.getColumnIndex(sync_table.Name)) });
 
 					count_to++;
 
@@ -244,10 +243,6 @@ public class Synchronize {
 			}
 			c.close();
 			if (count_to > 0) {
-				params.add(new BasicNameValuePair("Count_To_Queries", String
-						.valueOf(count_to)));
-				// device_id = telephonyManager.getDeviceId();
-				// params.add(new BasicNameValuePair("Device_Id", device_id));
 				url = "http://www.learnfactsquick.com/lfq_app_php/synchronize_to.php";
 				json = makeHttpRequest(url, "POST", params);
 				if (json == null) {
@@ -293,15 +288,19 @@ public class Synchronize {
 		int count_from;
 		results = "";
 		try {
-			// device_id = telephonyManager.getDeviceId();
+			device_id = telephonyManager.getDeviceId();
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			// params.add(new BasicNameValuePair("Device_Id", device_id));
 			SharedPreferences sharedPref = LfqApp.getInstance()
 					.getSharedPreferences(
 							LfqApp.getInstance().getString(
 									R.string.preference_file_key),
 							Context.MODE_PRIVATE);
-			params.add(new BasicNameValuePair("TIME_SYNCED_FROM", sharedPref.getString("TIME_SYNCED_FROM", null)));
+			Log.d(TAG,
+					"TIME_SYNCED_FROM="
+							+ sharedPref.getString("TIME_SYNCED_FROM", null));
+			params.add(new BasicNameValuePair("TIME_SYNCED_FROM", sharedPref
+					.getString("TIME_SYNCED_FROM", null)));
+			params.add(new BasicNameValuePair("Device_Id", device_id));
 			url = "http://www.learnfactsquick.com/lfq_app_php/synchronize_from.php";
 			json = makeHttpRequest(url, "POST", params);
 			if (json == null) {
@@ -313,7 +312,7 @@ public class Synchronize {
 			c = null;
 			// System.out.println(json.toString());
 			String db, id, is_image, imageString, query, table, name, action, user;
-			Boolean done = false;
+			Boolean done = true;
 			for (int i = 0; i < count_from; i++) {
 				done = false;
 				db = json.getString(sync_table.DB + i);
@@ -338,10 +337,13 @@ public class Synchronize {
 					try {
 						MainLfqActivity.getDatabase().execSQL(query);
 						results = (i + 1) + ". SYNCED: " + query + ". ";
-						done = true;
 					} catch (Exception e) {
 						results = (i + 1) + ". NOT SYNCED " + query + "."
 								+ e.getMessage();
+						done = false;
+						Log.e(TAG,
+								"NOT SYCNED!!!: " + query + "."
+										+ e.getMessage());
 					}
 					results += "<br />";
 				} else {// IS IMAGE? -> INSERT:
@@ -353,18 +355,15 @@ public class Synchronize {
 					MainLfqActivity.getDatabase().update(table, cv,
 							sync_table.Name + "=?", new String[] { name });
 					results = "Updated " + table + ", " + name + ". ";
-					done = true;
-				}
-				if (done == true) {
-					String timeStamp = new SimpleDateFormat("yyyy/MM/DD HH:mm:ss")
-					.format(Calendar.getInstance().getTime());
-					sharedPref.edit().putString("TIME_SYNCED_FROM", timeStamp).commit();
-					System.out.println("SET TIME_SYCNED FROM=" + timeStamp);
 				}
 				// System.out.println(results);
 				loader.doProgress(results);
 			}// END FOR LOOP
 				// RESET DATABASES SYNCED DATES:
+			String timeStamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+					.format(Calendar.getInstance().getTime());
+			sharedPref.edit().putString("TIME_SYNCED_FROM", timeStamp).commit();
+			Log.d(TAG, "SET TIME_SYCNED FROM=" + timeStamp);
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -391,8 +390,9 @@ public class Synchronize {
 
 		try {
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			//TelephonyManager telephonyManager = (TelephonyManager) LfqApp.getInstance().getSystemService(Context.TELEPHONY_SERVICE);
-			// device_id = telephonyManager.getDeviceId();
+			// TelephonyManager telephonyManager = (TelephonyManager)
+			// LfqApp.getInstance().getSystemService(Context.TELEPHONY_SERVICE);
+			device_id = telephonyManager.getDeviceId();
 			// params.add(new BasicNameValuePair("Device_Id", device_id));
 			url = "http://www.learnfactsquick.com/lfq_app_php/get_sync_from_count.php";
 			SharedPreferences sharedPref = LfqApp.getInstance()
@@ -400,7 +400,8 @@ public class Synchronize {
 							LfqApp.getInstance().getString(
 									R.string.preference_file_key),
 							Context.MODE_PRIVATE);
-			params.add(new BasicNameValuePair("TIME_SYNCED_FROM", sharedPref.getString("TIME_SYNCED_FROM", null)));
+			params.add(new BasicNameValuePair("TIME_SYNCED_FROM", sharedPref
+					.getString("TIME_SYNCED_FROM", null)));
 			JSONObject json_from_count = makeHttpRequest(url, "POST", params);
 			if (is_report) {
 				if (json_from_count == null) {
@@ -452,12 +453,12 @@ public class Synchronize {
 			loader.doProgress(Helpers.arrToString(str, "@"));
 		}
 	}
-	
+
 	static class autoSync extends AsyncTask<String, String, String> {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			System.out.println("AUTOSYNC CALLED");	
+			System.out.println("AUTOSYNC CALLED");
 			username = "";
 			if (Helpers.getLoginStatus() == true) {
 				username = Helpers.getUsername();
@@ -474,7 +475,7 @@ public class Synchronize {
 			String table = vars[3];
 			String name = vars[4];
 			String is_image = vars[5];
-			String image = vars[6];			
+			String image = vars[6];
 			String autosync_result = "";
 
 			if (is_image.equals("TRUE")) {
@@ -491,7 +492,7 @@ public class Synchronize {
 					.getSharedPreferences(
 							LfqApp.getInstance().getString(
 									R.string.preference_file_key),
-							Context.MODE_PRIVATE);		
+							Context.MODE_PRIVATE);
 			if (sharedPref.getBoolean("AUTO SYNC", false) == false
 					|| !isConnected()) {
 				ContentValues cv = new ContentValues();
@@ -514,19 +515,20 @@ public class Synchronize {
 				System.out.println("sql=" + sql);
 				params.add(new BasicNameValuePair(sync_table.SQL, sql));
 				params.add(new BasicNameValuePair("User", username));
-				params.add(new BasicNameValuePair(sync_table.Is_Image, is_image_str));
+				params.add(new BasicNameValuePair(sync_table.Is_Image,
+						is_image_str));
 				if (is_image.equals("TRUE")) {
 					params.add(new BasicNameValuePair("table", table));
 					params.add(new BasicNameValuePair(sync_table.DB, db));
 					params.add(new BasicNameValuePair("name", name));
-					//Base64.encodeToString(image, 0);
+					// Base64.encodeToString(image, 0);
 					params.add(new BasicNameValuePair("image", image));
 				}
 				String url = "http://www.learnfactsquick.com/lfq_app_php/synchronize_from_app_auto.php";
 				JSONObject myjson = makeHttpRequest(url, "POST", params);
 				if (myjson == null) {
 					return "";
-				}			
+				}
 				System.out.println("JSON=" + gson.toJson(myjson));
 				autosync_result = myjson.getString("result");
 				String debug = myjson.getString("DEBUG");
@@ -539,7 +541,7 @@ public class Synchronize {
 				e.printStackTrace();
 				text += "...FAILED CONNECTION.";
 			}
-			return null;			
+			return null;
 		}
 
 		@Override
@@ -548,12 +550,12 @@ public class Synchronize {
 
 		@Override
 		protected void onPostExecute(String result) {
-			returnResult(text); 
+			returnResult(text);
 		}
-		
-	    private String returnResult(String result) {
-	        return result;
-	    }
+
+		private String returnResult(String result) {
+			return result;
+		}
 
 	}
 
@@ -641,7 +643,7 @@ public class Synchronize {
 			JSONObject myjson = makeHttpRequest(url, "POST", params);
 			if (myjson == null) {
 				return "";
-			}			
+			}
 			System.out.println("JSON=" + gson.toJson(myjson));
 			autosync_result = myjson.getString("result");
 			String debug = myjson.getString("DEBUG");

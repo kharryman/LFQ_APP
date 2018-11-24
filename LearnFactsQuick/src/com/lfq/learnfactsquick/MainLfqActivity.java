@@ -18,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 
 public class MainLfqActivity extends Activity {
+	private static final String TAG = "MainLfqActivity"; 
 	public static final doSyncTo doSyncTo = null;
 	private RelativeLayout main_layout;
 	Button edit_acrostics, edit_alphabet, edit_dictionary, edit_events,
@@ -84,6 +86,8 @@ public class MainLfqActivity extends Activity {
 			if (is_do_to) {
 				new doSyncTo().execute();
 			} else {
+				//NEED TO UPDATE SYNC TO TIME HERE:
+				
 				is_do_from = (Synchronize.getFromCount(false, "db") > 0);
 				if (is_do_from) {
 					new doSyncFrom().execute();
@@ -495,6 +499,10 @@ public class MainLfqActivity extends Activity {
 		@Override
 		protected void onPostExecute(String file_url) {
 			dialog.dismiss();
+			String timeStamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+			.format(Calendar.getInstance().getTime());
+			sharedPref.edit().putString("TIME_SYNCED_FROM", timeStamp).commit();
+			Log.d(TAG, "SET TIME_SYCNED FROM=" + timeStamp);
 		}
 
 	}

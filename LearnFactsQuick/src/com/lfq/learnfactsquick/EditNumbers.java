@@ -1,23 +1,30 @@
 package com.lfq.learnfactsquick;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 import com.lfq.learnfactsquick.Constants.cols.global_numbers;
 import com.lfq.learnfactsquick.Constants.cols.user_numbers;
 import com.lfq.learnfactsquick.Constants.tables;
+import com.lfq.learnfactsquick.MainLfqActivity.doSyncConflicts;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -38,8 +45,9 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class EditNumbers extends Activity {
-	private RelativeLayout entries_layout;
-	private List<RelativeLayout> entries;
+	private LinearLayout entries_header_layout;
+	private LinearLayout entries_layout;
+	private List<LinearLayout> entries;
 	private LinearLayout top_layout;
 	private TextView results, login_status, prompt_total_number_tv,
 			total_number_tv, prompt_input_number, prompt_input_mnemonic,
@@ -54,28 +62,31 @@ public class EditNumbers extends Activity {
 	private Spinner select_number_title;
 	private ArrayAdapter titlesAdapter;
 
-	private RelativeLayout.LayoutParams params;
+	private LinearLayout.LayoutParams params;
 	private LinearLayout.LayoutParams button_params;
 
 	private String text, numbers_table, username, password;
 	private String[] textspl;
 	private int num_entries;
-	private TextView[] prompt_num_ent, prompt_mne_ent, prompt_mne_inf;
-	private EditText[] num_ent, mne_ent, inf_ent;
-	private Button[] delete_entry, insert_above_entry;
+	private List<TextView> prompt_num_ent, prompt_mne_ent, prompt_mne_inf;
+	private List<EditText> num_ent, mne_ent, inf_ent;
+	// private TextView[] prompt_num_ent, prompt_mne_ent, prompt_mne_inf;
+	// private EditText[] num_ent, mne_ent, inf_ent;
+	private List<Button> delete_entries, insert_above_entries;
 	private int id, sav_id;
 	private HashMap<String, String> text_list;
 	private Boolean logged_in;
 	private Helpers h;
+	AlertDialog dialog;
 	private Activity this_act;
 	SharedPreferences sharedPref;
 	SharedPreferences.Editor editor;
 	private String autosync_text, sql;
 	private ContentValues cv;
-	private int view_id;
 
 	private MenuItem menu_item_autosync_on, menu_item_autosync_off;
 	private static Boolean is_database_load;
+	private List<String> total_numbers_list;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,12 +98,21 @@ public class EditNumbers extends Activity {
 		editor = sharedPref.edit();
 		autosync_text = "";
 		sql = "";
-		view_id = 1;
 		cv = new ContentValues();
 		h = new Helpers(this_act);
 		text_list = new HashMap<String, String>();
 		logged_in = false;
-		entries = new ArrayList<RelativeLayout>();
+		entries = new ArrayList<LinearLayout>();
+		total_numbers_list = new ArrayList<String>();
+		prompt_num_ent = new ArrayList<TextView>();
+		prompt_mne_ent = new ArrayList<TextView>();
+		prompt_mne_inf = new ArrayList<TextView>();
+		num_ent = new ArrayList<EditText>();
+		mne_ent = new ArrayList<EditText>();
+		inf_ent = new ArrayList<EditText>();
+		delete_entries = new ArrayList<Button>();
+		insert_above_entries = new ArrayList<Button>();
+
 		new doLoadDatabases().execute();
 
 	}
@@ -192,23 +212,21 @@ public class EditNumbers extends Activity {
 		if (check_update_numbers.isChecked()
 				|| (check_insert_numbers.isChecked() && input_number_numbers_entries
 						.getText().toString().length() > 0)) {
-			for (int i = 0; i < num_ent.length; i++) {
-				if (num_ent[i] != null) {
-					editor.putString("EDIT NUMBERS NUMBER ENTRY " + i,
-							num_ent[i].getText().toString());
+			for (int i = 0; i < num_ent.size(); i++) {
+				if (num_ent.get(i) != null) {
+					editor.putString("EDIT NUMBERS NUMBER ENTRY " + i, num_ent
+							.get(i).getText().toString());
 				}
 			}
-			for (int i = 0; i < mne_ent.length; i++) {
-				if (mne_ent[i] != null) {
+			for (int i = 0; i < mne_ent.size(); i++) {
+				if (mne_ent.get(i) != null) {
 					editor.putString("EDIT NUMBERS MNEMONIC ENTRY " + i,
-							mne_ent[i].getText().toString());
+							mne_ent.get(i).getText().toString());
 				}
 			}
 		}
 		editor.putString("EDIT NUMBERS NUMBER NUMBERS",
 				input_number_numbers_entries.getText().toString());
-		editor.putBoolean("EDIT NUMBERS CHECK SHARED NUMBERS",
-				check_edit_shared_numbers.isChecked());
 		editor.putBoolean("EDIT NUMBERS CHECK USER NUMBERS",
 				check_edit_user_numbers.isChecked());
 		editor.commit();
@@ -224,7 +242,8 @@ public class EditNumbers extends Activity {
 	public void setViews() {
 		// LAYOUT:
 		setTitle("EDIT NUMBERS");
-		entries_layout = (RelativeLayout) findViewById(R.id.numbers_mnemonic_entries_layout);
+		entries_header_layout = (LinearLayout) findViewById(R.id.numbers_mnemonic_entries_header_layout);
+		entries_layout = (LinearLayout) findViewById(R.id.numbers_mnemonic_entries_layout);
 		top_layout = (LinearLayout) findViewById(R.id.edit_numbers_top_layout);
 
 		// BUTTONS:
@@ -254,6 +273,7 @@ public class EditNumbers extends Activity {
 
 		// RADIOBUTTONS:
 		check_edit_shared_numbers = (RadioButton) findViewById(R.id.check_edit_shared_numbers);
+		check_edit_shared_numbers.setChecked(true);
 		check_edit_user_numbers = (RadioButton) findViewById(R.id.check_edit_user_numbers);
 		check_update_numbers = (RadioButton) findViewById(R.id.check_update_numbers);
 		check_delete_numbers = (RadioButton) findViewById(R.id.check_delete_numbers);
@@ -319,17 +339,29 @@ public class EditNumbers extends Activity {
 				.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View arg0) {
-						getTitles(tables.global_numbers);
+						new doGetTitles(false).execute(tables.global_numbers);
 					}
 				});
 		check_edit_user_numbers.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				if (Helpers.getLoginStatus() == true) {
-					getTitles(tables.user_numbers);
+					new doGetTitles(false).execute(tables.user_numbers);
 				} else {
 					check_edit_user_numbers.setChecked(false);
+					check_edit_shared_numbers.setChecked(true);
+					dialog = new AlertDialog.Builder(this_act).create();
+					dialog.setTitle("Not Logged In");
+					dialog.setMessage("Need to be logged in to se your numbers.");
+					dialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									dialog.dismiss();
+								}
+							});
 				}
+				dialog.show();
 			}
 		});
 
@@ -356,44 +388,6 @@ public class EditNumbers extends Activity {
 				setVisibilities();
 			}
 		});
-		// add_number.setOnClickListener(new View.OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		// num_entries++;
-		// wordspl.add("");
-		// infospl.add("");
-		// doAddEntries(type, word.size(), word.size() + 1);
-		// }
-		// });
-		// Number,NumInf,NumWors,Type
-
-		// remove_number.setOnClickListener(new View.OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		/*
-		 * System.out.println("infospl size=" + infospl.size());
-		 * System.out.println("wordspl size=" + wordspl.size());
-		 * System.out.println("mnespl size=" + mnespl.size()); if (num_entries >
-		 * 0) { num_entries--; } if (type != "anagram") {
-		 * scroll.removeView(tv_mnemonic.get(tv_mnemonic.size() - 1));
-		 * tv_mnemonic.remove(tv_mnemonic.size() - 1);
-		 * scroll.removeView(mnemonic.get(mnemonic.size() - 1));
-		 * mnemonic.remove(mnemonic.size() - 1); }
-		 * scroll.removeView(tv_word.get(tv_word.size() - 1));
-		 * tv_word.remove(tv_word.size() - 1);
-		 * scroll.removeView(word.get(word.size() - 1)); word.remove(word.size()
-		 * - 1); scroll.removeView(tv_info.get(tv_info.size() - 1));
-		 * tv_info.remove(tv_info.size() - 1);
-		 * scroll.removeView(info.get(info.size() - 1)); info.remove(info.size()
-		 * - 1); if (!type.equals("anagram")) { if (mnespl.size() > 0) {
-		 * mnespl.remove(mnespl.size() - 1); } } if (wordspl.size() > 0) {
-		 * wordspl.remove(wordspl.size() - 1); } if (infospl.size() > 0) {
-		 * infospl.remove(infospl.size() - 1); }
-		 */
-
-		// }
-
-		// });
 
 		select_number_title
 				.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -430,7 +424,7 @@ public class EditNumbers extends Activity {
 		add_after.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				addEditNumberInfo();
+				addRemoveNumber(true, entries.size() + 1, true);
 			}
 		});
 	}
@@ -467,287 +461,284 @@ public class EditNumbers extends Activity {
 			results.setText("");
 			input_number_numbers_entries.setText(sharedPref.getString(
 					"EDIT NUMBERS NUMBER NUMBERS", ""));
-
-			check_edit_shared_numbers.setChecked(sharedPref.getBoolean(
-					"EDIT NUMBERS CHECK SHARED NUMBERS", false));
-			check_edit_user_numbers.setChecked(sharedPref.getBoolean(
-					"EDIT NUMBERS CHECK USER NUMBERS", false));
-			check_update_numbers.setChecked(sharedPref.getBoolean(
-					"EDIT NUMBERS CHECK UPDATE NUMBERS", false));
-			check_insert_numbers.setChecked(sharedPref.getBoolean(
-					"EDIT NUMBERS CHECK INSERT NUMBERS", false));
-			if (check_update_numbers.isChecked()
-					|| check_insert_numbers.isChecked()) {
-				if (check_insert_numbers.isChecked()) {
-					startInsert();
-				}
-				if (check_update_numbers.isChecked()) {
-					do_begin_update_numbers();
-				}
-				for (int i = 0; i < num_ent.length; i++) {
-					if (num_ent[i] != null) {
-						num_ent[i].setText(sharedPref.getString(
-								"EDIT NUMBERS NUMBER ENTRY " + i, ""));
-					}
-				}
-				for (int i = 0; i < mne_ent.length; i++) {
-					if (mne_ent[i] != null) {
-						mne_ent[i].setText(sharedPref.getString(
-								"EDIT NUMBERS MNEMONIC ENTRY " + i, ""));
-					}
-				}
+			boolean isUser = false;
+			if(Helpers.getLoginStatus() == true){
+				isUser = sharedPref.getBoolean(
+						"EDIT NUMBERS CHECK USER NUMBERS", false);
+			   if(isUser==true){
+			      check_edit_user_numbers.setChecked(true);
+			   }
 			}
-			do_backup.setVisibility(View.GONE);
-			setVisibilities();
+			if(isUser==true){
+				new doGetTitles(true).execute(tables.user_numbers);
+			}else{
+				new doGetTitles(true).execute(tables.global_numbers);
+			}
 		}
 
 	}
 
-	public void getTitles(String table) {
-		System.out.println("getTitles called");
-		titlesAdapter.clear();
-		Cursor c_tits = null;
-		if (table.equals(tables.global_numbers)) {
-			c_tits = MainLfqActivity.getMiscDb()
-					.rawQuery(
-							"SELECT DISTINCT " + global_numbers.Title
-									+ " FROM " + table + " ORDER BY "
-									+ global_numbers.Title, null);
-		} else {
-			c_tits = MainLfqActivity.getMiscDb().rawQuery(
-					"SELECT DISTINCT " + user_numbers.Title + " FROM " + table
-							+ " WHERE " + user_numbers.Username
-							+ "=? ORDER BY " + user_numbers.Title,
-					new String[] { username });
+	public class doGetTitles extends AsyncTask<String, String, String> {
+		public boolean isStartUp;
+		public doGetTitles(Boolean isStartUp){
+			this.isStartUp = isStartUp;
 		}
-		if (c_tits.moveToFirst()) {
-			do {
-				titlesAdapter.add(c_tits.getString(0));
-			} while (c_tits.moveToNext());
+		@Override
+		protected void onPreExecute() {
+			titlesAdapter.clear();
 		}
-	}
 
-	public void addEditNumberInfo() {
-		num_entries++;
-		System.out.println("num_entries = " + num_entries);
-		// ADD PROMPT INPUT NUMBER
-		prompt_input_number = new TextView(this_act);
-		params = new RelativeLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT);
-		if (num_entries > 0) {
-			params.addRule(RelativeLayout.BELOW,
-					inf_ent[num_entries - 1].getId());
-		} else {
-			params.addRule(RelativeLayout.BELOW, total_number_tv.getId());
+		@Override
+		protected String doInBackground(String... strings) {
+			String table = strings[0];
+			System.out.println("getTitles called");
+			Cursor c_tits = null;
+			if (table.equals(tables.global_numbers)) {
+				c_tits = MainLfqActivity.getMiscDb().rawQuery(
+						"SELECT DISTINCT " + global_numbers.Title + " FROM "
+								+ table + " ORDER BY " + global_numbers.Title,
+						null);
+			} else {
+				c_tits = MainLfqActivity.getMiscDb().rawQuery(
+						"SELECT DISTINCT " + user_numbers.Title + " FROM "
+								+ table + " WHERE " + user_numbers.Username
+								+ "=? ORDER BY " + user_numbers.Title,
+						new String[] { username });
+			}
+			if (c_tits.moveToFirst()) {
+				do {
+					publishProgress(c_tits.getString(0));
+				} while (c_tits.moveToNext());
+			}
+			return null;
 		}
-		prompt_input_number.setText(num_entries + ") NUMBER:");
-		prompt_input_number.setId(view_id++);
-		entries_layout.addView(prompt_input_number, params);
 
-		// ADD INPUT NUMBER
-		input_number = new EditText(this_act);
-		params = new RelativeLayout.LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT);
-		params.addRule(RelativeLayout.BELOW, prompt_input_number.getId());
-		input_number.setRawInputType(InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE);
-		input_number.setMaxLines(3);
-		input_number.setGravity(Gravity.TOP);
-		input_number.setBackgroundResource(R.drawable.rounded_edittext_red);
-		input_number.setId(view_id++);
-		entries_layout.addView(input_number, params);
-
-		// ADD PROMPT INPUT MNEMONIC
-		prompt_input_mnemonic = new TextView(this_act);
-		params = new RelativeLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT);
-		params.addRule(RelativeLayout.BELOW, input_number.getId());
-		prompt_input_mnemonic.setText(num_entries + ") MNEMONIC");
-		prompt_input_mnemonic.setId(view_id++);
-		entries_layout.addView(prompt_input_mnemonic, params);
-
-		// ADD INPUT MNEMONIC
-		input_mnemonic = new EditText(this_act);
-		params = new RelativeLayout.LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT);
-		params.addRule(RelativeLayout.BELOW, prompt_input_mnemonic.getId());
-		input_mnemonic.setRawInputType(InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE);
-		input_mnemonic.setMaxLines(3);
-		input_mnemonic.setGravity(Gravity.TOP);
-		input_mnemonic.setBackgroundResource(R.drawable.rounded_edittext_red);
-		input_mnemonic.setId(view_id++);
-		entries_layout.addView(input_mnemonic, params);
-
-		// ADD PROMPT NUMBER INFO
-		prompt_input_number_info = new TextView(this_act);
-		params = new RelativeLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT);
-		params.addRule(RelativeLayout.BELOW, input_mnemonic.getId());
-		prompt_input_number_info.setText(num_entries + ") INFO:");
-		prompt_input_number_info.setId(view_id++);
-		entries_layout.addView(prompt_input_number_info, params);
-		// ADD INPUT INFO
-		input_number_info = new EditText(this_act);
-		params = new RelativeLayout.LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT);
-		params.addRule(RelativeLayout.BELOW, prompt_input_number_info.getId());
-		input_number_info
-				.setBackgroundResource(R.drawable.rounded_edittext_red);
-		input_number_info
-				.setRawInputType(InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE);
-		input_number_info.setMaxLines(3);
-		input_number_info.setId(view_id++);
-		input_number_info.setGravity(Gravity.TOP);
-		entries_layout.addView(input_number_info, params);
+		@Override
+		protected void onProgressUpdate(String... strings) {
+			titlesAdapter.add(strings[0]);
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			if(isStartUp==true){
+				check_update_numbers.setChecked(sharedPref.getBoolean(
+						"EDIT NUMBERS CHECK UPDATE NUMBERS", false));
+				check_insert_numbers.setChecked(sharedPref.getBoolean(
+						"EDIT NUMBERS CHECK INSERT NUMBERS", false));
+				if (check_update_numbers.isChecked()
+						|| check_insert_numbers.isChecked()) {
+					if (check_insert_numbers.isChecked()) {
+						startInsert();
+					}
+					if (check_update_numbers.isChecked()) {
+						do_begin_update_numbers();
+					}
+					for (int i = 0; i < num_ent.size(); i++) {
+						if (num_ent.get(i) != null) {
+							num_ent.get(i).setText(
+									sharedPref.getString(
+											"EDIT NUMBERS NUMBER ENTRY " + i, ""));
+						}
+					}
+					for (int i = 0; i < mne_ent.size(); i++) {
+						if (mne_ent.get(i) != null) {
+							mne_ent.get(i)
+									.setText(
+											sharedPref.getString(
+													"EDIT NUMBERS MNEMONIC ENTRY "
+															+ i, ""));
+						}
+					}
+				}
+				do_backup.setVisibility(View.GONE);
+				setVisibilities();	
+			}			
+		}		
 	}
 
 	public void resetEntries() {
 		entries_layout.removeAllViews();
-		System.out.println("entries.size()="+entries.size());
+		System.out.println("Reset entries called. size()=" + entries.size());
 		for (int i = 0; i < entries.size(); i++) {
 			// ADD THE RELATIVE LAYOUT:
-			params = new RelativeLayout.LayoutParams(
+			params = new LinearLayout.LayoutParams(
 					ViewGroup.LayoutParams.MATCH_PARENT,
 					ViewGroup.LayoutParams.WRAP_CONTENT);
-			if (i > 0) {
-				params.addRule(RelativeLayout.BELOW, entries.get(i - 1).getId());
-			}
+			((TextView) ((LinearLayout) entries.get(i).getChildAt(0))
+					.getChildAt(0)).setText((i + 1) + ") NUMBER:");
 			entries_layout.addView(entries.get(i));
 		}
 	}
+	
+	public String getTotalNumberPrompt(){
+		String ret="";
+		for(int i=0;i<total_numbers_list.size();i++){
+			if(!total_numbers_list.get(i).trim().equals("")){
+				ret += total_numbers_list.get(i) + "-"; 
+			}
+		}
+		if (ret.length()>0){
+			ret = ret.substring(0,ret.length()-1);
+		}
+		return ret;
+	}
 
-	public void addRemovetNumber(boolean is_add, int ent_num) {
+	public void addRemoveNumber(boolean is_add, int index, boolean is_after) {
 		System.out.println("is_add = " + is_add);
-		System.out.println("ent_num = " + ent_num);
 		// ADD PROMPT INPUT NUMBER
 		if (is_add == false) {
-			entries.remove(ent_num - 1);
+			System.out.println("total number string = "
+					+ total_number_tv.getText().toString() + ", index = "
+					+ index);
+			total_numbers_list.remove(index);			
+			total_number_tv.setText(getTotalNumberPrompt());
+			entries.remove(index);
 			resetEntries();
 		} else {
-			RelativeLayout rl = new RelativeLayout(this_act);
-			rl.setId(view_id++);
+			if (total_numbers_list.size() == 0 || is_after == true) {
+				total_numbers_list.add("");
+			} else {
+				total_numbers_list.add(index, "");
+			}
+			if (index == 0) {
+				System.out.println("INDEX IS 0!!!");
+				index++;
+			}
+			LinearLayout llh;
+			LinearLayout llv = new LinearLayout(this_act);
+			llv.setOrientation(LinearLayout.VERTICAL);
+			// ADD INSERT/DELETE ENTRY
+			// LAYOUT------------------------------------------:
+			llh = new LinearLayout(this_act);
+			llh.setOrientation(LinearLayout.HORIZONTAL);
 			prompt_input_number = new TextView(this_act);
-			params = new RelativeLayout.LayoutParams(
-					ViewGroup.LayoutParams.WRAP_CONTENT,
-					ViewGroup.LayoutParams.WRAP_CONTENT);
-			prompt_input_number.setText(ent_num + ") NUMBER:");
-			prompt_input_number.setId(view_id++);
-			rl.addView(prompt_input_number, params);
+			params = new LinearLayout.LayoutParams(0,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			params.weight = 0.3f;
+			llh.addView(prompt_input_number, params);
 			// ADD INPUT NUMBER
 			input_number = new EditText(this_act);
-			params = new RelativeLayout.LayoutParams(
-					ViewGroup.LayoutParams.MATCH_PARENT,
-					ViewGroup.LayoutParams.WRAP_CONTENT);
-			params.addRule(RelativeLayout.BELOW, prompt_input_number.getId());
-			input_number
-					.setRawInputType(InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE);
-			input_number.setMaxLines(3);
-			input_number.setGravity(Gravity.TOP);
+			input_number.setMaxLines(1);
+			params = new LinearLayout.LayoutParams(0,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			params.weight = 0.3f;
+			input_number.setRawInputType(InputType.TYPE_CLASS_NUMBER);
 			input_number.setBackgroundResource(R.drawable.rounded_edittext_red);
-			input_number.setId(view_id++);
-			rl.addView(input_number, params);
-			
-			// ADD INSERT ABOVE ENTRY BUTTON:
-			Button insert_above = new Button(this_act);
-			params = new RelativeLayout.LayoutParams(100,
-					ViewGroup.LayoutParams.WRAP_CONTENT);
-			insert_above.setId(view_id++);
-			insert_above.setText("+");
-			insert_above.setTextSize(24);
-			insert_above.setBackgroundResource(sharedPref.getInt(
-					"BG Button", R.drawable.button));
-			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-			final int final_ent_num = ent_num;
-			insert_above
-					.setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View arg0) {
-							addRemovetNumber(true, final_ent_num - 1);
-						}
-					});
-			rl.addView(insert_above, params);
-			// ADD DELETE ENTRY BUTTON:
-			Button delete_entry = new Button(this_act);
-			params = new RelativeLayout.LayoutParams(100,
-					ViewGroup.LayoutParams.WRAP_CONTENT);
-			delete_entry.setId(view_id++);
-			delete_entry.setText("-");
-			delete_entry.setTextSize(24);
-			delete_entry.setBackgroundResource(sharedPref.getInt(
-					"BG Button", R.drawable.button));
-			params.addRule(RelativeLayout.LEFT_OF,
-					insert_above.getId());
-			delete_entry.setOnClickListener(new View.OnClickListener() {
+			input_number.addTextChangedListener(new TextWatcher() {
 				@Override
-				public void onClick(View arg0) {
-					addRemovetNumber(false, final_ent_num);
+				public void afterTextChanged(Editable arg0) {
+					String total_number_txt = total_number_tv.getText()
+							.toString();
+
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence arg0, int arg1,
+						int arg2, int arg3) {
+				}
+
+				@Override
+				public void onTextChanged(CharSequence arg0, int arg1,
+						int arg2, int arg3) {
 				}
 			});
-			rl.addView(delete_entry, params);			
-
+			llh.addView(input_number, params);
+			// ADD INSERT ABOVE ENTRY BUTTON:
+			Button insert_above = new Button(this_act);
+			params = new LinearLayout.LayoutParams(0,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			params.weight = 0.2f;
+			insert_above.setText("+");
+			insert_above.setTextSize(24);
+			insert_above.setBackgroundResource(sharedPref.getInt("BG Button",
+					R.drawable.button));
+			insert_above.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					LinearLayout myllv = (LinearLayout) v.getParent()
+							.getParent();
+					addRemoveNumber(true, ((LinearLayout) myllv.getParent())
+							.indexOfChild(myllv), false);
+				}
+			});
+			llh.addView(insert_above, params);
+			// ADD DELETE ENTRY BUTTON:
+			Button delete_entry = new Button(this_act);
+			params = new LinearLayout.LayoutParams(0,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			params.weight = 0.2f;
+			delete_entry.setText("-");
+			delete_entry.setTextSize(24);
+			delete_entry.setBackgroundResource(sharedPref.getInt("BG Button",
+					R.drawable.button));
+			delete_entry.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					LinearLayout myllv = (LinearLayout) v.getParent()
+							.getParent();
+					addRemoveNumber(false, ((LinearLayout) myllv.getParent())
+							.indexOfChild(myllv), false);
+				}
+			});
+			llh.addView(delete_entry, params);
+			llv.addView(llh);
+			// ----------------------------------------------------------------
 			// ADD PROMPT INPUT MNEMONIC
+			llh = new LinearLayout(this_act);
+			llh.setOrientation(LinearLayout.HORIZONTAL);
 			prompt_input_mnemonic = new TextView(this_act);
-			params = new RelativeLayout.LayoutParams(
-					ViewGroup.LayoutParams.WRAP_CONTENT,
-					ViewGroup.LayoutParams.WRAP_CONTENT);
-			params.addRule(RelativeLayout.BELOW, input_number.getId());
-			prompt_input_mnemonic.setText(ent_num + ") MNEMONIC");
-			prompt_input_mnemonic.setId(view_id++);
-			rl.addView(prompt_input_mnemonic, params);
-
+			params = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			prompt_input_mnemonic.setText("MNEMONIC");
+			llh.addView(prompt_input_mnemonic, params);
 			// ADD INPUT MNEMONIC
 			input_mnemonic = new EditText(this_act);
-			params = new RelativeLayout.LayoutParams(
-					ViewGroup.LayoutParams.MATCH_PARENT,
-					ViewGroup.LayoutParams.WRAP_CONTENT);
-			params.addRule(RelativeLayout.BELOW, prompt_input_mnemonic.getId());
+			params = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.MATCH_PARENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
 			input_mnemonic
 					.setRawInputType(InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE);
 			input_mnemonic.setMaxLines(3);
 			input_mnemonic.setGravity(Gravity.TOP);
 			input_mnemonic
 					.setBackgroundResource(R.drawable.rounded_edittext_red);
-			input_mnemonic.setId(view_id++);
-			rl.addView(input_mnemonic, params);
-
+			llh.addView(input_mnemonic, params);
+			llv.addView(llh);
 			// ADD PROMPT NUMBER INFO
+			llh = new LinearLayout(this_act);
+			llh.setOrientation(LinearLayout.HORIZONTAL);
 			prompt_input_number_info = new TextView(this_act);
-			params = new RelativeLayout.LayoutParams(
-					ViewGroup.LayoutParams.WRAP_CONTENT,
-					ViewGroup.LayoutParams.WRAP_CONTENT);
-			params.addRule(RelativeLayout.BELOW, input_mnemonic.getId());
-			prompt_input_number_info.setText(ent_num + ") INFO:");
-			prompt_input_number_info.setId(view_id++);
-			rl.addView(prompt_input_number_info, params);
+			params = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			prompt_input_number_info.setText("INFO:");
+			llh.addView(prompt_input_number_info, params);
 			// ADD INPUT INFO
 			input_number_info = new EditText(this_act);
-			params = new RelativeLayout.LayoutParams(
-					ViewGroup.LayoutParams.MATCH_PARENT,
-					ViewGroup.LayoutParams.WRAP_CONTENT);
-			params.addRule(RelativeLayout.BELOW,
-					prompt_input_number_info.getId());
+			params = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.MATCH_PARENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
 			input_number_info
 					.setBackgroundResource(R.drawable.rounded_edittext_red);
 			input_number_info
 					.setRawInputType(InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE);
 			input_number_info.setMaxLines(3);
-			input_number_info.setId(view_id++);
 			input_number_info.setGravity(Gravity.TOP);
-			rl.addView(input_number_info, params);
-			entries.add((ent_num - 1), rl);
+			llh.addView(input_number_info, params);
+			llv.addView(llh);
+			entries.add((index - 1), llv);
 			resetEntries();
 			setVisibilities();
 		}
 	}
 
 	public void do_begin_update_numbers() {
+        if(select_number_title.getSelectedItem() == null){
+        	return;
+        }
+		total_numbers_list.clear();
 		// SHOW FULL SCREEN:
-		view_id = 1;
 		top_layout.setVisibility(View.GONE);
 		do_backup.setVisibility(View.VISIBLE);
 		// ----------------------------------------
@@ -762,26 +753,22 @@ public class EditNumbers extends Activity {
 			numbers_table = tables.user_numbers;
 		}
 		text = "";
+		entries_header_layout.removeAllViews();
 		entries_layout.removeAllViews();
 
 		// ADD PROMPT INPUT NUMBER
 		prompt_total_number_tv = new TextView(this_act);
-		params = new RelativeLayout.LayoutParams(
+		params = new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT);
 		prompt_total_number_tv.setText("TOTAL NUMBER:");
-		prompt_total_number_tv.setId(view_id++);
-		entries_layout.addView(prompt_total_number_tv, params);
-		// ADD INPUT NUMBER
+		entries_header_layout.addView(prompt_total_number_tv, params);
 		total_number_tv = new TextView(this_act);
-		params = new RelativeLayout.LayoutParams(
+		params = new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT);
-		params.addRule(RelativeLayout.BELOW, prompt_total_number_tv.getId());
-		total_number_tv.setBackgroundResource(R.drawable.rounded_edittext_red);
-		total_number_tv.setId(view_id++);
-		entries_layout.addView(total_number_tv, params);
-
+		// total_number_tv.setBackgroundResource(R.drawable.rounded_edittext_red);
+		entries_header_layout.addView(total_number_tv, params);
 		String total_number = "";
 		Cursor c_get1 = MainLfqActivity.getMiscDb()
 				.rawQuery(
@@ -804,28 +791,34 @@ public class EditNumbers extends Activity {
 							"HISTORICAL_NUMBERS")) {
 				is_date = true;
 			}
+			String[] total_numbers = new String[c_get1.getCount()];
 			do {
-				total_number += String.valueOf(c_get1.getString(c_get1
+				total_numbers[i] = String.valueOf(c_get1.getString(c_get1
 						.getColumnIndex(user_numbers.Entry)));
-				num_ent[i].setText(c_get1.getString(c_get1
+				num_ent.get(i).setText(
+						c_get1.getString(c_get1
+								.getColumnIndex(user_numbers.Entry)));
+				total_numbers_list.add(c_get1.getString(c_get1
 						.getColumnIndex(user_numbers.Entry)));
 				System.out.println("SETTING mne_ent["
 						+ i
 						+ "] TO="
 						+ c_get1.getString(c_get1
 								.getColumnIndex(user_numbers.Entry_Mnemonic)));
-				mne_ent[i].setText(c_get1.getString(c_get1
-						.getColumnIndex(user_numbers.Entry_Mnemonic)));
-				inf_ent[i].setText(c_get1.getString(c_get1
-						.getColumnIndex(user_numbers.Entry_Info)));
+				mne_ent.get(i).setText(
+						c_get1.getString(c_get1
+								.getColumnIndex(user_numbers.Entry_Mnemonic)));
+				inf_ent.get(i).setText(
+						c_get1.getString(c_get1
+								.getColumnIndex(user_numbers.Entry_Info)));
 				i++;
 			} while (c_get1.moveToNext());
-			if (is_date == true && total_number.length() == 8) {
-				total_number = total_number.substring(0, 4) + "/"
-						+ total_number.substring(4, 6) + "/"
-						+ total_number.substring(6, 8);
-			}
-			total_number_tv.setText(total_number);
+			// if (is_date == true && total_number.length() == 8) {
+			// total_number = total_number.substring(0, 4) + "/"
+			// + total_number.substring(4, 6) + "/"
+			// + total_number.substring(6, 8);
+			// }
+			total_number_tv.setText(TextUtils.join("-", total_numbers));
 		}
 		setVisibilities();
 	}
@@ -839,127 +832,127 @@ public class EditNumbers extends Activity {
 				.toString());
 		System.out.println("startInsert num_entries=" + num_entries);
 		entries.clear();
-		prompt_num_ent = new TextView[num_entries];
-		prompt_mne_ent = new TextView[num_entries];
-		prompt_mne_inf = new TextView[num_entries];
-		num_ent = new EditText[num_entries];
-		mne_ent = new EditText[num_entries];
-		inf_ent = new EditText[num_entries];
-		delete_entry = new Button[num_entries];
-		insert_above_entry = new Button[num_entries];
+		prompt_num_ent.clear();
+		prompt_mne_ent.clear();
+		prompt_mne_inf.clear();
+		num_ent.clear();
+		mne_ent.clear();
+		inf_ent.clear();
+		delete_entries.clear();
+		insert_above_entries.clear();
 
 		final int num_eles = 8;
-		RelativeLayout rl;
+		LinearLayout llh, llv;
 		for (int i = 0; i < num_entries; i++) {
-			final int final_ent_num = i;
-			rl = new RelativeLayout(this_act);
-			rl.setId(view_id++);
+			llv = new LinearLayout(this_act);
+			llv.setOrientation(LinearLayout.VERTICAL);
+			llh = new LinearLayout(this_act);
+			llh.setOrientation(LinearLayout.HORIZONTAL);
 			// ADD PROMPT NUMBER:
-			prompt_num_ent[i] = new TextView(this_act);
-			prompt_num_ent[i].setText((i + 1) + ") NUMBER:");
-			prompt_num_ent[i].setId(view_id++);
-			params = new RelativeLayout.LayoutParams(
-					ViewGroup.LayoutParams.WRAP_CONTENT,
-					ViewGroup.LayoutParams.WRAP_CONTENT);
-			rl.addView(prompt_num_ent[i], params);
+			prompt_num_ent.add(new TextView(this_act));
+			params = new LinearLayout.LayoutParams(0,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			params.weight = 0.3f;
+			prompt_num_ent.get(i).setText((i + 1) + ") NUMBER:");
+			llh.addView(prompt_num_ent.get(i), params);
 			// ADD NUMBER INPUT:
-			num_ent[i] = new EditText(this_act);
-			num_ent[i].setRawInputType(InputType.TYPE_CLASS_NUMBER);
-			num_ent[i].setId(view_id++);
-			num_ent[i].setMaxLines(1);
-			params = new RelativeLayout.LayoutParams(200,
+			num_ent.add(new EditText(this_act));
+			num_ent.get(i).setRawInputType(InputType.TYPE_CLASS_NUMBER);
+			num_ent.get(i).setMaxLines(1);
+			params = new LinearLayout.LayoutParams(0,
 					ViewGroup.LayoutParams.WRAP_CONTENT);
-			params.addRule(RelativeLayout.BELOW, prompt_num_ent[i].getId());
-			num_ent[i].setBackgroundResource(R.drawable.rounded_edittext_red);
-			rl.addView(num_ent[i], params);
+			params.weight = 0.3f;
+			num_ent.get(i).setBackgroundResource(
+					R.drawable.rounded_edittext_red);
+			llh.addView(num_ent.get(i), params);
 			// ADD INSERT ABOVE ENTRY BUTTON:
-			insert_above_entry[i] = new Button(this_act);
-			params = new RelativeLayout.LayoutParams(100,
+			insert_above_entries.add(new Button(this_act));
+			params = new LinearLayout.LayoutParams(0,
 					ViewGroup.LayoutParams.WRAP_CONTENT);
-			insert_above_entry[i].setId(view_id++);
-			insert_above_entry[i].setText("+");
-			insert_above_entry[i].setTextSize(24);
-			insert_above_entry[i].setBackgroundResource(sharedPref.getInt(
-					"BG Button", R.drawable.button));
-			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-			insert_above_entry[i]
-					.setOnClickListener(new View.OnClickListener() {
+			params.weight = 0.2f;
+			insert_above_entries.get(i).setText("+");
+			insert_above_entries.get(i).setTextSize(24);
+			insert_above_entries.get(i).setBackgroundResource(
+					sharedPref.getInt("BG Button", R.drawable.button));
+			insert_above_entries.get(i).setOnClickListener(
+					new View.OnClickListener() {
 						@Override
-						public void onClick(View arg0) {
-							addRemovetNumber(true, final_ent_num + 1);
+						public void onClick(View v) {
+							LinearLayout myllv = (LinearLayout) v.getParent()
+									.getParent();
+							addRemoveNumber(true, ((LinearLayout) myllv
+									.getParent()).indexOfChild(myllv), false);
 						}
 					});
-			rl.addView(insert_above_entry[i], params);
+			llh.addView(insert_above_entries.get(i), params);
 			// ADD DELETE ENTRY BUTTON:
-			delete_entry[i] = new Button(this_act);
-			params = new RelativeLayout.LayoutParams(100,
-					ViewGroup.LayoutParams.WRAP_CONTENT);
-			delete_entry[i].setId(view_id++);
-			delete_entry[i].setText("-");
-			delete_entry[i].setTextSize(24);
+			delete_entries.add(new Button(this_act));
+			params = new LinearLayout.LayoutParams(0,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			params.weight = 0.2f;
+			delete_entries.get(i).setText("-");
+			delete_entries.get(i).setTextSize(24);
 			// delete_entry[i].setBackgroundResource(R.drawable.minus);
-			delete_entry[i].setBackgroundResource(sharedPref.getInt(
-					"BG Button", R.drawable.button));
-			params.addRule(RelativeLayout.LEFT_OF,
-					insert_above_entry[i].getId());
-			delete_entry[i].setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View arg0) {
-					addRemovetNumber(false, final_ent_num);
-				}
-			});
-			rl.addView(delete_entry[i], params);
-
+			delete_entries.get(i).setBackgroundResource(
+					sharedPref.getInt("BG Button", R.drawable.button));
+			delete_entries.get(i).setOnClickListener(
+					new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							LinearLayout myllv = (LinearLayout) v.getParent()
+									.getParent();
+							addRemoveNumber(false, ((LinearLayout) myllv
+									.getParent()).indexOfChild(myllv), false);
+						}
+					});
+			llh.addView(delete_entries.get(i), params);
+			llv.addView(llh);
+			// CREATE NEW HORIZONTAL LINEAR LAYOUT:
+			llh = new LinearLayout(this_act);
+			llh.setOrientation(LinearLayout.HORIZONTAL);
 			// ADD PROMPT MNEMONIC:
-			prompt_mne_ent[i] = new TextView(this_act);
-			prompt_mne_ent[i].setText((i + 1) + ") MNEMONIC:");
-			prompt_mne_ent[i].setId(view_id++);
-			params = new RelativeLayout.LayoutParams(
-					ViewGroup.LayoutParams.MATCH_PARENT,
-					ViewGroup.LayoutParams.WRAP_CONTENT);
-			params.addRule(RelativeLayout.BELOW, num_ent[i].getId());
-			rl.addView(prompt_mne_ent[i], params);
+			prompt_mne_ent.add(new TextView(this_act));
+			prompt_mne_ent.get(i).setText("MNEMONIC:");
+			params = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			llh.addView(prompt_mne_ent.get(i), params);
 			// ADD MNEMONIC INPUT:
 			System.out.println("Creating new mne_ent!!!!!!!!!!!11 IN LOOP");
-			mne_ent[i] = new EditText(this_act);
-			mne_ent[i].setId(view_id++);
-			mne_ent[i].setMaxLines(2);
-			params = new RelativeLayout.LayoutParams(
-					ViewGroup.LayoutParams.MATCH_PARENT,
-					ViewGroup.LayoutParams.WRAP_CONTENT);
-			params.addRule(RelativeLayout.BELOW, prompt_mne_ent[i].getId());
-			mne_ent[i].setBackgroundResource(R.drawable.rounded_edittext_red);
-			rl.addView(mne_ent[i], params);
+			mne_ent.add(new EditText(this_act));
+			mne_ent.get(i).setMaxLines(2);
+			params = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.MATCH_PARENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			mne_ent.get(i).setBackgroundResource(
+					R.drawable.rounded_edittext_red);
+			llh.addView(mne_ent.get(i), params);
+			llv.addView(llh);
 			// ADD PROMPT MNEMONIC INFORMATION:
-			prompt_mne_inf[i] = new TextView(this_act);
-			prompt_mne_inf[i].setText((i + 1) + ") INFO:");
-			prompt_mne_inf[i].setId(view_id++);
-			params = new RelativeLayout.LayoutParams(
-					ViewGroup.LayoutParams.MATCH_PARENT,
+			llh = new LinearLayout(this_act);
+			llh.setOrientation(LinearLayout.HORIZONTAL);
+			prompt_mne_inf.add(new TextView(this_act));
+			prompt_mne_inf.get(i).setText("INFO:");
+			params = new LinearLayout.LayoutParams(
+					ViewGroup.LayoutParams.WRAP_CONTENT,
 					ViewGroup.LayoutParams.WRAP_CONTENT);
-			params.addRule(RelativeLayout.BELOW, mne_ent[i].getId());
-			rl.addView(prompt_mne_inf[i], params);
+			llh.addView(prompt_mne_inf.get(i), params);
 			// ADD MNEMONIC INFORMATION:
-			inf_ent[i] = new EditText(this_act);
-			inf_ent[i].setId(view_id++);
-			inf_ent[i].setMaxLines(2);
-			params = new RelativeLayout.LayoutParams(
+			inf_ent.add(new EditText(this_act));
+			inf_ent.get(i).setMaxLines(2);
+			params = new LinearLayout.LayoutParams(
 					ViewGroup.LayoutParams.MATCH_PARENT,
 					ViewGroup.LayoutParams.WRAP_CONTENT);
-			params.addRule(RelativeLayout.BELOW, prompt_mne_inf[i].getId());
-			inf_ent[i].setBackgroundResource(R.drawable.rounded_edittext_red);
-			rl.addView(inf_ent[i], params);
+			inf_ent.get(i).setBackgroundResource(
+					R.drawable.rounded_edittext_red);
+			llh.addView(inf_ent.get(i), params);
+			llv.addView(llh);
 			// ADD THE RELATIVE LAYOUT:
-			params = new RelativeLayout.LayoutParams(
+			params = new LinearLayout.LayoutParams(
 					ViewGroup.LayoutParams.MATCH_PARENT,
 					ViewGroup.LayoutParams.WRAP_CONTENT);
-			if (i > 0) {
-				params.addRule(RelativeLayout.BELOW, entries.get(i - 1).getId());
-			}else{
-				params.addRule(RelativeLayout.BELOW, total_number_tv.getId());
-			}
-			entries_layout.addView(rl, params);
-			entries.add(rl);
+			entries_layout.addView(llv, params);
+			entries.add(llv);
 		}
 	}
 
@@ -988,8 +981,8 @@ public class EditNumbers extends Activity {
 				.toString());
 		text = "";
 		for (int i = 0; i < num_entries; i++) {
-			cv.put(global_numbers.Entry, num_ent[i].getText().toString());
-			cv.put(global_numbers.Entry_Mnemonic, mne_ent[i].getText()
+			cv.put(global_numbers.Entry, num_ent.get(i).getText().toString());
+			cv.put(global_numbers.Entry_Mnemonic, mne_ent.get(i).getText()
 					.toString());
 			cv.put(global_numbers.Entry_Index, (i + 1));
 			MainLfqActivity.getMiscDb().update(
@@ -1004,10 +997,11 @@ public class EditNumbers extends Activity {
 					+ " SET " + user_numbers.Title + "='"
 					+ input_number.getText().toString() + ", "
 					+ user_numbers.Entry + "='"
-					+ num_ent[i].getText().toString() + user_numbers.Entry_Info
-					+ "='" + input_number_info.getText().toString() + "', "
+					+ num_ent.get(i).getText().toString()
+					+ user_numbers.Entry_Info + "='"
+					+ input_number_info.getText().toString() + "', "
 					+ user_numbers.Entry_Mnemonic + "='"
-					+ mne_ent[i].getText().toString() + "' WHERE "
+					+ mne_ent.get(i).getText().toString() + "' WHERE "
 					+ global_numbers.Title + "='"
 					+ select_number_title.getSelectedItem().toString()
 					+ "' AND " + global_numbers.Entry_Index + "='" + (i + 1)
@@ -1061,8 +1055,8 @@ public class EditNumbers extends Activity {
 		cv.put(global_numbers.Entry_Number, entry_number);
 
 		for (int i = 0; i < num_entries; i++) {
-			cv.put(global_numbers.Entry, num_ent[i].getText().toString());
-			cv.put(global_numbers.Entry_Mnemonic, mne_ent[i].getText()
+			cv.put(global_numbers.Entry, num_ent.get(i).getText().toString());
+			cv.put(global_numbers.Entry_Mnemonic, mne_ent.get(i).getText()
 					.toString());
 			cv.put(global_numbers.Entry_Index, (i + 1));
 			MainLfqActivity.getMiscDb().insert(numbers_table, null, cv);
@@ -1073,8 +1067,8 @@ public class EditNumbers extends Activity {
 					+ "," + global_numbers.Entry_Mnemonic + ") VALUES('"
 					+ username_value + input_number.getText().toString()
 					+ "','" + entry_number + "','" + (i + 1) + "','"
-					+ num_ent[i].getText().toString() + "','"
-					+ mne_ent[i].getText().toString() + "')";
+					+ num_ent.get(i).getText().toString() + "','"
+					+ mne_ent.get(i).getText().toString() + "')";
 			// autoSync(sql, db, action, table, name, bool is_image, byte[]
 			// image)
 			autosync_text += Synchronize.autoSync(sql, "misc_db", "insert",

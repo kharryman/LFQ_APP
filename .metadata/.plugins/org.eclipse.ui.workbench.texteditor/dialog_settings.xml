@@ -6,22 +6,23 @@
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="isRegEx"/>
-		<item value="resetEntries" key="selection"/>
+		<item value="total_numbers_list" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="resetEntries"/>
-			<item value="setId"/>
-			<item value="doLoadDatabases"/>
-			<item value="id"/>
-			<item value="entries_layout"/>
-			<item value="startInsert"/>
-			<item value="view_id"/>
-			<item value="addEditNumberInfo"/>
+			<item value="total_numbers_list"/>
+			<item value="total_number"/>
+			<item value="check_user"/>
+			<item value="execute"/>
+			<item value="postExecute"/>
+			<item value="postExexute"/>
+			<item value="doGetTitles"/>
+			<item value="logged"/>
 		</list>
 		<list key="replacehistory">
+			<item value="ll"/>
 			<item value="results_right."/>
 			<item value="results_left."/>
 			<item value="results_right"/>
@@ -29,14 +30,13 @@
 			<item value="c"/>
 			<item value="user_events"/>
 			<item value="getMiscDb"/>
-			<item value="Date"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="257" key="DIALOG_WIDTH"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 		<item value="362" key="DIALOG_HEIGHT"/>
-		<item value="362" key="DIALOG_Y_ORIGIN"/>
-		<item value="1106" key="DIALOG_X_ORIGIN"/>
+		<item value="246" key="DIALOG_Y_ORIGIN"/>
+		<item value="1082" key="DIALOG_X_ORIGIN"/>
 	</section>
 </section>
